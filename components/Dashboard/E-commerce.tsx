@@ -17,7 +17,7 @@ const MapOne = dynamic(() => import("../Maps/MapOne"), {
 const ECommerce: React.FC = () => {
   return (
     <>
-
+      <h1>hello world</h1>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
           <svg
