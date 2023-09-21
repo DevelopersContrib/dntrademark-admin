@@ -112,7 +112,7 @@ const DropdownUser = () => {
           </li>
           <li>
             <Link
-              href="#"
+              href="/pricing"
               className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
             >
               <svg
@@ -128,12 +128,12 @@ const DropdownUser = () => {
                   fill=""
                 />
               </svg>
-              My Contacts
+              Pricing
             </Link>
           </li>
           <li>
             <Link
-              href="/pages/settings"
+              href="#"
               className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
             >
               <svg
