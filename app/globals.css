@@ -174,3 +174,9 @@ span.flatpickr-weekday,
 .map-btn .jvectormap-container .jvectormap-zoomin {
   right: 45px;
 }
+
+
+/* Custom CSS ---------------------- */
+.bg-sidebar-aside{
+  @apply bg-[rgb(255_251_215/35%)] dark:bg-black;
+}
