@@ -3,7 +3,6 @@ import './globals.css';
 import './data-tables-css.css';
 import './satoshi.css';
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 import Loader from '@/components/common/Loader';
 import Sidebar from '@/components/Sidebar';
@@ -12,24 +11,13 @@ import Header from '@/components/Header';
 import { getUser } from '@/lib/user';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const searchParams = useSearchParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [token, setToken] = useState(searchParams.get('token'));
-
-  const retrieveUserData = async () => {
-    const res = await getUser(token);
-
-    if (res.data) {
-      localStorage.setItem('user', JSON.stringify(res.data));
-      setLoading(false);
-    } else {
-      window.location.href = 'https://www.dntrademark.com/';
-    }
-  };
 
   useEffect(() => {
-    retrieveUserData();
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   }, []);
 
   return (
