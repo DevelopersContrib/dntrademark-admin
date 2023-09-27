@@ -8,8 +8,6 @@ import Loader from '@/components/common/Loader';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 
-import { getUser } from '@/lib/user';
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
