@@ -114,7 +114,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   href="/"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 ${(pathname === "/" ||
                   pathname.includes("dashboard")) &&
-                    "bg-graydark dark:bg-meta-4"
+                    "text-white bg-graydark dark:bg-meta-4"
                     }`}
                 >
                   <svg
@@ -165,7 +165,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <Link
                   href="/chart"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 ${pathname.includes("chart") && "bg-graydark dark:bg-meta-4"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 ${pathname.includes("chart") && "text-white bg-graydark dark:bg-meta-4"
                     }`}
                 >
                   <svg
