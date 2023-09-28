@@ -5,12 +5,6 @@ import Packages from "@/components/Pricing/Packages";
 import { Metadata } from 'next';
 import { FaCircleNotch } from 'react-icons/fa6'
 
-export const metadata: Metadata = {
-  title: 'TailAdmin | Next.js E-commerce Dashboard Template',
-  description: 'This is Home Blog page for TailAdmin Next.js',
-  // other metadata
-};
-
 const Page = () => {
 
   const [plans, setPlans] = useState<PackagesProps[]>([]);
