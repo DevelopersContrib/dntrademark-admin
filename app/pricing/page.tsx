@@ -34,7 +34,7 @@ const Page = () => {
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         {/* Start:: Pricing Item */}
-        {plans.data.data.map((plan:any) => (
+        {plans.map((plan) => (
           <div key={plan.id} className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-7.5 xl:p-12.5">
             <h3 className="text-black dark:text-white font-bold text-3xl xl:text-title-xxl mb-7.5">
               ${plan.price}{" "}
