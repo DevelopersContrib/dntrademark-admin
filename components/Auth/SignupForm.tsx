@@ -8,7 +8,7 @@ import { User } from '@/types/user';
 import { checkEmail, loginUser, saveUser } from '@/lib/data';
 
 const SignupForm = () => {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
   const [providers, setProviders] = useState<any>(null);
 
   const schema = Yup.object().shape({
