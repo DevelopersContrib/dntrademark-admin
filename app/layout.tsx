@@ -3,6 +3,7 @@ import './globals.css';
 import './data-tables-css.css';
 import './satoshi.css';
 import { useState, useEffect } from 'react';
+import AuthProvider from "@/app/context/AuthProvider";
 
 import Loader from '@/components/common/Loader';
 import Sidebar from '@/components/Sidebar';
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
+      <AuthProvider>
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
           {loading ? (
             <Loader />
@@ -46,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           )}
         </div>
+        </AuthProvider>
       </body>
     </html>
   );
