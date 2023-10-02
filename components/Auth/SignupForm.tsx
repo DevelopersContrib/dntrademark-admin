@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import { User } from '@/types/user';
 
 const SignupForm = () => {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
   const [providers, setProviders] = useState<any>(null);
 
   const schema = Yup.object().shape({
@@ -21,7 +21,28 @@ const SignupForm = () => {
   });
 
   const handleSubmitForm = async (values: User) => {
+<<<<<<< HEAD
     signIn('credentials', values);
+=======
+    console.log('im here');
+    // const res = await checkEmail(values.email);
+
+    // console.log(res);
+    // try {
+    //   const res = await fetch('/api/user/check?email=' + values.email, {
+    //     method: 'get',
+    //   });
+    //   const result = await res.json();
+    //   if (!result.data.error.success && result.data.error === 'Email is available.') {
+    //     console.log('im here');
+    //     signIn('credentials', { email: values.email, password: values.password, firstName: values.firstName, lastName: values.lastName });
+    //   } else {
+    //     alert('Email is not available.');
+    //   }
+    // } catch (error) {
+    //   console.log('Error', error);
+    // }
+>>>>>>> parent of 8db178e (implement nextauth)
   };
 
   useEffect(() => {
@@ -179,16 +200,6 @@ const SignupForm = () => {
             <div className="mb-5">
               <input type="submit" value="Create account" className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90" />
             </div>
-            {/*session?.user ? (
-                <button type='button' onClick={()=>{signOut()}} className='outline_btn'>
-                  Sign Out {session?.user.email}
-                </button>
-              ) : (
-            <button type="button" onClick={handleSubmit} aria-label="signup with email and password" className="inline-flex items-center gap-2.5 bg-black dark:bg-btndark hover:bg-blackho ease-in-out duration-300 font-medium text-white rounded-full px-6 py-3">
-                      Create Account
-            </button>
-              )
-            */}
             <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
               <span>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
