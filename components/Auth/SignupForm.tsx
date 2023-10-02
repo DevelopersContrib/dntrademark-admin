@@ -5,7 +5,6 @@ import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { User } from '@/types/user';
-import { checkEmail, loginUser, saveUser } from '@/lib/data';
 
 const SignupForm = () => {
   const { data: session } = useSession();
@@ -21,32 +20,8 @@ const SignupForm = () => {
       .required('Please confirm your password.'),
   });
 
-  // const handleSubmit = async () => {
-  //   signIn("credentials", 
-  //       { email: 'row.none@gmail.com', password: '11111111', 
-  //         firstName: 'ronan', lastName: 'li' , redirect: false,
-  //       })
-  // }
-
   const handleSubmitForm = async (values: User) => {
-    console.log('im here');
-    const res = await checkEmail(values.email);
-
-    console.log(res);
-    try {
-      const res = await fetch('/api/user/check?email=' + values.email, {
-        method: 'get',
-      });
-      const result = await res.json();
-      if (!result.data.error.success && result.data.error === 'Email is available.') {
-        console.log('im here...');
-        signIn('credentials', { email: values.email, password: values.password, firstName: values.firstName, lastName: values.lastName });
-      } else {
-        alert('Email is not available.');
-      }
-    } catch (error) {
-      console.log('Error', error);
-    }
+    signIn('credentials', values);
   };
 
   useEffect(() => {
@@ -62,14 +37,13 @@ const SignupForm = () => {
         initialValues={{
           firstName: 'Stephen',
           lastName: 'Catacte',
-          email: 'scatacte@mailinator.com',
+          email: 'teepin.i@mailinator.com',
           password: 'school30',
           rePassword: 'school30',
         }}
         validationSchema={schema}
         onSubmit={(values: User) => {
           setTimeout(() => {
-            console.log('waa');
             handleSubmitForm(values);
           }, 500);
         }}

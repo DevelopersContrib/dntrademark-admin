@@ -1,5 +1,5 @@
 import { User } from '@/types/user';
-import axios from 'axios'
+import axios from 'axios';
 
 export const checkEmail = async (email?: string) => {
   try {
@@ -40,40 +40,71 @@ export const loginUser = async (data: User) => {
 //     console.log('Error', error);
 //   }
 // };
-export async function saveUser(credentials: { firstName: string; lastName: string; email: string; password: string; }) {
-  // console.log('credentials..',credentials)
-  const urlCheck = process.env.API_URL+'/user/check?api_key='+process.env.API_KEY+'&email='+credentials.email
-  
-  const checkRes = await axios.get(urlCheck);
-  if(/*!checkRes.data.data.success &&*/ checkRes.data.data.data.length==0){
-      console.log('not found')
-      const params = new URLSearchParams();
-      params.append('first_name', credentials.firstName);
-      params.append('last_name', credentials.lastName);
-      params.append('email', credentials.email);
-      params.append('password', credentials.password);
-      
-      const urlSave = process.env.API_URL+'/user/save?api_key='+process.env.API_KEY
-      const saveRes = await axios.post(urlSave, params);
-      
-      if(saveRes.data.data.success){
-          const signinUrl = process.env.API_URL+'/auth/login?api_key='+process.env.API_KEY
-          const signinRes = await axios.post(signinUrl,params);
-          
-          return ({success:true, id:saveRes.data.data.data.id, name:credentials.firstName, email:credentials.email, token:signinRes.data.token});
-      }else{
-          return null
+
+export const authorizeUser = async (credentials: User) => {
+  console.log('authorizeUser');
+  try {
+    const apiUrl = process.env.API_URL + '/user/check?api_key=' + process.env.API_KEY + '&email=' + credentials.email;
+    const res = await axios.get(apiUrl);
+    const result = res.data;
+
+    if (result.data.success && result.data.error === '') {
+      try {
+        const apiUrl = process.env.API_URL + '/auth/login?api_key=' + process.env.API_KEY;
+        const params = new URLSearchParams();
+
+        params.append('email', credentials.email as string);
+        params.append('password', credentials.password as string);
+
+        const res = await axios.post(apiUrl, params);
+
+        if (res.data.token) {
+          return {
+            id: result.data.data.id,
+            email: credentials.email,
+            name: result.data.data.first_name,
+            token: res.data.token,
+          };
+        }
+      } catch (error) {
+        console.log('error', error);
       }
-  }else{
-      const d = checkRes.data.data.data;
-      
-      const params = new URLSearchParams();
 
-      params.append('email', credentials.email);
-      params.append('password', credentials.password);
+      // return user;
+    } else {
+      try {
+        const apiUrl = process.env.API_URL + '/user/save?api_key=' + process.env.API_KEY;
+        const params = new URLSearchParams();
+        params.append('first_name', credentials.firstName as string);
+        params.append('last_name', credentials.lastName as string);
+        params.append('email', credentials.email as string);
+        params.append('password', credentials.password as string);
 
-      const signinUrl = process.env.API_URL+'/auth/login?api_key='+process.env.API_KEY
-      const signinRes = await axios.post(signinUrl,params);
-      return { id: d.id, email:credentials.email, name: d.first_name, token:signinRes.data.token }
-  }
-}
+        const res = await axios.post(apiUrl, params);
+        const result = res.data;
+
+        if (result.success) {
+          const userId = result.data.id;
+          const apiUrl = process.env.API_URL + '/auth/login?api_key=' + process.env.API_KEY;
+          const params = new URLSearchParams();
+
+          params.append('email', credentials.email as string);
+          params.append('password', credentials.password as string);
+
+          const res = await axios.post(apiUrl, params);
+
+          if (res.data.token) {
+            return {
+              id: userId,
+              email: credentials.email,
+              name: credentials.firstName,
+              token: res.data.token,
+            };
+          }
+        }
+      } catch (error) {
+        console.log('error', error);
+      }
+    }
+  } catch (error) {}
+};
