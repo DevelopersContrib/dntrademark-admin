@@ -21,28 +21,7 @@ const SignupForm = () => {
   });
 
   const handleSubmitForm = async (values: User) => {
-<<<<<<< HEAD
     signIn('credentials', values);
-=======
-    console.log('im here');
-    // const res = await checkEmail(values.email);
-
-    // console.log(res);
-    // try {
-    //   const res = await fetch('/api/user/check?email=' + values.email, {
-    //     method: 'get',
-    //   });
-    //   const result = await res.json();
-    //   if (!result.data.error.success && result.data.error === 'Email is available.') {
-    //     console.log('im here');
-    //     signIn('credentials', { email: values.email, password: values.password, firstName: values.firstName, lastName: values.lastName });
-    //   } else {
-    //     alert('Email is not available.');
-    //   }
-    // } catch (error) {
-    //   console.log('Error', error);
-    // }
->>>>>>> parent of 8db178e (implement nextauth)
   };
 
   useEffect(() => {
@@ -56,11 +35,11 @@ const SignupForm = () => {
     <>
       <Formik
         initialValues={{
-          firstName: 'Stephen',
-          lastName: 'Catacte',
-          email: 'teepin.i@mailinator.com',
-          password: 'school30',
-          rePassword: 'school30',
+          firstName: '',
+          lastName: '',
+          email: '',
+          password: '',
+          rePassword: '',
         }}
         validationSchema={schema}
         onSubmit={(values: User) => {

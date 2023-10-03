@@ -29,8 +29,8 @@ const SigninForm = () => {
     <>
       <Formik
         initialValues={{
-          email: 'teepinteepin@mailinator.com',
-          password: 'school30',
+          email: '',
+          password: '',
         }}
         validationSchema={schema}
         onSubmit={(values: { email: string; password: string }) => {
