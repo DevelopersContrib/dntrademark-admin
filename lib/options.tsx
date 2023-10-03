@@ -1,5 +1,4 @@
 import type { NextAuthOptions } from 'next-auth';
-<<<<<<< HEAD
 import GitHubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
@@ -29,22 +28,10 @@ export const options: NextAuthOptions = {
       clientId: process.env.GOOGLE_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
-=======
-import GitHubProviders from 'next-auth/providers/github';
-import CredentialsProvider from 'next-auth/providers/credentials';
-
-export const options: NextAuthOptions = {
-  providers: [
-    GitHubProviders({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
-    }),
->>>>>>> parent of 8db178e (implement nextauth)
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
         email: {
-<<<<<<< HEAD
           label: 'Username:',
           type: 'text',
           placeholder: 'username',
@@ -71,45 +58,9 @@ export const options: NextAuthOptions = {
           password: profile?.email,
         };
 
-        saveUser(user);
+        authorizeUser(user);
       }
       //return 'https://www.dash.dntrademark.com/pricing'
-=======
-          label: 'Email',
-          type: 'text',
-          placeholder: 'Email',
-        },
-        password: {
-          label: 'Password',
-          type: 'password',
-          placeholder: 'Password',
-        },
-      },
-      async authorize(credentials, req) {
-        const res = await fetch('/your/endpoint', {
-          method: 'POST',
-          body: JSON.stringify(credentials),
-          headers: { 'Content-Type': 'application/json' },
-        });
-        const user = await res.json();
-
-        // If no error and we have user data, return it
-        if (res.ok && user) {
-          return user;
-        }
-        // Return null if user data could not be retrieved
-        return null;
-      },
-    }),
-  ],
-  callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      console.log(user);
-      console.log(account);
-      console.log(profile);
-      console.log(email);
-      console.log(credentials);
->>>>>>> parent of 8db178e (implement nextauth)
       return true;
     },
     async redirect({ url, baseUrl }) {
@@ -124,8 +75,5 @@ export const options: NextAuthOptions = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-<<<<<<< HEAD
   debug: true,
-=======
->>>>>>> parent of 8db178e (implement nextauth)
 };

@@ -1,8 +1,5 @@
 import { User } from '@/types/user';
-<<<<<<< HEAD
 import axios from 'axios';
-=======
->>>>>>> parent of 8db178e (implement nextauth)
 
 export const checkEmail = async (email?: string) => {
   try {
@@ -36,14 +33,13 @@ export const saveUser = async (values: User) => {
 
     const result = await res.json();
 
-<<<<<<< HEAD
-//     if (result.data.id) {
-//       return { id: result.data.id, name: values.firstName };
-//     }
-//   } catch (error) {
-//     console.log('Error', error);
-//   }
-// };
+    if (result.data.id) {
+      return { id: result.data.id, name: values.firstName };
+    }
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
 
 export const authorizeUser = async (credentials: User) => {
   console.log('authorizeUser');
@@ -111,12 +107,4 @@ export const authorizeUser = async (credentials: User) => {
       }
     }
   } catch (error) {}
-=======
-    if (result.data.id) {
-      return { id: result.data.id, name: values.firstName };
-    }
-  } catch (error) {
-    console.log('Error', error);
-  }
->>>>>>> parent of 8db178e (implement nextauth)
 };
