@@ -16,4 +16,4 @@ export default withAuth({
   },
 });
 
-export const config = { matcher: ["/","/extra","/dashboard"] }
+export const config = { matcher: ["/","/extra","/dashboard","/pricing"] }
