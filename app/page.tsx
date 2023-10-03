@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import ECommerce from '@/components/Dashboard/E-commerce';
 
 export const metadata: Metadata = {
-  title: 'TailAdmin | Next.js E-commerce Dashboard Template',
-  description: 'This is Home Blog page for TailAdmin Next.js',
+  title: 'DNTrademark Admin - Global Trademark Notification Platform',
+  description: 'dntrademark.com is a SaaS platform designed to provide an efficient and user-friendly way to check domain names against global trademark databases.',
   // other metadata
 };
 

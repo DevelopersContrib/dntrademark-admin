@@ -1,9 +1,16 @@
+import { Metadata } from 'next';
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
 
 import SignupForm from '@/components/Auth/SignupForm';
+
+export const metadata: Metadata = {
+  title: 'DNTrademark Admin - SignUp',
+  description: 'dntrademark.com is a SaaS platform designed to provide an efficient and user-friendly way to check domain names against global trademark databases.',
+  // other metadata
+};
 
 const SignUp: React.FC = () => {
   return (
