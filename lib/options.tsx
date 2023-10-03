@@ -12,10 +12,9 @@ interface User {
 
 export const options: NextAuthOptions = {
   pages: {
-    // signIn: '/auth/signup',
-    signIn: '/auth/signup',
+    signIn: '/auth/signin',
     // signOut: '/auth/signout',
-    error: '/auth/error', // Error code passed in query string as ?error=
+    // error: '/auth/error', // Error code passed in query string as ?error=
     // verifyRequest: '/auth/verify-request', // (used for check email message)
     // newUser: '/auth/new-user' // New users will be directed here on first sign in (leave the property out if not of interest)
   },
@@ -44,7 +43,10 @@ export const options: NextAuthOptions = {
       },
       async authorize(credentials: any) {
         const user = await authorizeUser(credentials);
-        return user;
+        // console.log('user',user)
+        // return user;
+        // console.log('credentials',credentials)
+        return { id: user?.id, email:user?.email, name: user?.name, password: credentials?.password }
       },
     }),
   ],
