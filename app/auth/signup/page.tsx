@@ -24,7 +24,7 @@ const SignUp: React.FC = () => {
                 <Image className="hidden dark:block" src={'https://cdn.vnoc.com/logos/logo-dntrademark-final.png'} alt="Logo" width={176} height={32} />
                 <Image className="dark:hidden" src={'https://cdn.vnoc.com/logos/logo-dntrademark-final.png'} alt="Logo" width={176} height={32} />
               </Link>
-              <p className="2xl:px-20">Lorem ipsum dolor sit amet, consectetur adipiscing elit suspendisse.</p>
+              <p className="2xl:px-20">Secure Your Domain with Global Trademark Notifications</p>
 
               <span className="mt-15 inline-block">
                 <svg width="350" height="350" viewBox="0 0 350 350" fill="none" xmlns="http://www.w3.org/2000/svg">
