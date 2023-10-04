@@ -9,7 +9,7 @@ const nextConfig = {
                 pathname: '/u/**',
             },
         ],
-        domains : ['lh3.googleusercontent.com', 'localhost'] // <== Domain name
+        domains : ['lh3.googleusercontent.com', 'localhost', 'cdn.vnoc.com'] // <== Domain name
     },
 }
 
