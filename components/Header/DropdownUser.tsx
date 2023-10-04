@@ -1,23 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {signOut, useSession, getProviders } from "next-auth/react";
+import {signOut, useSession} from "next-auth/react";
 
 const DropdownUser = () => {
   const { data: session } = useSession();
-  const [providers, setProviders] = useState<any>(null);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
-
-  useEffect(() => {
-    (async () => {
-      const res = await getProviders();
-      setProviders(res);
-    })();
-  }, []);
 
   // close on click outside
   useEffect(() => {
