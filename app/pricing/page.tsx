@@ -1,3 +1,4 @@
+/*
 "use client"
 import { PackagesProps } from "@/types/packages";
 import { useEffect, useState } from "react";
@@ -40,7 +41,7 @@ const Page = () => {
 
   return (
     <>
-      {/* Start:: Pricing Item */}
+      {// Start:: Pricing Item}
       {
         loading ?
           <div className="w-full min-h-[50vh] flex items-center justify-center">
@@ -58,3 +59,25 @@ const Page = () => {
 }
 
 export default Page;
+
+*/
+
+import { getPackages } from '@/lib/data';
+import { PackagesProps } from "@/types/packages";
+import Packages from "@/components/Pricing/Packages";
+
+async function Page() {
+  const plans = await getPackages();
+  return (
+    <>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+        {plans.data.map((plan: PackagesProps) => (
+            <Packages key={plan.id} {...plan} />
+        ))}
+      </div>
+
+    </>
+  )
+}
+
+export default Page

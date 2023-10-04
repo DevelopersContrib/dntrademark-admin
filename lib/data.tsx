@@ -13,6 +13,17 @@ export const checkEmail = async (email?: string) => {
   }
 };
 
+export const getPackages = async () => {
+  try {
+    const url = process.env.API_URL + '/packages?api_key=' + process.env.API_KEY
+    const res = await axios.get(url);
+    const result = res.data;
+    return result.data;
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
 export const loginUser = async (data: User) => {
   try {
     const res = await fetch('/api/auth/signin', {
