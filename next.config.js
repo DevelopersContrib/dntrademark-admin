@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
     images: {
         remotePatterns: [
@@ -9,7 +10,7 @@ const nextConfig = {
                 pathname: '/u/**',
             },
         ],
-        domains : ['lh3.googleusercontent.com', 'localhost', 'cdn.vnoc.com'] // <== Domain name
+        domains: ['lh3.googleusercontent.com', 'localhost', 'cdn.vnoc.com'] // <== Domain name
     },
 }
 
