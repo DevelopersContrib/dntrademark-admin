@@ -1,22 +1,37 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { FaGithub } from 'react-icons/fa6'
+import { FaDumbbell, FaDumpster, FaGithub } from 'react-icons/fa6';
+
+import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 
 const SigninForm = () => {
   const { data: session } = useSession();
   const [providers, setProviders] = useState<any>(null);
+  const [error, setError] = useState('');
 
   const schema = Yup.object().shape({
     email: Yup.string().email('Invalid email address.').required('Enter your email address.'),
     password: Yup.string().required('Enter you password.'),
   });
 
-  const handleSubmitForm = (values: { email: string; password: string }) => {
-    signIn('credentials', values);
+  const handleSubmitForm = async (values: { email: string; password: string }) => {
+    setError((prev) => '');
+    const res = await fetch('/api/user/check', {
+      method: 'POST',
+      body: JSON.stringify(values),
+    });
+
+    const result = await res.json();
+
+    console.log(result);
+    if (!result.success) {
+      setError(result.error);
+    } else {
+      signIn('credentials', values);
+    }
   };
 
   useEffect(() => {
@@ -62,6 +77,11 @@ const SigninForm = () => {
                   </svg>
                 </span>
                 <ErrorMessage component="small" className="text-[rgb(220,53,69)]" name="email" />
+                {error === 'Email not found.' && (
+                  <>
+                    <small className="text-[rgb(220,53,69)]">{error}</small>
+                  </>
+                )}
               </div>
             </div>
 
@@ -89,6 +109,11 @@ const SigninForm = () => {
                   </svg>
                 </span>
                 <ErrorMessage component="small" className="text-[rgb(220,53,69)]" name="password" />
+                {error === 'Incorrect password.' && (
+                  <>
+                    <small className="text-[rgb(220,53,69)]">{error}</small>
+                  </>
+                )}
               </div>
             </div>
 
@@ -97,9 +122,12 @@ const SigninForm = () => {
             </div>
 
             <div className="space-y-5">
-              <button onClick={() => {
-                signIn('google');
-              }} className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
+              <button
+                onClick={() => {
+                  signIn('google');
+                }}
+                className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
+              >
                 <span>
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clipPath="url(#clip0_191_13499)">
@@ -129,9 +157,12 @@ const SigninForm = () => {
                 </span>
                 Sign in with Google
               </button>
-              <button onClick={() => {
-                signIn('github');
-              }} className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
+              <button
+                onClick={() => {
+                  signIn('github');
+                }}
+                className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
+              >
                 <span>
                   <FaGithub className="w-5 h-5" />
                 </span>

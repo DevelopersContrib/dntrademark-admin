@@ -11,10 +11,11 @@ export const POST = async (req: Request) => {
 
     const res = await axios.post(apiUrl, params);
     const result = res.data;
-    console.log(result)
+    console.log(result);
     let response = NextResponse.next();
-    response.cookies.set('token', result.token)
-    return NextResponse.redirect(new URL('/new', req.url))
+    response.cookies.set('token', result.token);
+
+    return NextResponse.redirect(new URL('/new', req.url));
   } catch (error) {
     return error;
   }
