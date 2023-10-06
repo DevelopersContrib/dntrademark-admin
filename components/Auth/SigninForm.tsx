@@ -10,6 +10,7 @@ import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 const SigninForm = () => {
   const { data: session } = useSession();
   const [providers, setProviders] = useState<any>(null);
+  const [error, setError] = useState('');
 
   const schema = Yup.object().shape({
     email: Yup.string().email('Invalid email address.').required('Enter your email address.'),
@@ -17,14 +18,20 @@ const SigninForm = () => {
   });
 
   const handleSubmitForm = async (values: { email: string; password: string }) => {
+    setError((prev) => '');
     const res = await fetch('/api/user/check', {
       method: 'POST',
       body: JSON.stringify(values),
     });
 
-    console.log(res);
+    const result = await res.json();
 
-    // signIn('credentials', values);
+    console.log(result);
+    if (!result.success) {
+      setError(result.error);
+    } else {
+      signIn('credentials', values);
+    }
   };
 
   useEffect(() => {
@@ -70,6 +77,11 @@ const SigninForm = () => {
                   </svg>
                 </span>
                 <ErrorMessage component="small" className="text-[rgb(220,53,69)]" name="email" />
+                {error === 'Email not found.' && (
+                  <>
+                    <small className="text-[rgb(220,53,69)]">{error}</small>
+                  </>
+                )}
               </div>
             </div>
 
@@ -97,6 +109,11 @@ const SigninForm = () => {
                   </svg>
                 </span>
                 <ErrorMessage component="small" className="text-[rgb(220,53,69)]" name="password" />
+                {error === 'Incorrect password.' && (
+                  <>
+                    <small className="text-[rgb(220,53,69)]">{error}</small>
+                  </>
+                )}
               </div>
             </div>
 
