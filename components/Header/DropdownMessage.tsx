@@ -90,8 +90,9 @@ const DropdownMessage = () => {
           dropdownOpen === true ? "block" : "hidden"
         }`}
       >
-        <div className="px-4.5 py-3">
+        <div className="px-4.5 py-3 flex justify-between w-full">
           <h5 className="text-sm font-medium text-bodydark2">Messages</h5>
+          <a href="" className='text-sm font-medium text-bodydark2'>View All</a>
         </div>
 
         <ul className="flex h-auto flex-col overflow-y-auto">
