@@ -38,15 +38,17 @@ export default function CheckoutForm() {
     }
 
     const card = elements.getElement(CardElement);
-    const result = await stripe.createToken(card);
+    if(card){
+      const result = await stripe.createToken(card);
 
-    if (result.error) {
-      // Show error to your customer.
-      console.log(result.error.message);
-    } else {
-      // Send the token to your server.
-      // This function does not exist yet; we will define it in the next step.
-      stripeTokenHandler(result.token);
+      if (result.error) {
+        // Show error to your customer.
+        console.log(result.error.message);
+      } else {
+        // Send the token to your server.
+        // This function does not exist yet; we will define it in the next step.
+        stripeTokenHandler(result.token);
+      }
     }
   };
 
