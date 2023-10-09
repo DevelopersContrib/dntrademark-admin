@@ -2,7 +2,11 @@ import { signOut, useSession, getProviders } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 
 const ucfirst = (str: string) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  if (str != null){
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }else {
+    return 'User';
+  }
 };
 
 const WelcomeNotif = () => {
