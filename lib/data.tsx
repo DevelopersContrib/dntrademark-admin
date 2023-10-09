@@ -1,10 +1,14 @@
 import { User } from '@/types/user';
 import axios from 'axios';
+import { FaDumpster } from 'react-icons/fa6';
 
 export const checkEmail = async (email?: string) => {
   try {
-   
-    const urlCheck = process.env.API_URL+'/user/check?api_key='+process.env.API_KEY+'&email='+email
+    const urlCheck = process.env.API_URL + '/user/check?api_key=' + process.env.API_KEY + '&email=' + email;
+
+    console.log('urlCheck', process.env.API_URL);
+    console.log('urlCheck', urlCheck);
+
     const result = await axios.get(urlCheck);
     return !result.data.error.success && result.data.error === 'Email is available.' ? { isEmailAvailable: true } : { isEmailAvailable: false };
     // return { isEmailAvailable: false }
@@ -15,7 +19,7 @@ export const checkEmail = async (email?: string) => {
 
 export const getPackages = async () => {
   try {
-    const url = process.env.API_URL + '/packages?api_key=' + process.env.API_KEY
+    const url = process.env.API_URL + '/packages?api_key=' + process.env.API_KEY;
     const res = await axios.get(url);
     const result = res.data;
     return result.data;
@@ -36,7 +40,7 @@ export const loginUser = async (data: User) => {
 
 export const saveUser = async (values: User) => {
   try {
-    // ayaw na ug call diri /api/auth/signup kai serverside naman ni...diritso na sa api call didto sa process.env.API_URL 
+    // ayaw na ug call diri /api/auth/signup kai serverside naman ni...diritso na sa api call didto sa process.env.API_URL
     const res = await fetch('/api/auth/signup', {
       method: 'POST',
       body: JSON.stringify(values),
@@ -53,13 +57,12 @@ export const saveUser = async (values: User) => {
 };
 
 export const authorizeUser = async (credentials: User) => {
-  
   try {
     const apiUrl = process.env.API_URL + '/user/check?api_key=' + process.env.API_KEY + '&email=' + credentials.email;
-    
+
     const res = await axios.get(apiUrl);
     const result = res.data;
-    
+
     if (result.data.success && result.data.error === '') {
       try {
         const apiUrl = process.env.API_URL + '/auth/login?api_key=' + process.env.API_KEY;
@@ -69,7 +72,7 @@ export const authorizeUser = async (credentials: User) => {
         params.append('password', credentials.password as string);
 
         const res = await axios.post(apiUrl, params);
-        
+
         if (res.data.token) {
           return {
             id: result.data.data.id,
@@ -94,7 +97,7 @@ export const authorizeUser = async (credentials: User) => {
 
         const res = await axios.post(apiUrl, params);
         const result = res.data;
-        
+
         if (result.success) {
           const userId = result.data.data.id;
           const apiUrl = process.env.API_URL + '/auth/login?api_key=' + process.env.API_KEY;
