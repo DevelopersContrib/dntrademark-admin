@@ -46,8 +46,7 @@ export const options: NextAuthOptions = {
         // console.log('user',user)
         // return user;
         // console.log('credentials',credentials)
-        console.log(user);
-        // return { id: user?.id, email:user?.email, name: user?.name, password: credentials?.password }
+        return { id: user?.id, email: user?.email, name: user?.name, password: credentials?.password };
       },
     }),
   ],
