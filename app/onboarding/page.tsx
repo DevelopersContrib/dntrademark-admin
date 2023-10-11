@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import Tabs from '@/components/onboarding/Tabs';
 
-const page = () => {
+const Page = () => {
   const [activeTab, setActiveTab] = useState<number>(1);
 
   const handleTabClick = (tabNumber: number) => {
@@ -152,4 +152,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
