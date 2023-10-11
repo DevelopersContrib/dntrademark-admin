@@ -65,8 +65,8 @@ const Header = (props: {
             <Image
               width={32}
               height={32}
-              src={"/images/logo/logo-icon.png"}
-              alt="Logo"
+              src={"https://cdn.vnoc.com/logos/logo-icon-dntrademark.png"}
+              alt="DNTRADEMARK LOGO ICON"
             />
           </Link>
         </div>

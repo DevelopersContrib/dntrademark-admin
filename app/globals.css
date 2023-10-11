@@ -178,7 +178,7 @@ span.flatpickr-weekday,
 
 /* Custom CSS ---------------------- */
 .bg-sidebar-aside{
-  @apply bg-[rgb(255_251_215/35%)] dark:bg-black;
+  @apply bg-[rgba(255,251,215,1)] lg:bg-[rgba(255,251,215,0.35)] dark:bg-black;
 }
 
 .fa-spin{

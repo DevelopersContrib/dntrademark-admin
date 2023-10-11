@@ -71,8 +71,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           <Image
             width={176}
             height={32}
-            src={"/images/logo/logo-dntrademark-final.png"}
-            alt="Logo"
+            src={"https://cdn.vnoc.com/logos/logo-dntrademark-onwhite.png"}
+            alt="DNTRADEMARK LOGO"
           />
         </Link>
 
