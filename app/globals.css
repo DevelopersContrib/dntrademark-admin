@@ -178,7 +178,7 @@ span.flatpickr-weekday,
 
 /* Custom CSS ---------------------- */
 .bg-sidebar-aside{
-  @apply bg-[rgb(255_251_215/35%)] dark:bg-black;
+  @apply bg-[rgba(255,251,215,1)] lg:bg-[rgba(255,251,215,0.35)] dark:bg-black;
 }
 
 .fa-spin{
@@ -216,4 +216,33 @@ span.flatpickr-weekday,
     -webkit-transform: rotate(1turn);
     transform: rotate(1turn);
   }
+}
+
+
+
+.StripeElement {
+  height: 40px;
+  padding: 10px 12px;
+  width: 100%;
+  color: #32325d;
+  background-color: white;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px 0 #e6ebf1;
+  -webkit-transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;
+}
+.StripeElement--focus {
+  box-shadow: 0 1px 3px 0 #cfd7df;
+}
+.StripeElement--invalid {
+  border-color: #fa755a;
+}
+.StripeElement--webkit-autofill {
+  background-color: #fefde5 !important;
+}
+
+/* Onboarding Custom Tabs ------------------------------- */
+.nav-tabs.active{
+  @apply bg-[#C90D11] text-white;
 }
