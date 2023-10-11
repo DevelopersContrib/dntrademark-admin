@@ -241,3 +241,8 @@ span.flatpickr-weekday,
 .StripeElement--webkit-autofill {
   background-color: #fefde5 !important;
 }
+
+/* Onboarding Custom Tabs ------------------------------- */
+.nav-tabs.active{
+  @apply bg-[#C90D11] text-white;
+}
