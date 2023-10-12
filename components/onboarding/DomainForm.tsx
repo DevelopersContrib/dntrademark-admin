@@ -23,10 +23,8 @@ const DomainForm= () => {
 
     useEffect(() => {
       const validateErrors = () => {
-        const dataErrors = {
-          domainError: (domains==''?"Please enter domains":"") ,
-        }
-        setErrors(dataErrors);
+        const domainError = domains==''?"Please enter domains":""
+        setErrors({ ...errors, ['domainError']: domainError});
       }
       validateErrors()
     }, [data]);
