@@ -8,6 +8,7 @@ interface User {
   lastName: any;
   email: any;
   password: any;
+  token:any;
 }
 
 export const options: NextAuthOptions = {
@@ -46,7 +47,8 @@ export const options: NextAuthOptions = {
         // console.log('user',user)
         // return user;
         // console.log('credentials',credentials)
-        return { id: user?.id, email: user?.email, name: user?.name, password: credentials?.password };
+        
+        return { id: user?.id, email: user?.email, name: user?.name, password: credentials?.password, token:user?.token };
       },
     }),
   ],
@@ -69,12 +71,19 @@ export const options: NextAuthOptions = {
       console.log('redirect', url, baseUrl);
       return baseUrl;
     },
-    async session({ session, token, user }) {
-      return session;
+    async session({ session, user, token }) {
+      session.user.accessToken = token.accessToken
+      session.user.id = token.id
+      return session
     },
     async jwt({ token, user, account, profile, isNewUser }) {
-      return token;
-    },
+      if (account){
+        token.accessToken = user.token
+        token.id = user.id
+      }
+      return token
+    }
+    
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: true,
