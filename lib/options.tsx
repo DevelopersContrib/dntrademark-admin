@@ -60,6 +60,7 @@ export const options: NextAuthOptions = {
           lastName: profile?.name?.split(' ')[1],
           email: profile?.email,
           password: profile?.email,
+          token:user.token
         };
 
         authorizeUser(user);
