@@ -1,24 +1,43 @@
 'use client';
 import { useEffect, useRef, useState } from "react";
 import { signOut, useSession, getProviders } from "next-auth/react";
+import ErrorBlock from './ErrorBlock';
 
 const DomainForm= () => {
+  const initialValues = {
+		isLoading:false,
+		isSuccess:false
+	}
+
+  const initialErrors = {
+		validate:false,
+		domainError: "",
+	};
+
     const { data: session } = useSession();
+    const [data, setData] = useState(initialValues);
     const [domains, setDomains] = useState("");
     const [result, setResult] = useState<any>();
     const [providers, setProviders] = useState<any>(null);
+    const [errors, setErrors] = useState(initialErrors);
 
     useEffect(() => {
-        (async () => {
-          const res = await getProviders();
-          setProviders(res);
-        })();
-      }, []);
+      const validateErrors = () => {
+        const dataErrors = {
+          domainError: (domains==''?"Please enter domains":"") ,
+        }
+        setErrors(dataErrors);
+      }
+      validateErrors()
+    }, [data]);
 
     const handleSubmit = async (
         e: React.FormEvent<HTMLFormElement>
       ): Promise<void> => {
         e.preventDefault();
+
+        const isValid = !Object.values(errors).some(v => v);
+        setErrors({ ...errors, ['validate']: true })
         const formData = new URLSearchParams();
         formData.append("domains", domains);
         console.log(session?.user)
@@ -30,12 +49,14 @@ const DomainForm= () => {
           },
         }).then(async (result) => {
           setResult(await result.json());
+          setData({ ...data, ['isSuccess']: true});
         });
       };
 
 
     return (
         <>
+        { data.isSuccess ?
         <div className="mb-4">
                   <div
                     className="flex w-full rounded-lg border-l-[6px] border-[#34D399] bg-[#34D399] bg-opacity-[15%] px-7 py-8 shadow-md md:p-9"
@@ -66,7 +87,8 @@ const DomainForm= () => {
                       </p>
                     </div>
                   </div>
-                </div>
+          </div>:null}
+          {errors.validate? (<ErrorBlock msg={errors.domainError} />): null}
           <div className="font-medium leading-relaxed">
          </div>
          <div className="mb-2">
