@@ -55,7 +55,7 @@ export const options: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       if (account?.provider !== 'credentials') {
-        const user: User = {
+        const Newuser: User = {
           firstName: profile?.name?.split(' ')[0],
           lastName: profile?.name?.split(' ')[1],
           email: profile?.email,
@@ -63,7 +63,7 @@ export const options: NextAuthOptions = {
           token:user.token
         };
 
-        authorizeUser(user);
+        authorizeUser(Newuser);
       }
       //return 'https://www.dash.dntrademark.com/pricing'
       return true;
