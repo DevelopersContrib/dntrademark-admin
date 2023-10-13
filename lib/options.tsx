@@ -9,6 +9,7 @@ interface User {
   email: any;
   password: any;
   token:any;
+  id:any;
 }
 
 export const options: NextAuthOptions = {
@@ -60,7 +61,8 @@ export const options: NextAuthOptions = {
           lastName: profile?.name?.split(' ')[1],
           email: profile?.email,
           password: profile?.email,
-          token:user.token
+          token:user.token,
+          id:user.id
         };
 
         authorizeUser(Newuser);
@@ -73,13 +75,13 @@ export const options: NextAuthOptions = {
       return baseUrl;
     },
     async session({ session, user, token }) {
-      session.user.accessToken = token.accessToken
-      session.user.id = token.id
+      session.token = token.token
+      session.id = token.id
       return session
     },
     async jwt({ token, user, account, profile, isNewUser }) {
       if (account){
-        token.accessToken = user.token
+        token.token = user.token
         token.id = user.id
       }
       return token

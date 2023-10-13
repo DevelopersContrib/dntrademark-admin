@@ -39,6 +39,7 @@ const DomainForm= () => {
         const formData = new URLSearchParams();
         formData.append("domains", domains);
         console.log(session?.user)
+        console.log('token'+session?.token)
         fetch("/api/domain/add", {
           body: formData.toString(),
           method: "post",
