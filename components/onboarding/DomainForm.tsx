@@ -17,10 +17,9 @@ const DomainForm = () => {
 
   const handleSubmitForm = async (values: { domains: string}) => {
     setError((prev) => '');
-    values.token = session?.token
     const res = await fetch('/api/domain/add', {
       method: 'POST',
-      body: JSON.stringify(values),
+      body: JSON.stringify({ domains: values.domains, token:session?.token  }),
     });
 
     const result = await res.json();
