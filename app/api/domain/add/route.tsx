@@ -1,22 +1,22 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
-import { getCookies, getCookie, setCookie, deleteCookie } from 'cookies-next';
 
 export const POST = async (req: Request) => {
   try {
-    const token = getCookie('token');
-    console.log(token)
     const data = await req.json();
-
+    const token = data.token
+    
+    const headers = { 'Authorization': 'Bearer '+token }; // auth header with bearer token
+    
     const apiUrl = process.env.API_URL + '/domains/add?api_key=' + process.env.API_KEY;
 
     const params = new URLSearchParams();
     params.append('domains', data.domains);
-   
-    const res = await axios.post(apiUrl, params);
+ 
+    const res = await axios.post(apiUrl, params, { headers });
     const result = res.data;
 
-    return NextResponse.json(result.data);
+    return NextResponse.json(result);
   } catch (error) {
     console.log(error);
   }
