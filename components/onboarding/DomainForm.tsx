@@ -17,9 +17,11 @@ const DomainForm = () => {
 
   const handleSubmitForm = async (values: { domains: string}) => {
     setError((prev) => '');
+    const finalDomains = values.domains.split("\n");
+    
     const res = await fetch('/api/domain/add', {
       method: 'POST',
-      body: JSON.stringify({ domains: values.domains, token:session?.token  }),
+      body: JSON.stringify({ domains:  finalDomains.join(","), token:session?.token  }),
     });
 
     const result = await res.json();
@@ -95,12 +97,7 @@ const DomainForm = () => {
          <div className="mb-2">
           Add Domains <small>(separate domain by new line)</small>
          </div>
-         <Field
-                  type="textarea"
-                  name="domains"
-                  rows={5}
-                  className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                />
+         <Field name="domains" as="textarea" className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
            <button type="submit" className='bg-primary inline-flex items-center justify-center rounded-md py-4 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-8 xl:px-10'>Submit</button>
           </Form>
         )}
