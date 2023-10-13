@@ -8,12 +8,12 @@ export const POST = async (req: Request) => {
     
     const headers = { 'Authorization': 'Bearer '+token }; // auth header with bearer token
     
-    const apiUrl = process.env.API_URL + '/domains/add?api_key=' + process.env.API_KEY;
+    const apiUrl = process.env.API_URL + '/user/update?api_key=' + process.env.API_KEY;
 
     const params = new URLSearchParams();
-    params.append('domains', data.domains);
+    //params.append('is_onboarding', data.is_onboarding);
  
-    const res = await axios.post(apiUrl, params, { headers });
+    const res = await axios.put(apiUrl, data, { headers });
     const result = res.data;
 
     return NextResponse.json(result);

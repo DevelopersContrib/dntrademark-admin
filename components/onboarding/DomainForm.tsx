@@ -38,6 +38,12 @@ const DomainForm = () => {
     (async () => {
       const res = await getProviders();
       setProviders(res);
+
+      const updated = await fetch('/api/user/update', {
+        method: 'POST',
+        body: JSON.stringify({ is_onboarding:  1, token:session?.token  }),
+      });
+
     })();
   }, []);
 
