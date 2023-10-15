@@ -2,22 +2,20 @@
 import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
 import CheckoutForm from '@/components/Checkout/CheckoutForm';
+import { StripePackage } from "@/types/stripe";
 
 // Docs:: https://stripe.com/docs/payments/accept-a-payment-charges?client=react
 
 // Make sure to call `loadStripe` outside of a component's render to avoid
 // recreating the `Stripe` object on every render.
-const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
 
-export default function StripeWrapper() {
-  const options = {
-    // passing the client secret obtained from the server
-    clientSecret: '{{CLIENT_SECRET}}',
-  };
-
+const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY!);
+const StripeWrapper: React.FC<StripePackage> = ({ id, pack }) => {
   return (
     <Elements stripe={stripePromise}>
-      <CheckoutForm />
+      <CheckoutForm pack={pack} />
     </Elements>
   );
 };
+
+export default StripeWrapper;

@@ -17,6 +17,18 @@ export const checkEmail = async (email?: string) => {
   }
 };
 
+export const getPackage = async (id:number) => {
+  try {
+    const url = process.env.API_URL + '/packages?api_key=' + process.env.API_KEY;
+    const res = await axios.get(url);
+    const data = res.data.data.data.find((item: { id: number; }) => item.id === id);
+    return data;
+  } catch (error) {
+    console.log('Error', error);
+    return null;
+  }
+};
+
 export const getPackages = async () => {
   try {
     const url = process.env.API_URL + '/packages?api_key=' + process.env.API_KEY;
