@@ -61,9 +61,14 @@ const CheckoutForm: React.FC<pack> = ({ pack  }) => {
         // Send the token to your server.
         // This function does not exist yet; we will define it in the next step.
         setLoading(true)
-        const res = stripeTokenHandler(result.token,pack.id.toString());
-        setLoading(false)
-        setSuccess(true)
+        const res = await stripeTokenHandler(result.token,pack.id.toString());
+        if(res.token){
+          setLoading(false)
+          setSuccess(true)
+          setTimeout(function(){
+            window.location.href = "/onboarding"
+          },3000)
+        }
       }
     }
   };
@@ -83,10 +88,9 @@ const CheckoutForm: React.FC<pack> = ({ pack  }) => {
                 <h5 className="mb-3 text-lg font-bold text-black dark:text-[#009ef7]">
                   Payment Success
                 </h5>
-                {/* <p className="text-base leading-relaxed text-body">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry.
-                </p> */}
+                <p className="text-base leading-relaxed text-body">
+                  You are being redirected onboarding...
+                </p>
               </div>
             
         </div>

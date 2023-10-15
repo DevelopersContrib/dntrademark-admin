@@ -31,8 +31,10 @@ export const POST = async (req: Request) => {
             prince:pack.price,
             client_secret:paymentIntent.client_secret
         }
-        console.log('data',data); //
-        return new NextResponse(paymentIntent.client_secret, { status: 200 });
+        // call payment api... 
+
+
+        return NextResponse.json({ token: paymentIntent.client_secret }, { status: 200 });
     } catch (error: any) {
         return new NextResponse(error, {
         status: 400,
