@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import StripeWrapper from '@/components/Checkout/StripeWrapper';
 import { getPackage } from '@/lib/data';
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: 'DNTrademark Admin - Global Trademark Notification Platform',
@@ -13,9 +14,12 @@ interface Checkout {
 
 const App: React.FC<Checkout> = async ({ params  }) => {
   const pack = await getPackage(parseInt(params.id));
-  return (
-      <StripeWrapper pack={pack} id={params.id} />
-  );
+  if(pack===undefined){
+    redirect('/')
+  }else
+    return (
+        <StripeWrapper pack={pack} id={params.id} />
+    );
 };
 
 export default App;
