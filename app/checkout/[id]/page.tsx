@@ -13,8 +13,8 @@ interface Checkout {
 }
 
 const App: React.FC<Checkout> = async ({ params  }) => {
-  const pack = await getPackage(parseInt(params.id));
-  if(pack===undefined){
+  const pack = await getPackage(parseInt(params.id))
+  if(pack===undefined || parseInt(params.id)===1){
     redirect('/')
   }else
     return (

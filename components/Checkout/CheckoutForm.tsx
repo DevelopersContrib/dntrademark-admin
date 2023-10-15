@@ -4,7 +4,6 @@ import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import CardSection from './CardSection';
 import { FaCircleNotch } from 'react-icons/fa6'
 import { PackagesProps } from "@/types/packages";
-// import { notFound } from 'next/navigation'
 
 // Docs:: https://stripe.com/docs/payments/accept-a-payment-charges?client=react
 
@@ -33,7 +32,6 @@ interface pack {
 const CheckoutForm: React.FC<pack> = ({ pack  }) => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  // if(pack==null) return notFound()
   const stripe = useStripe();
   const elements = useElements();
 
@@ -89,7 +87,7 @@ const CheckoutForm: React.FC<pack> = ({ pack  }) => {
                   Payment Success
                 </h5>
                 <p className="text-base leading-relaxed text-body">
-                  You are being redirected onboarding...
+                You are being redirected to the onboarding page...
                 </p>
               </div>
             
