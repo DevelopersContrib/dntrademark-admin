@@ -199,6 +199,19 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             }`}
                         >
                           <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+
+                            <li>
+                              <Link
+                                href="/forms/form-elements"
+                                className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${pathname === "/forms/form-elements" &&
+                                  "text-white"
+                                  }`}
+                              >
+                                All Domains
+                                <span className="absolute right-4 block rounded bg-primary py-1 px-2 text-xs font-medium text-white">999+</span>
+                              </Link>
+                            </li>{/* End:: All Domains */}
+
                             <li>
                               <Link
                                 href="/forms/form-layout"
@@ -208,17 +221,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               >
                                 Add Domains
                               </Link>
-                            </li>
-                            <li>
-                              <Link
-                                href="/forms/form-elements"
-                                className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${pathname === "/forms/form-elements" &&
-                                  "text-white"
-                                  }`}
-                              >
-                                All Domains
-                              </Link>
-                            </li>
+                            </li>{/* End:: Add Domains */}
+
                             <li>
                               <Link
                                 href="/forms/form-layout"
@@ -226,9 +230,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                   "text-white"
                                   }`}
                               >
-                                Domain With Hits
+                                Domain w/ Hits
+                                <span className="absolute right-4 block rounded bg-primary py-1 px-2 text-xs font-medium text-white">999+</span>
                               </Link>
-                            </li>
+                            </li>{/* End:: Domain with hits */}
+
                             <li>
                               <Link
                                 href="/forms/form-layout"
@@ -236,9 +242,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                   "text-white"
                                   }`}
                               >
-                                Domain Without Hits
+                                Domain w/out Hits
+                                <span className="absolute right-4 block rounded bg-primary py-1 px-2 text-xs font-medium text-white">999+</span>
                               </Link>
-                            </li>
+                            </li>{/* End:: Domain without hits */}
+
                             <li>
                               <Link
                                 href="/forms/form-layout"
@@ -248,7 +256,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               >
                                 Domain Items
                               </Link>
-                            </li>
+                            </li>{/* End:: Domain Items */}
 
                           </ul>
                         </div>
