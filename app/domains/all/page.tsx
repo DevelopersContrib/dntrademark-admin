@@ -1,8 +1,8 @@
-import Index from "@/components/Domains/Index"
+import AllDomains from "@/components/Domains/AllDomains"
 
 const page = () => {
   return (
-    <Index />
+    <AllDomains />
   )
 }
 

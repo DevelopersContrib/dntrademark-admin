@@ -202,9 +202,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
                             <li>
                               <Link
-                                href="/forms/form-elements"
-                                className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${pathname === "/forms/form-elements" &&
-                                  "text-white"
+                                href="/domains/all"
+                                className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${pathname === "/domains/all" &&
+                                  "text-[#212539] dark:text-white"
                                   }`}
                               >
                                 All Domains
@@ -216,7 +216,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               <Link
                                 href="/forms/form-layout"
                                 className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${pathname === "/forms/form-layout" &&
-                                  "text-white"
+                                  "text-[#212539] dark:text-white"
                                   }`}
                               >
                                 Add Domains
@@ -225,9 +225,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
                             <li>
                               <Link
-                                href="/forms/form-layout"
-                                className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${pathname === "/forms/form-layout" &&
-                                  "text-white"
+                                href="/domains/with-hits"
+                                className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${pathname === "/domains/with-hits" &&
+                                  "text-[#212539] dark:text-white"
                                   }`}
                               >
                                 Domain w/ Hits
@@ -237,26 +237,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
                             <li>
                               <Link
-                                href="/forms/form-layout"
-                                className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${pathname === "/forms/form-layout" &&
-                                  "text-white"
+                                href="/domains/without-hits"
+                                className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${pathname === "/domains/without-hits" &&
+                                  "text-[#212539] dark:text-white"
                                   }`}
                               >
                                 Domain w/out Hits
                                 <span className="absolute right-4 block rounded bg-primary py-1 px-2 text-xs font-medium text-white">999+</span>
                               </Link>
                             </li>{/* End:: Domain without hits */}
-
-                            <li>
-                              <Link
-                                href="/forms/form-layout"
-                                className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${pathname === "/forms/form-layout" &&
-                                  "text-white"
-                                  }`}
-                              >
-                                Domain Items
-                              </Link>
-                            </li>{/* End:: Domain Items */}
 
                           </ul>
                         </div>
