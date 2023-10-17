@@ -13,53 +13,57 @@ const UploadForm= () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [values, setValues] = useState<any>(null);
-
-  const handleUploadCSV = (e: React.FormEvent<HTMLFormElement>) => {
+  
+  interface DataItem {
+    domain: string;
+  }
+  
+  const handleUploadCSV = () => {
     setUploading(true);
 
     const reader = new FileReader();
-    const [file] = inputRef.current?.files;
-    
 
-    reader.onloadend = async ({target}) => {
+    const fileInput = inputRef.current;
+    if (fileInput && fileInput.files) {
+      const filesArray = Array.from(fileInput.files);
+      const [file] = filesArray;
+
+      reader.onloadend = async ({target}) => {
+        if (target) {
+          const csv = Papa.parse(target.result as string, { header: true });
      
-      const csv = Papa.parse(target.result, { header: true });
-      const valuesAr = [];
+          const csvData: any = csv.data;
+          const newCSVData = csvData as DataItem[];
+          const valuesAr: string[] = [];
 
-      csv.data.map((d) => {
-        if (Object.values(d)){
-          valuesAr.push(Object.values(d));
+          for(var x=0;x<newCSVData.length;x++){
+            if(newCSVData[x].domain!=="") valuesAr.push(newCSVData[x].domain);
+          }
+          
+          const finalDomains = valuesAr.join(",");
+          const res = await fetch('/api/domain/add', {
+            method: 'POST',
+            body: JSON.stringify({ domains:  finalDomains, token:session?.token  }),
+          });
+      
+          const result = await res.json();
+      
+          console.log(result);
+          if (!result.success) {
+            setError(result.error);
+            setUploading(false);
+          } else {
+            setSuccess(result.message);
+            setUploading(false);
+          }
         }
-        
-      });
-
-      const finalDomains = valuesAr.join(",");
-      console.log(finalDomains)
-      const res = await fetch('/api/domain/add', {
-        method: 'POST',
-        body: JSON.stringify({ domains:  finalDomains, token:session?.token  }),
-      });
+      };
   
-      const result = await res.json();
-  
-      console.log(result);
-      if (!result.success) {
-        setError(result.error);
-        setUploading(false);
-      } else {
-        setSuccess(result.message);
-        setUploading(false);
-      }
-
-    };
-
-    reader.readAsText(file);
-    
-    
+      reader.readAsText(file);
+    }
   };
 
   return (
-    
     <div>
         { success != "" ?
         <div className="mb-4">
