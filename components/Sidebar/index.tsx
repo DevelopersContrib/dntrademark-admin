@@ -214,8 +214,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
                             <li>
                               <Link
-                                href="/forms/form-layout"
-                                className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${pathname === "/forms/form-layout" &&
+                                href="/domains/add"
+                                className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${pathname === "/domains/add" &&
                                   "text-[#212539] dark:text-white"
                                   }`}
                               >
