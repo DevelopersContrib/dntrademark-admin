@@ -10,6 +10,8 @@ const DomainForm = () => {
   const [providers, setProviders] = useState<any>(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [uploading, setUploading] = useState(false);
+  
 
   const schema = Yup.object().shape({
     domains: Yup.string().required('Please enter domains'),
@@ -17,6 +19,7 @@ const DomainForm = () => {
 
   const handleSubmitForm = async (values: { domains: string}) => {
     setError((prev) => '');
+    setUploading(true);
     const finalDomains = values.domains.split("\n");
     
     const res = await fetch('/api/domain/add', {
@@ -29,8 +32,10 @@ const DomainForm = () => {
     console.log(result);
     if (!result.success) {
       setError(result.error);
+      setUploading(false);
     } else {
       setSuccess(result.message);
+      setUploading(false);
     }
   };
 
@@ -104,7 +109,7 @@ const DomainForm = () => {
           Add Domains <small>(separate domain by new line)</small>
          </div>
          <Field name="domains" as="textarea" className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
-           <button type="submit" className='bg-primary inline-flex items-center justify-center rounded-md py-4 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-8 xl:px-10'>Submit</button>
+           <button type="submit" className='bg-primary inline-flex items-center justify-center rounded-md py-4 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-8 xl:px-10'>{uploading ? "Submitting..." : "Submit"}</button>
           </Form>
         )}
       </Formik>
