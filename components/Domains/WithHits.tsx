@@ -1,11 +1,11 @@
 import { FaBuffer } from "react-icons/fa6"
 import { FaTimes } from "react-icons/fa"
 
-const Index = () => {
+const WithHits = () => {
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-        <h3 className="font-medium text-black dark:text-white">All Domains</h3>
+        <h3 className="font-medium text-black dark:text-white">Domains With Hits</h3>
       </div>
       <div className="flex flex-col gap-5.5 p-6.5">
         <div className="max-w-full overflow-x-auto">
@@ -193,13 +193,41 @@ const Index = () => {
               </tr>
             </tbody>
           </table>
-          <div className="py-4 font-medium text-[#666] dark:text-white">
-            Showing 1 to 3 of 1 entries
+          <div className="flex w-full py-4 justify-between">
+            <div className="font-medium text-[#666] dark:text-white">
+              Showing 1 to 3 of 1 entries
+            </div>
+            <nav>
+              <ul className="flex flex-wrap items-center gap-2">
+                <li>
+                  <a className="flex items-center justify-center rounded bg-[#EDEFF1] py-1.5 px-3 text-xs font-medium text-black hover:bg-primary hover:text-white dark:bg-graydark dark:text-white dark:hover:bg-primary dark:hover:text-white" href="#">Previous</a>
+                </li>
+                <li>
+                  <a className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white" href="#">1</a>
+                </li>
+                <li>
+                  <a className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white" href="#">2</a>
+                </li>
+                <li>
+                  <a className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white" href="#">3</a>
+                </li>
+                <li>
+                  <a className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white" href="#">4</a>
+                </li>
+                <li>
+                  <a className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white" href="#">5</a>
+                </li>
+                <li>
+                  <a className="flex items-center justify-center rounded bg-[#EDEFF1] py-1.5 px-3 text-xs font-medium text-black hover:bg-primary hover:text-white dark:bg-graydark dark:text-white dark:hover:bg-primary dark:hover:text-white" href="#">Next</a>
+                </li>
+              </ul>
+            </nav>
           </div>
+
         </div>
       </div>
     </div>
   )
 }
 
-export default Index
+export default WithHits
