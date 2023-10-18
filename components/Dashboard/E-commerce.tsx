@@ -6,7 +6,7 @@ import WelcomeNotif from "../Dashboard/WelcomeNotif";
 
 import CardDataStats from "../CardDataStats";
 
-
+import { Stats } from "@/types/stats";
 
 // import Map from "../Maps/TestMap";
 
@@ -19,29 +19,32 @@ const MapOne = dynamic(() => import("../Maps/MapOne"), {
 
 
 
-export default function ECommerce() {
+export default function ECommerce(stats: any) {
+  const domainStats = stats as Stats;
+  console.log('domainStats',domainStats)
+
   const initialStats= {
-		domainsCount:"",
-		hitsCount: "",
-    noHitsCount:"",
-    domainsAtRiskCount:""
+		domainsCount:domainStats.domainsCount,
+		hitsCount: domainStats.hitsCount,
+    noHitsCount:domainStats.noHitsCount,
+    domainsAtRiskCount:domainStats.domainsAtRiskCount
   };
   const [values, setQuotes] = useState(initialStats)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const getData = async () => {
-      const res = await fetch("/api/domain/stats");
-      const data = await res.json();
-      console.log(data)
-      setQuotes(data)
-      setLoading(false)
-    }
-    getData();
-    return () => {
-      // here you can clean the effect in case the component gets unmonth before the async function ends
-    }
-  },[])
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const res = await fetch("/api/domain/stats");
+  //     const data = await res.json();
+  //     console.log(data)
+  //     setQuotes(data)
+  //     setLoading(false)
+  //   }
+  //   getData();
+  //   return () => {
+  //     // here you can clean the effect in case the component gets unmonth before the async function ends
+  //   }
+  // },[])
 
   
   

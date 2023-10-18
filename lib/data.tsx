@@ -1,5 +1,7 @@
 import { User } from '@/types/user';
 import axios from 'axios';
+import { options } from '@/lib/options';
+import { getServerSession } from "next-auth/next"
 import { FaDumpster } from 'react-icons/fa6';
 
 export const checkEmail = async (email?: string) => {
@@ -26,6 +28,23 @@ export const getPackage = async (id:number) => {
   } catch (error) {
     console.log('Error', error);
     return null;
+  }
+};
+
+export const getDomainStats = async () => {
+  try {
+    const session = await getServerSession(options)
+
+    const config = {
+      headers:{ 'Authorization': 'Bearer '+session?.token }
+    };
+    const apiUrl = process.env.API_URL + '/domains/stats?api_key=' + process.env.API_KEY;
+    const res = await axios.get(apiUrl, config)
+    
+    // const res = await axios.get(apiUrl)
+    return res.data.data;
+  } catch (error) {
+    console.log('Error', error);
   }
 };
 

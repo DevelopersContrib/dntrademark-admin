@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import ECommerce from '@/components/Dashboard/E-commerce';
+import { getDomainStats } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: 'DNTrademark Admin - Global Trademark Notification Platform',
@@ -7,10 +8,17 @@ export const metadata: Metadata = {
   // other metadata
 };
 
-export default function Home() {
+export default async function Home() {
+  // const stats = await getDomainStats();
+  const stats= {
+		domainsCount:0,
+		hitsCount: 0,
+    noHitsCount:0,
+    domainsAtRiskCount:0
+  };
   return (
     <>
-      <ECommerce />
+      <ECommerce stats={stats} />
     </>
   );
 }
