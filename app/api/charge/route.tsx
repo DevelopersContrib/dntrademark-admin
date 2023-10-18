@@ -35,7 +35,7 @@ export const POST = async (req: Request) => {
       };
 
       // call payment api...
-      const apiUrl = 'http://127.0.0.1:8000/api/v1/payment/charge?api_key=' + process.env.API_KEY;
+      const apiUrl = process.env.API_URL + '/payment/charge?api_key=' + process.env.API_KEY;
 
       const res = await axios.post(apiUrl, data, {
         headers: {
