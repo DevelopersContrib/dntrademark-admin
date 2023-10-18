@@ -19,11 +19,11 @@ export const checkEmail = async (email?: string) => {
   }
 };
 
-export const getPackage = async (id:number) => {
+export const getPackage = async (id: number) => {
   try {
     const url = process.env.API_URL + '/packages?api_key=' + process.env.API_KEY;
     const res = await axios.get(url);
-    const data = res.data.data.data.find((item: { id: number; }) => item.id === id);
+    const data = res.data.data.data.find((item: { id: number }) => item.id === id);
     return data;
   } catch (error) {
     console.log('Error', error);
@@ -89,14 +89,16 @@ export const saveUser = async (values: User) => {
 
 export const authorizeUser = async (credentials: User) => {
   try {
-    const apiUrl = process.env.API_URL + '/user/check?api_key=' + process.env.API_KEY + '&email=' + credentials.email;
+    // const apiUrl = process.env.API_URL + '/user/check?api_key=' + process.env.API_KEY + '&email=' + credentials.email;
+    const apiUrl = 'http://127.0.0.1:8000/api/v1/user/check?api_key=' + process.env.API_KEY + '&email=' + credentials.email;
 
     const res = await axios.get(apiUrl);
     const result = res.data;
 
     if (result.data.success && result.data.error === '') {
       try {
-        const apiUrl = process.env.API_URL + '/auth/login?api_key=' + process.env.API_KEY;
+        // const apiUrl = process.env.API_URL + '/auth/login?api_key=' + process.env.API_KEY;
+        const apiUrl = 'http://127.0.0.1:8000/api/v1/auth/login?api_key=' + process.env.API_KEY;
         const params = new URLSearchParams();
 
         params.append('email', credentials.email as string);
