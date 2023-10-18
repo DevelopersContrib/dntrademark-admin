@@ -21,7 +21,7 @@ const MapOne = dynamic(() => import("../Maps/MapOne"), {
 
 export default function ECommerce(stats: any) {
   const domainStats = stats as Stats;
- 
+  console.log(domainStats)
 
   const initialStats= {
 		domainsCount:domainStats.stats.domainsCount,
