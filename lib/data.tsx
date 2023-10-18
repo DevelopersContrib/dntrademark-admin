@@ -48,6 +48,23 @@ export const getDomainStats = async () => {
   }
 };
 
+export const getUserPackage = async () => {
+  try {
+    const session = await getServerSession(options)
+
+    const config = {
+      headers:{ 'Authorization': 'Bearer '+session?.token }
+    };
+    const apiUrl = process.env.API_URL + '/user/'+session?.id+'?api_key=' + process.env.API_KEY;
+    const res = await axios.get(apiUrl, config)
+    //console.log(res);
+    // const res = await axios.get(apiUrl)
+    return res.data.user;
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
 export const getPackages = async () => {
   try {
     const url = process.env.API_URL + '/packages?api_key=' + process.env.API_KEY;
