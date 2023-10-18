@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import ECommerce from '@/components/Dashboard/E-commerce';
-import { getDomainStats } from '@/lib/data';
+import { getDomainStats, getUserPackage } from '@/lib/data';
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: 'DNTrademark Admin - Global Trademark Notification Platform',
@@ -10,9 +11,19 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const stats = await getDomainStats();
-  return (
-    <>
-      <ECommerce stats={stats} />
-    </>
-  );
+  const usepack = await getUserPackage();
+  console.log(usepack.package_id);
+  console.log(usepack.is_onboarding);
+  if(usepack?.package_id===null){
+    redirect('/pricing');
+  }else if(usepack?.package_id!==null && parseInt(usepack.is_onboarding) === 0){
+    redirect('/onboarding');
+  } else{
+    return (
+      <>
+        <ECommerce stats={stats} />
+      </>
+    );
+  }
+  
 }
