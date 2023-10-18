@@ -20,7 +20,13 @@ const MapOne = dynamic(() => import("../Maps/MapOne"), {
 
 
 export default function ECommerce() {
-  const [values, setQuotes] = useState([])
+  const initialStats= {
+		domainsCount:"",
+		hitsCount: "",
+    noHitsCount:"",
+    domainsAtRiskCount:""
+  };
+  const [values, setQuotes] = useState(initialStats)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -46,7 +52,7 @@ export default function ECommerce() {
 
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Domains" total={(values.domainsCount?values.domainsCount:0)} rate="" levelUp>
+        <CardDataStats title="Domains" total={String(values.domainsCount?values.domainsCount:0)} rate="" levelUp>
         <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -65,7 +71,7 @@ export default function ECommerce() {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Domains with Hits" total={(values.hitsCount?values.hitsCount:0)} rate="" levelUp>
+        <CardDataStats title="Domains with Hits" total={String(values.hitsCount?values.hitsCount:0)} rate="" levelUp>
         <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -84,7 +90,7 @@ export default function ECommerce() {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Domains without Hits" total={(values.noHitsCount?values.noHitsCount:0)}  levelUp>
+        <CardDataStats title="Domains without Hits" total={String(values.noHitsCount?values.noHitsCount:0)}  rate="" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -103,7 +109,7 @@ export default function ECommerce() {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Domains at Risk" total={(values.domainsAtRiskCount?values.domainsAtRiskCount:0)} levelUp>
+        <CardDataStats title="Domains at Risk" total={String(values.domainsAtRiskCount?values.domainsAtRiskCount:0)} rate="" levelUp>
         <svg
             className="fill-primary dark:fill-white"
             width="22"
