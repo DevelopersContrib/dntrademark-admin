@@ -9,13 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  // const stats = await getDomainStats();
-  const stats= {
-		domainsCount:0,
-		hitsCount: 0,
-    noHitsCount:0,
-    domainsAtRiskCount:0
-  };
+  const stats = await getDomainStats();
   return (
     <>
       <ECommerce stats={stats} />
