@@ -12,11 +12,10 @@ export const metadata: Metadata = {
 export default async function Home() {
   const stats = await getDomainStats();
   const usepack = await getUserPackage();
-  console.log(usepack.package_id);
-  console.log(usepack.is_onboarding);
+ 
   if(usepack?.package_id===null){
     redirect('/pricing');
-  }else if(usepack?.package_id!==null && parseInt(usepack.is_onboarding) === 0){
+  }else if(usepack?.package_id!==null && parseInt(usepack?.is_onboarding) === 0){
     redirect('/onboarding');
   } else{
     return (
