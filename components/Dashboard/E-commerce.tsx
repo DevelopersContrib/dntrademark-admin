@@ -21,16 +21,19 @@ const MapOne = dynamic(() => import("../Maps/MapOne"), {
 
 export default function ECommerce(stats: any) {
   const domainStats = stats as Stats;
-  console.log('domainStats',domainStats)
+ 
 
   const initialStats= {
-		domainsCount:domainStats.domainsCount,
-		hitsCount: domainStats.hitsCount,
-    noHitsCount:domainStats.noHitsCount,
-    domainsAtRiskCount:domainStats.domainsAtRiskCount
+		domainsCount:domainStats.stats.domainsCount,
+		hitsCount: domainStats.stats.hitsCount,
+    noHitsCount:domainStats.stats.noHitsCount,
+    domainsAtRiskCount:domainStats.stats.domainsAtRiskCount
   };
+
   const [values, setQuotes] = useState(initialStats)
   const [loading, setLoading] = useState(true)
+
+  
 
   // useEffect(() => {
   //   const getData = async () => {
