@@ -7,8 +7,8 @@ const headers = {
 export const POST = async (req: Request) => {
   try {
     const data = await req.json();
-    const apiUrl = process.env.API_URL + '/user/check/credentials?api_key=' + process.env.API_KEY;
-    // const apiUrl = 'http://127.0.0.1:8000/api/v1/user/check/credentials?api_key=' + process.env.API_KEY;
+    // const apiUrl = process.env.API_URL + '/user/check/credentials?api_key=' + process.env.API_KEY;
+    const apiUrl = 'http://127.0.0.1:8000/api/v1/user/check/credentials?api_key=' + process.env.API_KEY;
 
     const params = new URLSearchParams();
     params.append('email', data.email);
