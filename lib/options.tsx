@@ -65,7 +65,13 @@ export const options: NextAuthOptions = {
           id:user.id
         };
 
-        authorizeUser(Newuser);
+        const u = await authorizeUser(Newuser);
+        
+        user.id = u?.id;
+        user.email = u?.email;
+        user.name = u?.name;
+        user.token = u?.token;
+       
       }
       //return 'https://www.dash.dntrademark.com/pricing'
       return true;

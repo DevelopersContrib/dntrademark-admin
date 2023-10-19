@@ -34,7 +34,7 @@ export const getPackage = async (id: number) => {
 export const getDomainStats = async () => {
   try {
     const session = await getServerSession(options)
-
+    console.log('session',session)
     const config = {
       headers:{ 'Authorization': 'Bearer '+session?.token }
     };
@@ -51,7 +51,7 @@ export const getDomainStats = async () => {
 export const getUserPackage = async () => {
   try {
     const session = await getServerSession(options)
-
+    console.log('session::',session)
     const config = {
       headers:{ 'Authorization': 'Bearer '+session?.token }
     };
