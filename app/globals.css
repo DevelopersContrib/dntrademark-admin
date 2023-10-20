@@ -246,3 +246,7 @@ span.flatpickr-weekday,
 .nav-tabs.active{
   @apply bg-[#C90D11] text-white;
 }
+
+.swal2-container{
+  z-index: 9999;
+}

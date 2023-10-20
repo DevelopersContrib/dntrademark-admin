@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { FaDumbbell, FaDumpster, FaGithub } from 'react-icons/fa6';
+import { FaDumbbell, FaDumpster, FaGithub, FaCircleNotch } from 'react-icons/fa6';
 
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 
@@ -118,7 +118,13 @@ const SigninForm = () => {
             </div>
 
             <div className="mb-5">
-              <input type="submit" value="Sign In" className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90" />
+              <button
+                type="submit"
+                className="w-full flex items-center justify-center cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
+              >
+                <FaCircleNotch className="w-4 h-4 fa-spin mr-2" />
+                Sign In
+              </button>
             </div>
 
             <div className="space-y-5">
