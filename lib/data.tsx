@@ -112,6 +112,7 @@ export const authorizeUser = async (credentials: User) => {
     const result = res.data;
 
     if (result.data.success && result.data.error === '') {
+      console.log('found')
       try {
         const apiUrl = process.env.API_URL + '/auth/login?api_key=' + process.env.API_KEY;
         const params = new URLSearchParams();
@@ -135,6 +136,7 @@ export const authorizeUser = async (credentials: User) => {
 
       // return user;
     } else {
+      console.log('not found')
       try {
         const apiUrl = process.env.API_URL + '/user/save?api_key=' + process.env.API_KEY;
         const params = new URLSearchParams();
@@ -145,7 +147,7 @@ export const authorizeUser = async (credentials: User) => {
 
         const res = await axios.post(apiUrl, params);
         const result = res.data;
-
+        console.log('result',result)
         if (result.success) {
           const userId = result.data.data.id;
           const apiUrl = process.env.API_URL + '/auth/login?api_key=' + process.env.API_KEY;
@@ -155,7 +157,7 @@ export const authorizeUser = async (credentials: User) => {
           params.append('password', credentials.password as string);
 
           const res = await axios.post(apiUrl, params);
-
+          console.log('res.data',res.data)
           if (res.data.token) {
             return {
               id: userId,

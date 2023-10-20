@@ -1,4 +1,3 @@
-"use client"
 import React, { useState } from 'react'
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import EmailAccountSettings from '@/components/Settings/EmailAccountSettings';
