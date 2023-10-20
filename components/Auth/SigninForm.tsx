@@ -122,7 +122,7 @@ const SigninForm = () => {
                 type="submit"
                 className="w-full flex items-center justify-center cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
               >
-                <FaCircleNotch className="w-4 h-4 fa-spin mr-2" />
+                <FaCircleNotch className="w-4 h-4 fa-spin mr-2 hidden" />
                 Sign In
               </button>
             </div>
