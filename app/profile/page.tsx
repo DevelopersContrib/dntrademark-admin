@@ -5,11 +5,12 @@ import EmailAccountSettings from '@/components/Settings/EmailAccountSettings';
 import PasswordAccountSettings from '@/components/Settings/PasswordAccountSettings';
 import DeleteAccountSettings from '@/components/Settings/DeleteAccountSettings';
 
+/*
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Account Settings | dntrademark.com",
   // other metadata
-};
+};*/
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState<number>(1);
