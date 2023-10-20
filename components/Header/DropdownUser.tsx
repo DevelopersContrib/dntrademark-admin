@@ -50,7 +50,6 @@ const DropdownUser = () => {
           <span className="block text-sm font-medium text-black dark:text-white">
           {session?.user.name}
           </span>
-          <span className="block text-xs">UX Designer</span>
         </span>
         {
           session?.user?.image ? (
