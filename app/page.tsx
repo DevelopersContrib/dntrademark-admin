@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 export default async function Home() {
   const stats = await getDomainStats();
   const usepack = await getUserPackage();
+  console.log('server stats'+stats)
  
   if(usepack?.package_id===null){
     redirect('/pricing');

@@ -122,6 +122,7 @@ const SigninForm = () => {
             <div className="mb-5">
               <button type="submit" className="w-full flex items-center justify-center cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90">
                 {isLoading && <FaCircleNotch className="w-4 h-4 fa-spin mr-2" />}
+
                 Sign In
               </button>
             </div>
