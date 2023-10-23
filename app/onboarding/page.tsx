@@ -41,7 +41,7 @@ const Page = () => {
               Welcome to DNTrademark 
               </h5>
               <p className="text-base leading-relaxed text-body-color">
-              We're thrilled to have you join us on this journey to protect your trademarks and intellectual property. Our platform offers a simple  suite of tools and services to make trademark registration and management seamless.
+              We are thrilled to have you join us on this journey to protect your trademarks and intellectual property. Our platform offers a simple  suite of tools and services to make trademark registration and management seamless.
               </p>
             </div>
           </div>
