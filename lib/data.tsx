@@ -1,7 +1,7 @@
 import { User } from '@/types/user';
 import axios from 'axios';
 import { options } from '@/lib/options';
-import { getServerSession } from "next-auth/next"
+import { getServerSession } from 'next-auth/next';
 import { FaDumpster } from 'react-icons/fa6';
 
 export const checkEmail = async (email?: string) => {
@@ -33,14 +33,14 @@ export const getPackage = async (id: number) => {
 
 export const getDomainStats = async () => {
   try {
-    const session = await getServerSession(options)
-    console.log('session',session)
+    const session = await getServerSession(options);
+    console.log('session', session);
     const config = {
-      headers:{ 'Authorization': 'Bearer '+session?.token }
+      headers: { Authorization: 'Bearer ' + session?.token },
     };
     const apiUrl = process.env.API_URL + '/domains/stats?api_key=' + process.env.API_KEY;
-    const res = await axios.get(apiUrl, config)
-    
+    const res = await axios.get(apiUrl, config);
+
     // const res = await axios.get(apiUrl)
     return res.data.data;
   } catch (error) {
@@ -50,13 +50,13 @@ export const getDomainStats = async () => {
 
 export const getUserPackage = async () => {
   try {
-    const session = await getServerSession(options)
-    console.log('session::',session)
+    const session = await getServerSession(options);
+    console.log('session::', session);
     const config = {
-      headers:{ 'Authorization': 'Bearer '+session?.token }
+      headers: { Authorization: 'Bearer ' + session?.token },
     };
-    const apiUrl = process.env.API_URL + '/user/'+session?.id+'?api_key=' + process.env.API_KEY;
-    const res = await axios.get(apiUrl, config)
+    const apiUrl = process.env.API_URL + '/user/' + session?.id + '?api_key=' + process.env.API_KEY;
+    const res = await axios.get(apiUrl, config);
     //console.log(res);
     // const res = await axios.get(apiUrl)
     return res.data.user;
@@ -147,23 +147,29 @@ export const authorizeUser = async (credentials: User) => {
         const result = res.data;
 
         if (result.success) {
-          const userId = result.data.data.id;
-          const apiUrl = process.env.API_URL + '/auth/login?api_key=' + process.env.API_KEY;
-          const params = new URLSearchParams();
+          return {
+            id: result.user.id,
+            email: result.user.email,
+            name: result.user.first_name,
+            token: result.token,
+          };
+          // const userId = result.data.user.id;
+          // const apiUrl = process.env.API_URL + '/auth/login?api_key=' + process.env.API_KEY;
+          // const params = new URLSearchParams();
 
-          params.append('email', credentials.email as string);
-          params.append('password', credentials.password as string);
+          // params.append('email', credentials.email as string);
+          // params.append('password', credentials.password as string);
 
-          const res = await axios.post(apiUrl, params);
+          // const res = await axios.post(apiUrl, params);
 
-          if (res.data.token) {
-            return {
-              id: userId,
-              email: credentials.email,
-              name: credentials.firstName,
-              token: res.data.token,
-            };
-          }
+          // if (res.data.token) {
+          //   return {
+          //     id: userId,
+          //     email: credentials.email,
+          //     name: credentials.firstName,
+          //     token: res.data.token,
+          //   };
+          // }
         }
       } catch (error) {
         console.log('error', error);

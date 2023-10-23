@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { FaDumbbell, FaDumpster, FaGithub, FaCircleNotch } from 'react-icons/fa6';
-
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 
 const SigninForm = () => {
   const { data: session } = useSession();
   const [providers, setProviders] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState('');
 
   const schema = Yup.object().shape({
@@ -26,11 +26,12 @@ const SigninForm = () => {
 
     const result = await res.json();
 
-    console.log(result);
     if (!result.success) {
       setError(result.error);
+      setIsLoading(false);
     } else {
       signIn('credentials', values);
+      setIsLoading(false);
     }
   };
 
@@ -50,6 +51,7 @@ const SigninForm = () => {
         }}
         validationSchema={schema}
         onSubmit={(values: { email: string; password: string }) => {
+          setIsLoading(true);
           setTimeout(() => {
             handleSubmitForm(values);
           }, 500);
@@ -118,11 +120,8 @@ const SigninForm = () => {
             </div>
 
             <div className="mb-5">
-              <button
-                type="submit"
-                className="w-full flex items-center justify-center cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
-              >
-                <FaCircleNotch className="w-4 h-4 fa-spin mr-2" />
+              <button type="submit" className="w-full flex items-center justify-center cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90">
+                {isLoading && <FaCircleNotch className="w-4 h-4 fa-spin mr-2" />}
                 Sign In
               </button>
             </div>
