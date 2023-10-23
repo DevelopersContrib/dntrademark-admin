@@ -48,6 +48,25 @@ export const getDomainStats = async () => {
   }
 };
 
+export const getUser = async () => {
+  try {
+    const session = await getServerSession(options);
+    console.log('session', session);
+    const config = {
+      headers: { Authorization: 'Bearer ' + session?.token },
+    };
+    const apiUrl = process.env.API_URL + '/user/'+session?.id+'?api_key=' + process.env.API_KEY;
+    const res = await axios.get(apiUrl, config);
+    console.log(apiUrl);
+    console.log(res.data)
+
+    return res.data.user;
+    
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
 export const getUserPackage = async () => {
   try {
     const session = await getServerSession(options);
