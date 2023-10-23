@@ -3,12 +3,12 @@ import React, { useState } from 'react'
 import EmailAccountSettings from '@/components/Settings/EmailAccountSettings';
 import PasswordAccountSettings from '@/components/Settings/PasswordAccountSettings';
 import DeleteAccountSettings from '@/components/Settings/DeleteAccountSettings';
-import {Details} from "@/types/details";
+import {details} from "@/types/details";
 
 export default function Tabmenu(userdetails: any) {
     const [activeTab, setActiveTab] = useState<number>(1);
-    const userEmail = userdetails as Details;
-    console.log(userEmail.userdetails.email)
+    const userEmail = userdetails as details;
+    console.log(userEmail.details.email)
   
     const handleTabClick = (tabNumber: number) => {
       setActiveTab(tabNumber);
@@ -52,7 +52,7 @@ export default function Tabmenu(userdetails: any) {
                 activeTab === 1
                 &&
                 <>
-                  <EmailAccountSettings email={userEmail.userdetails.email}/>
+                  <EmailAccountSettings email={userEmail.details.email}/>
                 </>
               }
   

@@ -1,7 +1,3 @@
-'use client';
-import React, { useState, useRef } from "react";
-
-
 const OnboardContent = () => {
   return (
     <>
@@ -27,7 +23,7 @@ const OnboardContent = () => {
             Welcome to DNTrademark
             </h5>
             <p className="text-base leading-relaxed text-body-color">
-            We're thrilled to have you join us on this journey to protect your trademarks and intellectual property. Our platform offers a simple  suite of tools and services to make trademark registration and management seamless.
+            We&apos;re thrilled to have you join us on this journey to protect your trademarks and intellectual property. Our platform offers a simple  suite of tools and services to make trademark registration and management seamless.
             </p>
           </div>
         </div>
@@ -69,9 +65,9 @@ const OnboardContent = () => {
             <h5 className="mb-2 text-lg font-semibold text-dark">What’s next?</h5>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
               <div className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-3">                  
-                <div class="rounded-md bg-[#C4F9E2] p-4">
-                  <p class="flex items-center text-sm font-medium text-[#004434]">
-                    <span class="pr-3">
+                <div className="rounded-md bg-[#C4F9E2] p-4">
+                  <p className="flex items-center text-sm font-medium text-[#004434]">
+                    <span className="pr-3">
                       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="10" cy="10" r="10" fill="#00B078"></circle>
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M14.1203 6.78954C14.3865 7.05581 14.3865 7.48751 14.1203 7.75378L9.12026 12.7538C8.85399 13.02 8.42229 13.02 8.15602 12.7538L5.88329 10.4811C5.61703 10.2148 5.61703 9.78308 5.88329 9.51682C6.14956 9.25055 6.58126 9.25055 6.84753 9.51682L8.63814 11.3074L13.156 6.78954C13.4223 6.52328 13.854 6.52328 14.1203 6.78954Z" fill="white"></path>
@@ -82,9 +78,9 @@ const OnboardContent = () => {
                 </div>
               </div>
               <div className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-3">                  
-                <div class="rounded-md bg-[#C4F9E2] p-4">
-                  <p class="flex items-center text-sm font-medium text-[#004434]">
-                    <span class="pr-3">
+                <div className="rounded-md bg-[#C4F9E2] p-4">
+                  <p className="flex items-center text-sm font-medium text-[#004434]">
+                    <span className="pr-3">
                       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="10" cy="10" r="10" fill="#00B078"></circle>
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M14.1203 6.78954C14.3865 7.05581 14.3865 7.48751 14.1203 7.75378L9.12026 12.7538C8.85399 13.02 8.42229 13.02 8.15602 12.7538L5.88329 10.4811C5.61703 10.2148 5.61703 9.78308 5.88329 9.51682C6.14956 9.25055 6.58126 9.25055 6.84753 9.51682L8.63814 11.3074L13.156 6.78954C13.4223 6.52328 13.854 6.52328 14.1203 6.78954Z" fill="white"></path>
@@ -95,9 +91,9 @@ const OnboardContent = () => {
                 </div>
               </div>
               <div className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-3">                  
-                <div class="rounded-md bg-[#C4F9E2] p-4">
-                  <p class="flex items-center text-sm font-medium text-[#004434]">
-                    <span class="pr-3">
+                <div className="rounded-md bg-[#C4F9E2] p-4">
+                  <p className="flex items-center text-sm font-medium text-[#004434]">
+                    <span className="pr-3">
                       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="10" cy="10" r="10" fill="#00B078"></circle>
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M14.1203 6.78954C14.3865 7.05581 14.3865 7.48751 14.1203 7.75378L9.12026 12.7538C8.85399 13.02 8.42229 13.02 8.15602 12.7538L5.88329 10.4811C5.61703 10.2148 5.61703 9.78308 5.88329 9.51682C6.14956 9.25055 6.58126 9.25055 6.84753 9.51682L8.63814 11.3074L13.156 6.78954C13.4223 6.52328 13.854 6.52328 14.1203 6.78954Z" fill="white"></path>
@@ -108,9 +104,9 @@ const OnboardContent = () => {
                 </div>
               </div>
               <div className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-3">                  
-                <div class="rounded-md bg-[#C4F9E2] p-4">
-                  <p class="flex items-center text-sm font-medium text-[#004434]">
-                    <span class="pr-3">
+                <div className="rounded-md bg-[#C4F9E2] p-4">
+                  <p className="flex items-center text-sm font-medium text-[#004434]">
+                    <span className="pr-3">
                       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="10" cy="10" r="10" fill="#00B078"></circle>
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M14.1203 6.78954C14.3865 7.05581 14.3865 7.48751 14.1203 7.75378L9.12026 12.7538C8.85399 13.02 8.42229 13.02 8.15602 12.7538L5.88329 10.4811C5.61703 10.2148 5.61703 9.78308 5.88329 9.51682C6.14956 9.25055 6.58126 9.25055 6.84753 9.51682L8.63814 11.3074L13.156 6.78954C13.4223 6.52328 13.854 6.52328 14.1203 6.78954Z" fill="white"></path>
