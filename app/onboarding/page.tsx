@@ -80,7 +80,7 @@ const Page = () => {
                   </div>
                 </div>
               </div>
-              <h5 className="mb-2 text-lg font-semibold text-dark">What’s next?</h5>
+              <h5 className="mb-2 text-lg font-semibold text-dark">What is next?</h5>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
                 <div className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-3">                  
                   <div className="rounded-md bg-[#C4F9E2] p-4">
