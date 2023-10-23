@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import Tabs from '@/components/onboarding/Tabs';
 import DomainForm from '@/components/onboarding/DomainForm';
 import UploadForm from '@/components/onboarding/UploadForm';
+import OnboardContent from '@/components/onboarding/OnboardContent';
 
 const Page = () => {
   const [activeTab, setActiveTab] = useState<number>(1);
@@ -19,6 +20,7 @@ const Page = () => {
             Onboarding
           </h3>
         </div>
+        <OnboardContent/>        
         <div className="mb-4 p-7.5 w-full">
           <div
             className="mb-7.5 flex flex-wrap gap-3 rounded-lg border border-stroke py-3 px-4 dark:border-strokedark">
