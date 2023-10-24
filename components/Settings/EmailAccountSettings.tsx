@@ -5,6 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 import {details} from "@/types/details";
+import { checkEmail } from '@/lib/data';
 
 
 import dynamic from "next/dynamic";
@@ -17,18 +18,49 @@ export default function EmailAccountSettings(userdetails: any)  {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [updating, setUpdating] = useState(false);
-  const [user, setUser] = useState('');
+  const [formData, setFormData] = useState({
+    email: "",
+  });
   const userEmail = userdetails as details;
   const userInfo = userEmail.userdetails ;
+
+
+  const handleInput = (e: any) => {
+    const fieldName = e.target.name;
+    const fieldValue = e.target.value;
   
+    setFormData((prevState) => ({
+      ...prevState,
+      [fieldName]: fieldValue
+    }));
+  }
   
-  const handleClick = () => {
-    Swal.fire({
-      title: 'Error!',
-      text: 'Unabled to proccess, please try again!',
-      icon: 'error',
-      confirmButtonText: 'Close'
-    })
+  const handleClick = async (e:any) => {
+    e.preventDefault();
+    setError((prev) => '');
+    console.log(formData.email)
+    if (formData.email==''){
+        setError('Please enter email address');
+    }else {
+      
+      const res = await checkEmail(formData.email); 
+      console.log(res?.isEmailAvailable)
+      
+      if (!res?.isEmailAvailable){
+        setError('Email is already taken by another user!');
+      }
+
+
+    }
+
+    if (error != ""){
+      Swal.fire({
+        title: 'Error!',
+        text: error,
+        icon: 'error',
+        confirmButtonText: 'Close'
+      })
+   }
   }
 
   
@@ -85,6 +117,7 @@ export default function EmailAccountSettings(userdetails: any)  {
         </label>
         <input
           type="text"
+          name="email"
           value={userInfo.email}
           disabled
           className="border-[#ddd] text-body-color placeholder-body-color focus:border-primary active:border-primary w-full rounded-lg border-[1.5px] py-3 px-5 font-medium outline-none transition disabled:cursor-default disabled:bg-[#F5F7FD]"
@@ -97,6 +130,8 @@ export default function EmailAccountSettings(userdetails: any)  {
         </label>
         <input
           type="text"
+          onChange={handleInput}
+          name="email"
           className="border-[#ddd] text-body-color placeholder-body-color focus:border-primary active:border-primary w-full rounded-lg border-[1.5px] py-3 px-5 font-medium outline-none transition disabled:cursor-default disabled:bg-[#F5F7FD]"
         />
       </div>
