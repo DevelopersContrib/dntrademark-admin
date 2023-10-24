@@ -38,7 +38,10 @@ const AllDomains = () => {
     setLoading(true)
     const res = await getDomains();
     // const domainData = res.domains.data as domains[];
-    const tData = res.domains as tableData;
+    console.log(res)
+    if (res){
+      const tData = res.domains as tableData;
+    }
     setTableData(tData);
     console.log('tData',tData)
     setLoading(false)
