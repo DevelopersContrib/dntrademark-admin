@@ -7,9 +7,7 @@ import {details} from "@/types/details";
 
 export default function Tabmenu(userdetails: any) {
     const [activeTab, setActiveTab] = useState<number>(1);
-    const userEmail = userdetails as details;
-    console.log(userEmail.details.email)
-  
+    
     const handleTabClick = (tabNumber: number) => {
       setActiveTab(tabNumber);
     };
@@ -52,7 +50,7 @@ export default function Tabmenu(userdetails: any) {
                 activeTab === 1
                 &&
                 <>
-                  <EmailAccountSettings email={userEmail.details.email}/>
+                  <EmailAccountSettings userdetails={userdetails.userdetails}/>
                 </>
               }
   

@@ -1,5 +1,5 @@
 export type details = {
-    details: {
+    userdetails: {
         email:any;
 	}
     
