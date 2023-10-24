@@ -4,15 +4,13 @@ import { options } from '@/lib/options';
 import { getServerSession } from 'next-auth/next';
 import { FaDumpster } from 'react-icons/fa6';
 
-export const checkEmail = async (email?: string) => {
+export const checkEmail = async (email: string) => {
   try {
-    const urlCheck = process.env.API_URL + '/user/check?api_key=' + process.env.API_KEY + '&email=' + email;
-
-    console.log('urlCheck', process.env.API_URL);
-    console.log('urlCheck', urlCheck);
+    const urlCheck = 'https://api.dntrademark.com/api/v1/user/check?api_key=6334aed4bdce9855f400653800596920&email=' + email;
 
     const result = await axios.get(urlCheck);
-    return !result.data.error.success && result.data.error === 'Email is available.' ? { isEmailAvailable: true } : { isEmailAvailable: false };
+    //console.log(result.data.data.data.id)
+    return result.data.data.data.id  ? { isEmailAvailable: false } : { isEmailAvailable: true };
     // return { isEmailAvailable: false }
   } catch (error) {
     console.log('Error', error);
@@ -94,6 +92,8 @@ export const getPackages = async () => {
     console.log('Error', error);
   }
 };
+
+
 
 export const loginUser = async (data: User) => {
   try {
