@@ -4,7 +4,7 @@ import React, { useEffect, useState  } from "react";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
-
+import {details} from "@/types/details";
 
 
 import dynamic from "next/dynamic";
@@ -12,13 +12,14 @@ const MapOne = dynamic(() => import("../Maps/MapOne"), {
   ssr: false,
 });
 
-export default function EmailAccountSettings(email: any)  {
+export default function EmailAccountSettings(userdetails: any)  {
   const { data: session } = useSession();
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [updating, setUpdating] = useState(false);
   const [user, setUser] = useState('');
-
+  const userEmail = userdetails as details;
+  const userInfo = userEmail.userdetails ;
   
   
   const handleClick = () => {
@@ -84,7 +85,7 @@ export default function EmailAccountSettings(email: any)  {
         </label>
         <input
           type="text"
-          value={email}
+          value={userInfo.email}
           disabled
           className="border-[#ddd] text-body-color placeholder-body-color focus:border-primary active:border-primary w-full rounded-lg border-[1.5px] py-3 px-5 font-medium outline-none transition disabled:cursor-default disabled:bg-[#F5F7FD]"
         />
