@@ -4,6 +4,7 @@ import { options } from '@/lib/options';
 import { getServerSession } from "next-auth/next"
 
 export const GET = async (req: Request) => {
+  /*
   try {
 
     const session = await getServerSession(options)
@@ -36,4 +37,7 @@ export const GET = async (req: Request) => {
   } catch (error) {
     console.log(error);
   }
+
+  */
+  return NextResponse.json({result:null});
 };
