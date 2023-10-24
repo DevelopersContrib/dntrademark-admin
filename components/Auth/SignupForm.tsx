@@ -5,11 +5,12 @@ import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { User } from '@/types/user';
-import { FaGithub } from 'react-icons/fa6'
+import { FaGithub, FaCircleNotch } from 'react-icons/fa6';
 
 const SignupForm = () => {
   // const { data: session } = useSession();
   const [providers, setProviders] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const schema = Yup.object().shape({
     firstName: Yup.string().required('What is your name?'),
@@ -22,6 +23,7 @@ const SignupForm = () => {
   });
 
   const handleSubmitForm = async (values: User) => {
+    setIsLoading(false);
     signIn('credentials', values);
   };
 
@@ -33,12 +35,10 @@ const SignupForm = () => {
   }, []);
 
   return (
-    <div className='w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2'>
+    <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
       <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
         <span className="mb-1.5 block font-medium">Start for free</span>
-        <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-          Sign Up
-        </h2>
+        <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">Sign Up</h2>
         <Formik
           initialValues={{
             firstName: '',
@@ -49,6 +49,7 @@ const SignupForm = () => {
           }}
           validationSchema={schema}
           onSubmit={(values: User) => {
+            setIsLoading(true);
             setTimeout(() => {
               handleSubmitForm(values);
             }, 500);
@@ -187,12 +188,19 @@ const SignupForm = () => {
                 </div>
               </div>
               <div className="mb-5">
-                <input type="submit" value="Create account" className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90" />
+                {/* <input type="submit" value="Create account" className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90" /> */}
+                <button type="submit" className="w-full flex items-center justify-center cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90">
+                  {isLoading && <FaCircleNotch className="w-4 h-4 fa-spin mr-2" />}
+                  Create Account
+                </button>
               </div>
               <div className="space-y-4">
-                <button onClick={() => {
-                  signIn('google');
-                }} className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
+                <button
+                  onClick={() => {
+                    signIn('google');
+                  }}
+                  className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
+                >
                   <span>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <g clipPath="url(#clip0_191_13499)">
@@ -223,9 +231,12 @@ const SignupForm = () => {
                   Sign up with Google
                 </button>
 
-                <button onClick={() => {
-                  signIn('github');
-                }} className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
+                <button
+                  onClick={() => {
+                    signIn('github');
+                  }}
+                  className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
+                >
                   <span>
                     <FaGithub className="w-5 h-5" />
                   </span>

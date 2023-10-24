@@ -1,7 +1,26 @@
-// Docs:: https://sweetalert2.github.io/#examples
+'use client';
 import Swal from 'sweetalert2'
+import React, { useEffect, useState  } from "react";
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
+import {details} from "@/types/details";
 
-const EmailAccountSettings = () => {
+
+import dynamic from "next/dynamic";
+const MapOne = dynamic(() => import("../Maps/MapOne"), {
+  ssr: false,
+});
+
+export default function EmailAccountSettings(userdetails: any)  {
+  const { data: session } = useSession();
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [updating, setUpdating] = useState(false);
+  const [user, setUser] = useState('');
+  const userEmail = userdetails as details;
+  const userInfo = userEmail.userdetails ;
+  
   
   const handleClick = () => {
     Swal.fire({
@@ -11,6 +30,9 @@ const EmailAccountSettings = () => {
       confirmButtonText: 'Close'
     })
   }
+
+  
+ 
   
   return (
     <>
@@ -63,7 +85,7 @@ const EmailAccountSettings = () => {
         </label>
         <input
           type="text"
-          value="admin@domain.com"
+          value={userInfo.email}
           disabled
           className="border-[#ddd] text-body-color placeholder-body-color focus:border-primary active:border-primary w-full rounded-lg border-[1.5px] py-3 px-5 font-medium outline-none transition disabled:cursor-default disabled:bg-[#F5F7FD]"
         />
@@ -92,4 +114,3 @@ const EmailAccountSettings = () => {
   )
 }
 
-export default EmailAccountSettings

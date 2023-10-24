@@ -8,8 +8,8 @@ interface User {
   lastName: any;
   email: any;
   password: any;
-  token:any;
-  id:any;
+  token: any;
+  id: any;
 }
 
 export const options: NextAuthOptions = {
@@ -45,11 +45,8 @@ export const options: NextAuthOptions = {
       },
       async authorize(credentials: any) {
         const user = await authorizeUser(credentials);
-        // console.log('user',user)
-        // return user;
-        // console.log('credentials',credentials)
-        
-        return { id: user?.id, email: user?.email, name: user?.name, password: credentials?.password, token:user?.token };
+
+        return { id: user?.id, email: user?.email, name: user?.name, password: credentials?.password, token: user?.token };
       },
     }),
   ],
@@ -61,17 +58,16 @@ export const options: NextAuthOptions = {
           lastName: profile?.name?.split(' ')[1],
           email: profile?.email,
           password: profile?.email,
-          token:user.token,
-          id:user.id
+          token: user.token,
+          id: user.id,
         };
 
         const u = await authorizeUser(Newuser);
-        
+
         user.id = u?.id;
         user.email = u?.email;
         user.name = u?.name;
         user.token = u?.token;
-       
       }
       //return 'https://www.dash.dntrademark.com/pricing'
       return true;
@@ -80,18 +76,17 @@ export const options: NextAuthOptions = {
       return baseUrl;
     },
     async session({ session, user, token }) {
-      session.token = token.token
-      session.id = token.id
-      return session
+      session.token = token.token;
+      session.id = token.id;
+      return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {
-      if (account){
-        token.token = user.token
-        token.id = user.id
+      if (account) {
+        token.token = user.token;
+        token.id = user.id;
       }
-      return token
-    }
-    
+      return token;
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: true,
