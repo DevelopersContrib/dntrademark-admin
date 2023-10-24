@@ -15,6 +15,7 @@ export const POST = async (req: Request) => {
  
     const res = await axios.put(apiUrl, data, { headers });
     const result = res.data;
+    
 
     return NextResponse.json(result);
   } catch (error) {
