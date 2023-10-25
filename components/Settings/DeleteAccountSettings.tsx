@@ -1,7 +1,17 @@
 // Docs:: https://sweetalert2.github.io/#examples
 import Swal from 'sweetalert2'
 
-const DeleteAccountSettings = () => {
+import {  signOut, useSession } from 'next-auth/react';
+
+
+
+import dynamic from "next/dynamic";
+const MapOne = dynamic(() => import("../Maps/MapOne"), {
+  ssr: false,
+});
+
+export default function DeleteAccountSettings()  {
+  const { data: session } = useSession();
 
   const handleClick = () => {
     Swal.fire({
@@ -12,16 +22,25 @@ const DeleteAccountSettings = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
+    }).then(async (result) => { // Mark the callback function as async
+  
       if (result.isConfirmed) {
+        const delete_user = await fetch('/api/user/delete', {
+          method: 'POST',
+          body: JSON.stringify({ token: session?.token }),
+        });
+        console.log(delete_user);
         Swal.fire(
           'Deleted!',
           'Your Account has been deleted.',
           'success'
-        )
+        );
+        setTimeout(() => {
+          signOut();
+        }, 600);
       }
-    })
-  }
+    });
+  };
 
   return (
     <>
@@ -81,4 +100,3 @@ const DeleteAccountSettings = () => {
   )
 }
 
-export default DeleteAccountSettings
