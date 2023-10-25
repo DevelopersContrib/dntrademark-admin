@@ -31,6 +31,35 @@ export const getPackage = async (id: number) => {
   }
 };
 
+export const getDomainList = async () => {
+  try {
+    /*const session = await getServerSession(options);
+    console.log('session', session);
+    const config = {
+      headers: { Authorization: 'Bearer ' + session?.token },
+    };
+    const apiUrl = process.env.API_URL + '/domains/stats?api_key=' + process.env.API_KEY;
+    const res = await axios.get(apiUrl, config);
+
+    // const res = await axios.get(apiUrl)
+    return res.data.data;
+    */
+
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: 'Bearer ' + session?.token },
+    };
+
+    const apiUrl = process.env.API_URL + '/domains?api_key=' + process.env.API_KEY + '&filter=&limit=4';
+    const res = await axios.get(apiUrl, config);
+
+    return res.data.domains
+
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
 export const getDomainStats = async () => {
   try {
     const session = await getServerSession(options);

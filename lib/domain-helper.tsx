@@ -5,8 +5,7 @@ export const getDomains = async () => {
     const res = await fetch('/api/domain/list', {
       method: 'GET',
     });
-
-    console.log(res);
+    return res.json();
   } catch (error) {
     return error;
   }

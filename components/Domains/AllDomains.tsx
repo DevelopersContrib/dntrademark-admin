@@ -2,51 +2,60 @@
 import { FaBuffer } from 'react-icons/fa6';
 import { FaTimes } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
-import { getDomains } from '@/lib/domain-helper';
+// import { getDomains } from '@/lib/domain-helper';
+// import { domains } from "@/types/domains";
+import { domainTable } from "@/types/domainTable";
 
-interface domains {
-  id: number;
-  created_at: string;
-  date_last_crawled: string;
-  domain_name: string;
-  no_of_items: string;
-  status: string;
-  updated_at: string;
-  user_id: number;
+// interface domains {
+//   id: number;
+//   created_at: string;
+//   date_last_crawled: string;
+//   domain_name: string;
+//   no_of_items: string;
+//   status: string;
+//   updated_at: string;
+//   user_id: number;
+// }
+
+// interface tableData {
+//   current_page: number;
+//   data: domains[];
+//   first_page_url: string;
+//   from: number;
+//   last_page: number;
+//   last_page_url: string;
+//   next_page_url: string;
+//   path: string;
+//   per_page: number;
+//   prev_page_url: string;
+//   to: number;
+//   total: number;
+// }
+interface tableProps {
+  tData: domainTable;
 }
 
-interface tableData {
-  current_page: number;
-  data: domains[];
-  first_page_url: string;
-  from: number;
-  last_page: number;
-  last_page_url: string;
-  next_page_url: string;
-  path: string;
-  per_page: number;
-  prev_page_url: string;
-  to: number;
-  total: number;
-}
-
-const AllDomains = () => {
-  const [rows, setRows] = useState<domains[]>([]);
-  const [tableData, setTableData] = useState<tableData>();
+// const AllDomains = (prop: domainTable) => {
+  const AllDomains = ({ tData }: tableProps) =>{
+    console.log('tData..',tData)
+  // const [rows, setRows] = useState<domains[]>([]);
+  const [tableData, setTableData] = useState<domainTable>();
   const [loading, setLoading] = useState(false)
-  const getAllDomains = async () => {
-    setLoading(true)
-    const res = await getDomains();
-    // const domainData = res.domains.data as domains[];
-    const tData = res.domains as tableData;
-    setTableData(tData);
-    console.log('tData',tData)
-    setLoading(false)
-    setRows(tData.data)
-  };
+
+  // const getAllDomains = async () => {
+  //   setLoading(true)
+  //   const res = await getDomains();
+  //   // const domainData = res.domains.data as domains[];
+  //   const tData = res.domains as domainTable;
+  //   setTableData(tData);
+  //   console.log('tData',tData)
+  //   setLoading(false)
+  //   setRows(tData.data)
+  // };
   useEffect(() => {
-    getAllDomains();
+    setTableData(tData);
   },[]);
+
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
@@ -119,7 +128,7 @@ const AllDomains = () => {
               </tr>
             </thead>
             <tbody>
-            {rows.map((item) => (
+               {tData.data.map((item) => (
  
 
               <tr key={item.id}>
@@ -182,7 +191,7 @@ const AllDomains = () => {
             </tbody>
           </table>
           <div className="flex w-full py-4 justify-between">
-            <div className="font-medium text-[#666] dark:text-white">Showing {tableData?.current_page} to {tableData?.per_page} of {tableData?.total} entries</div>
+            <div className="font-medium text-[#666] dark:text-white">Showing {tData?.current_page} to {tData?.per_page} of {tData?.total} entries</div>
             <nav>
               <ul className="flex flex-wrap items-center gap-2">
                 <li>
