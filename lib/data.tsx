@@ -17,6 +17,23 @@ export const checkEmail = async (email: string) => {
   }
 };
 
+export const getDomainList = async () => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: 'Bearer ' + session?.token },
+    };
+
+    const apiUrl = process.env.API_URL + '/domains?api_key=' + process.env.API_KEY + '&filter=&limit=4';
+    const res = await axios.get(apiUrl, config);
+
+    return res.data.domains
+
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
 export const getPackage = async (id: number) => {
   try {
     const url = process.env.API_URL + '/packages?api_key=' + process.env.API_KEY;
