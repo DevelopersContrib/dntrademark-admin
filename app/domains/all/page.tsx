@@ -1,8 +1,16 @@
 import AllDomains from "@/components/Domains/AllDomains"
+import {getDomainList} from '@/lib/data'
 
-const page = () => {
+// import { domains } from "@/types/domains";
+import { domainTable } from "@/types/domainTable";
+
+const page = async() => {
+  const domainlist = await getDomainList();
+  
+  const tData = domainlist as domainTable;
+
   return (
-    <AllDomains />
+    <AllDomains tData={tData} />
   )
 }
 
