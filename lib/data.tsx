@@ -24,7 +24,7 @@ export const getDomainList = async () => {
       headers: { Authorization: 'Bearer ' + session?.token },
     };
 
-    const apiUrl = process.env.API_URL + '/domains?api_key=' + process.env.API_KEY + '&filter=&limit=4';
+    const apiUrl = process.env.API_URL + '/domains?api_key=' + process.env.API_KEY + '&filter=&limit=10&page=1';
     const res = await axios.get(apiUrl, config);
 
     return res.data.domains
