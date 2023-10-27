@@ -3,7 +3,7 @@ import { FaBuffer } from 'react-icons/fa6';
 import { FaTimes } from 'react-icons/fa';
 import { FaCircleNotch } from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
-import { getDomains } from '@/lib/domain-helper';
+import { getDomains, deleteDomains} from '@/lib/domain-helper';
 import { domainTable } from "@/types/domainTable";
 import { domains } from "@/types/domains";
 
@@ -21,7 +21,8 @@ interface tableProps {
   const [reload, setReload] =  useState<number>(1);
   const [listItems, setListItems] = useState<JSX.Element[]>([]);
   const [selectAll, setSelectAll] = useState(false);
-  
+  const [selectedRows, setSelectedRows] = useState<domainTable[]>([]);
+
   const toggleSelectAll = () => {
     setSelectAll(!selectAll);
     const updatedData = rows.map((row) => ({
@@ -70,6 +71,23 @@ interface tableProps {
     callReload();
   }
 
+  const showSelectedRows = async() => {
+    const selected = rows.filter((row) => row.selected);
+    console.log('selected',selected)
+    //setSelectedRows(selected);
+    let ids: Array<number> = [];
+    selected.map((row) => ( 
+      ids.push(row.id)
+    ))
+    if(ids.length>1) {
+      const res = await deleteDomains(ids);
+      console.log('res',res)
+      if(res.domains.success){
+        alert('delete success!')
+        callReload();
+      }
+    }
+  };
 
   useEffect(() => {
     const generateListItems = (t:domainTable) => {
@@ -120,7 +138,7 @@ interface tableProps {
                 <FaBuffer className="w-4 h-4 mr-2" />
                 Bulk Add Domains
               </button>
-              <button className="bg-danger inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
+              <button onClick={showSelectedRows} className="bg-danger inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
                 <FaTimes className="w-4 h-4 mr-2" />
                 Delete Selected
               </button>
