@@ -5,13 +5,14 @@ import { FaCircleNotch } from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
 import { getDomains } from '@/lib/domain-helper';
 import { domainTable } from "@/types/domainTable";
+import { domains } from "@/types/domains";
 
 interface tableProps {
   tData: domainTable;
 }
 
   const AllDomains = ({ tData }: tableProps) =>{
-  // const [rows, setRows] = useState<domains[]>([]);
+  const [rows, setRows] = useState<domains[]>(tData.data);
   const [tableData, setTableData] = useState<domainTable>(tData);
   const [loading, setLoading] = useState(false)  
   const [search, setSearch] =  useState<string>('');
@@ -19,6 +20,24 @@ interface tableProps {
   const [page, setPage] =  useState<number>(1);
   const [reload, setReload] =  useState<number>(1);
   const [listItems, setListItems] = useState<JSX.Element[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
+  
+  const toggleSelectAll = () => {
+    setSelectAll(!selectAll);
+    const updatedData = rows.map((row) => ({
+      ...row,
+      selected: !selectAll,
+    }));
+    
+    setRows(updatedData);
+  };
+
+  const handleRowCheckboxChange = (id: number) => {
+    const updatedData = rows.map((row) =>
+      row.id === id ? { ...row, selected: !row.selected } : row
+    );
+    setRows(updatedData);
+  };
 
   const callReload = () => {
     const d = new Date();
@@ -52,24 +71,21 @@ interface tableProps {
   }
 
 
-  
-  const generateListItems = (t:domainTable) => {
-    const items = [];
-    for (let i = 1; i <= t.last_page; i++) {
-      items.push(<li><a onClick={() => handlePage(i)} className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white" href="#">{i}</a></li>);
-    }
-    setListItems(items);
-  };
-
-
   useEffect(() => {
+    const generateListItems = (t:domainTable) => {
+      const items = [];
+      for (let i = 1; i <= t.last_page; i++) {
+        items.push(<li key={i}><a onClick={() => handlePage(i)} className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white" href="#">{i}</a></li>);
+      }
+      setListItems(items);
+    }
     const getAllDomains = async () => {
       setLoading(true)
      
       const res = await getDomains(search,limit,page);
       const tData = res.domains as domainTable;
       setTableData(tData);
-     
+      setRows(tData.data);
       setLoading(false)
       generateListItems(tData)
     };
@@ -141,7 +157,8 @@ interface tableProps {
             <thead>
               <tr className="bg-gray-2 text-left dark:bg-meta-4">
                 <th className="min-w-[20px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                  <input type="checkbox" id="" />
+                  <input type="checkbox" id="" checked={selectAll}
+                onChange={toggleSelectAll} />
                 </th>
                 <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">Domains</th>
                 <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">Last Crawled Date</th>
@@ -151,12 +168,11 @@ interface tableProps {
               </tr>
             </thead>
             <tbody>
-               {tableData.data.map((item) => (
- 
-
+               {rows.map((item) => (
               <tr key={item.id}>
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
-                  <input type="checkbox" id="" />
+                  <input type="checkbox" id="" checked={item.selected || false}
+                  onChange={() => handleRowCheckboxChange(item.id)} />
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                   <h5 className="font-medium text-black dark:text-white">{item.domain_name}</h5>

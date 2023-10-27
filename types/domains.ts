@@ -7,4 +7,5 @@ export type domains = {
     status: string;
     updated_at: string;
     user_id: number;
+    selected:boolean;
   }
