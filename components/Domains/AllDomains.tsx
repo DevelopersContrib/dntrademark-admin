@@ -1,70 +1,92 @@
 'use client';
 import { FaBuffer } from 'react-icons/fa6';
 import { FaTimes } from 'react-icons/fa';
+import { FaCircleNotch } from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
-// import { getDomains } from '@/lib/domain-helper';
-// import { domains } from "@/types/domains";
+import { getDomains } from '@/lib/domain-helper';
 import { domainTable } from "@/types/domainTable";
 
-// interface domains {
-//   id: number;
-//   created_at: string;
-//   date_last_crawled: string;
-//   domain_name: string;
-//   no_of_items: string;
-//   status: string;
-//   updated_at: string;
-//   user_id: number;
-// }
-
-// interface tableData {
-//   current_page: number;
-//   data: domains[];
-//   first_page_url: string;
-//   from: number;
-//   last_page: number;
-//   last_page_url: string;
-//   next_page_url: string;
-//   path: string;
-//   per_page: number;
-//   prev_page_url: string;
-//   to: number;
-//   total: number;
-// }
 interface tableProps {
   tData: domainTable;
 }
 
-// const AllDomains = (prop: domainTable) => {
   const AllDomains = ({ tData }: tableProps) =>{
-    console.log('tData..',tData)
   // const [rows, setRows] = useState<domains[]>([]);
-  const [tableData, setTableData] = useState<domainTable>();
-  const [loading, setLoading] = useState(false)
+  const [tableData, setTableData] = useState<domainTable>(tData);
+  const [loading, setLoading] = useState(false)  
+  const [search, setSearch] =  useState<string>('');
+  const [limit, setLimit] =  useState<number>(10);
+  const [page, setPage] =  useState<number>(1);
+  const [reload, setReload] =  useState<number>(1);
+  const [listItems, setListItems] = useState<JSX.Element[]>([]);
 
-  // const getAllDomains = async () => {
-  //   setLoading(true)
-  //   const res = await getDomains();
-  //   // const domainData = res.domains.data as domains[];
-  //   const tData = res.domains as domainTable;
-  //   setTableData(tData);
-  //   console.log('tData',tData)
-  //   setLoading(false)
-  //   setRows(tData.data)
-  // };
+  const callReload = () => {
+    const d = new Date();
+    const time = d.getTime();
+    setReload(time);
+  }
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+    callReload();
+  }
+
+  const handleLimit = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setLimit(parseInt(event.target.value));
+    setPage(1)
+    callReload();
+  };
+
+  const handlePage = (pageNo: number) => {
+    setPage(pageNo)
+    callReload();
+  }
+
+  const handlePrevious = () => {
+    if(page>1) setPage(page - 1);
+    callReload();
+  }
+
+  const handleNext = () => {
+    if(page<tableData.last_page) setPage(page + 1);
+    callReload();
+  }
+
+
+  
+  const generateListItems = (t:domainTable) => {
+    const items = [];
+    for (let i = 1; i <= t.last_page; i++) {
+      items.push(<li><a onClick={() => handlePage(i)} className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white" href="#">{i}</a></li>);
+    }
+    setListItems(items);
+  };
+
+
   useEffect(() => {
-    setTableData(tData);
-  },[]);
+    const getAllDomains = async () => {
+      setLoading(true)
+     
+      const res = await getDomains(search,limit,page);
+      const tData = res.domains as domainTable;
+      setTableData(tData);
+     
+      setLoading(false)
+      generateListItems(tData)
+    };
+    getAllDomains();    
+  },[reload]);
+
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
         <h3 className="font-medium text-black dark:text-white">All Domains</h3>
+        
       </div>
       <div className="flex flex-col gap-5.5 p-6.5">
         <div className="max-w-full overflow-x-auto">
           <div className="w-full pb-4 border-b border-b-[#eee] flex justify-between mb-4">
-            <div className="flex items-center space-x-2">
+            {/* <div className="flex items-center space-x-2">
               <div>Filter</div>
               <div>
                 <div className="relative">
@@ -76,7 +98,7 @@ interface tableProps {
                   <span className="border-body-color absolute right-4 top-1/2 mt-[-2px] h-[10px] w-[10px] -translate-y-1/2 rotate-45 border-r-2 border-b-2"></span>
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="space-x-2">
               <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
                 <FaBuffer className="w-4 h-4 mr-2" />
@@ -93,20 +115,21 @@ interface tableProps {
             <div className="flex items-center space-x-2">
               <div>
                 <div className="relative">
-                  <select className="border-form-stroke border-[#ddd] text-body-color focus:border-primary active:border-primary w-full appearance-none rounded-lg border-[1.5px] py-2 pl-4 pr-8 font-medium outline-none transition disabled:cursor-default disabled:bg-[#F5F7FD]">
-                    <option value="">10</option>
-                    <option value="">20</option>
-                    <option value="">50</option>
+                  <select value={limit} onChange={handleLimit} className="border-form-stroke border-[#ddd] text-body-color focus:border-primary active:border-primary w-full appearance-none rounded-lg border-[1.5px] py-2 pl-4 pr-8 font-medium outline-none transition disabled:cursor-default disabled:bg-[#F5F7FD]">
+
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
                   </select>
                   <span className="border-body-color absolute right-4 top-1/2 mt-[-2px] h-[10px] w-[10px] -translate-y-1/2 rotate-45 border-r-2 border-b-2"></span>
                 </div>
               </div>
-              <div>records</div>
+              <div>records {loading?(<FaCircleNotch className="w-4 h-4 fa-spin" />):''} </div>
             </div>
             <div className="space-x-2 flex items-center">
               <div>search:</div>
               <div>
-                <input
+                <input value={search} onChange={handleSearchChange} 
                   type="text"
                   className="border-form-stroke border-[#ddd] text-body-color placeholder-body-color focus:border-primary active:border-primary w-full rounded-lg border-[1.5px] py-2 px-4 font-medium outline-none transition disabled:cursor-default disabled:bg-[#F5F7FD]"
                 />
@@ -128,7 +151,7 @@ interface tableProps {
               </tr>
             </thead>
             <tbody>
-               {tData.data.map((item) => (
+               {tableData.data.map((item) => (
  
 
               <tr key={item.id}>
@@ -184,51 +207,26 @@ interface tableProps {
                   </div>
                 </td>
                 </tr>
-
             ))}
-              
-              
             </tbody>
           </table>
           <div className="flex w-full py-4 justify-between">
             <div className="font-medium text-[#666] dark:text-white">Showing {tData?.current_page} to {tData?.per_page} of {tData?.total} entries</div>
-            <nav>
+            {tData?(
+              <nav>                 
               <ul className="flex flex-wrap items-center gap-2">
-                <li>
+              
+                 <li>
                   <a
                     className="flex items-center justify-center rounded bg-[#EDEFF1] py-1.5 px-3 text-xs font-medium text-black hover:bg-primary hover:text-white dark:bg-graydark dark:text-white dark:hover:bg-primary dark:hover:text-white"
-                    href="#"
+                    onClick={() => handlePrevious()}
                   >
                     Previous
                   </a>
                 </li>
+                {listItems}
                 <li>
-                  <a className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white" href="#">
-                    1
-                  </a>
-                </li>
-                <li>
-                  <a className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white" href="#">
-                    2
-                  </a>
-                </li>
-                <li>
-                  <a className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white" href="#">
-                    3
-                  </a>
-                </li>
-                <li>
-                  <a className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white" href="#">
-                    4
-                  </a>
-                </li>
-                <li>
-                  <a className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white" href="#">
-                    5
-                  </a>
-                </li>
-                <li>
-                  <a
+                  <a onClick={() => handleNext()}
                     className="flex items-center justify-center rounded bg-[#EDEFF1] py-1.5 px-3 text-xs font-medium text-black hover:bg-primary hover:text-white dark:bg-graydark dark:text-white dark:hover:bg-primary dark:hover:text-white"
                     href="#"
                   >
@@ -237,6 +235,8 @@ interface tableProps {
                 </li>
               </ul>
             </nav>
+            ):''}
+            
           </div>
         </div>
       </div>
