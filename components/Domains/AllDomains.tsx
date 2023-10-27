@@ -4,34 +4,8 @@ import { FaTimes } from 'react-icons/fa';
 import { FaCircleNotch } from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
 import { getDomains } from '@/lib/domain-helper';
-// import { domains } from "@/types/domains";
 import { domainTable } from "@/types/domainTable";
 
-// interface domains {
-//   id: number;
-//   created_at: string;
-//   date_last_crawled: string;
-//   domain_name: string;
-//   no_of_items: string;
-//   status: string;
-//   updated_at: string;
-//   user_id: number;
-// }
-
-// interface tableData {
-//   current_page: number;
-//   data: domains[];
-//   first_page_url: string;
-//   from: number;
-//   last_page: number;
-//   last_page_url: string;
-//   next_page_url: string;
-//   path: string;
-//   per_page: number;
-//   prev_page_url: string;
-//   to: number;
-//   total: number;
-// }
 interface tableProps {
   tData: domainTable;
 }
@@ -77,16 +51,7 @@ interface tableProps {
     callReload();
   }
 
-  const getAllDomains = async () => {
-    setLoading(true)
-   
-    const res = await getDomains(search,limit,page);
-    const tData = res.domains as domainTable;
-    setTableData(tData);
-   
-    setLoading(false)
-    generateListItems(tData)
-  };
+
   
   const generateListItems = (t:domainTable) => {
     const items = [];
@@ -98,9 +63,19 @@ interface tableProps {
 
 
   useEffect(() => {
+    const getAllDomains = async () => {
+      setLoading(true)
+     
+      const res = await getDomains(search,limit,page);
+      const tData = res.domains as domainTable;
+      setTableData(tData);
+     
+      setLoading(false)
+      generateListItems(tData)
+    };
     getAllDomains();    
   },[reload]);
-  //},[search,limit,page]);
+
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
