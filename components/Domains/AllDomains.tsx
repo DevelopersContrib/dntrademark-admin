@@ -15,6 +15,7 @@ interface tableProps {
   const [rows, setRows] = useState<domains[]>(tData.data);
   const [tableData, setTableData] = useState<domainTable>(tData);
   const [loading, setLoading] = useState(false)  
+
   const [search, setSearch] =  useState<string>('');
   const [limit, setLimit] =  useState<number>(10);
   const [page, setPage] =  useState<number>(1);
@@ -23,73 +24,90 @@ interface tableProps {
   const [selectAll, setSelectAll] = useState(false);
   const [selectedRows, setSelectedRows] = useState<domainTable[]>([]);
 
-  const toggleSelectAll = () => {
-    setSelectAll(!selectAll);
+  const [deleted, setDeleted] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+
+  const toggleCheckbox = (check:boolean) => {
+    setDeleted(false)
+    setSelectAll(check);
     const updatedData = rows.map((row) => ({
       ...row,
-      selected: !selectAll,
+      selected: check,
     }));
-    
     setRows(updatedData);
+  }
+  
+  const toggleSelectAll = () => {
+    toggleCheckbox(!selectAll)
   };
 
   const handleRowCheckboxChange = (id: number) => {
+    setDeleted(false)
     const updatedData = rows.map((row) =>
       row.id === id ? { ...row, selected: !row.selected } : row
     );
     setRows(updatedData);
   };
 
-  const callReload = () => {
+  const callReload = (del:boolean) => {
     const d = new Date();
     const time = d.getTime();
     setReload(time);
+    setDeleted(del);
   }
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
-    callReload();
+    callReload(false);
   }
 
   const handleLimit = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLimit(parseInt(event.target.value));
     setPage(1)
-    callReload();
+    callReload(false);
   };
 
-  const handlePage = (pageNo: number) => {
-    setPage(pageNo)
-    callReload();
-  }
+
 
   const handlePrevious = () => {
     if(page>1) setPage(page - 1);
-    callReload();
+    callReload(false);
   }
 
   const handleNext = () => {
     if(page<tableData.last_page) setPage(page + 1);
-    callReload();
+    callReload(false);
   }
 
-  const showSelectedRows = async() => {
+  const deleteRows = async() => {
     const selected = rows.filter((row) => row.selected);
-    console.log('selected',selected)
-    //setSelectedRows(selected);
     let ids: Array<number> = [];
     selected.map((row) => ( 
       ids.push(row.id)
     ))
-    if(ids.length>1) {
+
+    if(ids.length>0) {
+      setLoading(true)
+      setShowDelete(false)
+      setConfirmDelete(false)
       const res = await deleteDomains(ids);
-      console.log('res',res)
+      setLoading(false)
       if(res.domains.success){
-        alert('delete success!')
-        callReload();
+        callReload(true);
+        
       }
     }
   };
+  useEffect(() => {
+    const selected = rows.filter((row) => row.selected);
+    setShowDelete(selected.length>0)
+  },[rows]);
 
   useEffect(() => {
+    const handlePage = (pageNo: number) => {
+      setPage(pageNo)
+      callReload(false);
+    }
     const generateListItems = (t:domainTable) => {
       const items = [];
       for (let i = 1; i <= t.last_page; i++) {
@@ -97,6 +115,7 @@ interface tableProps {
       }
       setListItems(items);
     }
+
     const getAllDomains = async () => {
       setLoading(true)
      
@@ -107,7 +126,8 @@ interface tableProps {
       setLoading(false)
       generateListItems(tData)
     };
-    getAllDomains();    
+    getAllDomains();
+    // eslint-disable-next-line
   },[reload]);
 
 
@@ -117,6 +137,34 @@ interface tableProps {
         <h3 className="font-medium text-black dark:text-white">All Domains</h3>
         
       </div>
+      {deleted?(
+        <div className="mb-4">
+          <div className="flex w-full rounded-lg border-l-[6px] border-[#34D399] bg-[#34D399] bg-opacity-[15%] px-7 py-8 shadow-md md:p-9">
+            <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#34D399]">
+              <svg
+                width="16"
+                height="12"
+                viewBox="0 0 16 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2984 0.826822L15.2868 0.811827L15.2741 0.797751C14.9173 0.401867 14.3238 0.400754 13.9657 0.794406L5.91888 9.45376L2.05667 5.2868C1.69856 4.89287 1.10487 4.89389 0.747996 5.28987C0.417335 5.65675 0.417335 6.22337 0.747996 6.59026L0.747959 6.59029L0.752701 6.59541L4.86742 11.0348C5.14445 11.3405 5.52858 11.5 5.89581 11.5C6.29242 11.5 6.65178 11.3355 6.92401 11.035L15.2162 2.11161C15.5833 1.74452 15.576 1.18615 15.2984 0.826822Z"
+                  fill="white"
+                  stroke="white"
+                ></path>
+              </svg>
+            </div>
+            <div className="w-full">
+              <h5 className="mb-3 text-lg font-semibold text-dark">
+                {'Deleted Successfully'}
+              </h5>
+              
+            </div>
+          </div>
+        </div>
+      ):''}
+
       <div className="flex flex-col gap-5.5 p-6.5">
         <div className="max-w-full overflow-x-auto">
           <div className="w-full pb-4 border-b border-b-[#eee] flex justify-between mb-4">
@@ -138,10 +186,32 @@ interface tableProps {
                 <FaBuffer className="w-4 h-4 mr-2" />
                 Bulk Add Domains
               </button>
-              <button onClick={showSelectedRows} className="bg-danger inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
-                <FaTimes className="w-4 h-4 mr-2" />
-                Delete Selected
-              </button>
+              
+              {confirmDelete?(
+                  <>
+                    <button onClick={deleteRows} className="bg-danger inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
+                        <FaTimes className="w-4 h-4 mr-2" />
+                        Continue Delete?
+                      </button>
+                      <button onClick={() => {
+                        setShowDelete(false)
+                        setConfirmDelete(false)
+                        toggleCheckbox(false)
+                      }} className="bg-success inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
+                      <FaTimes className="w-4 h-4 mr-2" />
+                      Cancel
+                    </button>
+                  </>
+              ):(
+                showDelete?(
+                  <button onClick={() => {
+                    setConfirmDelete(true)
+                  }} className="bg-danger inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
+                    <FaTimes className="w-4 h-4 mr-2" />
+                    Delete Selected
+                  </button>
+                ):''
+              )}
             </div>
           </div>
 
