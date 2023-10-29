@@ -3,7 +3,7 @@ import { FaBuffer } from 'react-icons/fa6';
 import { FaTimes } from 'react-icons/fa';
 import { FaCircleNotch } from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
-import { getDomains } from '@/lib/domain-helper';
+import { getDomains, deleteDomains} from '@/lib/domain-helper';
 import { domainTable } from "@/types/domainTable";
 import { domains } from "@/types/domains";
 
@@ -15,63 +15,110 @@ interface tableProps {
   const [rows, setRows] = useState<domains[]>(tData.data);
   const [tableData, setTableData] = useState<domainTable>(tData);
   const [loading, setLoading] = useState(false)  
+
   const [search, setSearch] =  useState<string>('');
   const [limit, setLimit] =  useState<number>(10);
   const [page, setPage] =  useState<number>(1);
   const [reload, setReload] =  useState<number>(1);
   const [listItems, setListItems] = useState<JSX.Element[]>([]);
   const [selectAll, setSelectAll] = useState(false);
-  
-  const toggleSelectAll = () => {
-    setSelectAll(!selectAll);
+  const [selectedRows, setSelectedRows] = useState<domainTable[]>([]);
+
+  const [deleted, setDeleted] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+
+  const toggleCheckbox = (check:boolean) => {
+    setDeleted(false)
+    setSelectAll(check);
     const updatedData = rows.map((row) => ({
       ...row,
-      selected: !selectAll,
+      selected: check,
     }));
-    
     setRows(updatedData);
+  }
+  
+  const toggleSelectAll = () => {
+    toggleCheckbox(!selectAll)
   };
 
   const handleRowCheckboxChange = (id: number) => {
+    setDeleted(false)
     const updatedData = rows.map((row) =>
       row.id === id ? { ...row, selected: !row.selected } : row
     );
     setRows(updatedData);
   };
 
-  const callReload = () => {
+  const deleteSingle = (id: number) => {
+    setDeleted(false)
+    const updatedData = rows.map((row) =>
+      row.id === id ? { ...row, selected: true } : row
+    );
+    setRows(updatedData);
+    setShowDelete(false)
+    setConfirmDelete(true)
+  };
+  
+
+  const callReload = (del:boolean) => {
     const d = new Date();
     const time = d.getTime();
     setReload(time);
+    setDeleted(del);
   }
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
-    callReload();
+    callReload(false);
   }
 
   const handleLimit = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLimit(parseInt(event.target.value));
     setPage(1)
-    callReload();
+    callReload(false);
   };
 
-  const handlePage = (pageNo: number) => {
-    setPage(pageNo)
-    callReload();
-  }
+
 
   const handlePrevious = () => {
     if(page>1) setPage(page - 1);
-    callReload();
+    callReload(false);
   }
 
   const handleNext = () => {
     if(page<tableData.last_page) setPage(page + 1);
-    callReload();
+    callReload(false);
   }
 
+  const deleteRows = async() => {
+    const selected = rows.filter((row) => row.selected);
+    let ids: Array<number> = [];
+    selected.map((row) => ( 
+      ids.push(row.id)
+    ))
+
+    if(ids.length>0) {
+      setLoading(true)
+      setShowDelete(false)
+      setConfirmDelete(false)
+      const res = await deleteDomains(ids);
+      setLoading(false)
+      if(res.domains.success){
+        callReload(true);
+        
+      }
+    }
+  };
+  useEffect(() => {
+    const selected = rows.filter((row) => row.selected);
+    setShowDelete(selected.length>0)
+  },[rows]);
 
   useEffect(() => {
+    const handlePage = (pageNo: number) => {
+      setPage(pageNo)
+      callReload(false);
+    }
     const generateListItems = (t:domainTable) => {
       const items = [];
       for (let i = 1; i <= t.last_page; i++) {
@@ -79,6 +126,7 @@ interface tableProps {
       }
       setListItems(items);
     }
+
     const getAllDomains = async () => {
       setLoading(true)
      
@@ -89,7 +137,8 @@ interface tableProps {
       setLoading(false)
       generateListItems(tData)
     };
-    getAllDomains();    
+    getAllDomains();
+    // eslint-disable-next-line
   },[reload]);
 
 
@@ -99,6 +148,34 @@ interface tableProps {
         <h3 className="font-medium text-black dark:text-white">All Domains</h3>
         
       </div>
+      {deleted?(
+        <div className="mb-4">
+          <div className="flex w-full rounded-lg border-l-[6px] border-[#34D399] bg-[#34D399] bg-opacity-[15%] px-7 py-8 shadow-md md:p-9">
+            <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#34D399]">
+              <svg
+                width="16"
+                height="12"
+                viewBox="0 0 16 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.2984 0.826822L15.2868 0.811827L15.2741 0.797751C14.9173 0.401867 14.3238 0.400754 13.9657 0.794406L5.91888 9.45376L2.05667 5.2868C1.69856 4.89287 1.10487 4.89389 0.747996 5.28987C0.417335 5.65675 0.417335 6.22337 0.747996 6.59026L0.747959 6.59029L0.752701 6.59541L4.86742 11.0348C5.14445 11.3405 5.52858 11.5 5.89581 11.5C6.29242 11.5 6.65178 11.3355 6.92401 11.035L15.2162 2.11161C15.5833 1.74452 15.576 1.18615 15.2984 0.826822Z"
+                  fill="white"
+                  stroke="white"
+                ></path>
+              </svg>
+            </div>
+            <div className="w-full">
+              <h5 className="mb-3 text-lg font-semibold text-dark">
+                {'Deleted Successfully'}
+              </h5>
+              
+            </div>
+          </div>
+        </div>
+      ):''}
+
       <div className="flex flex-col gap-5.5 p-6.5">
         <div className="max-w-full overflow-x-auto">
           <div className="w-full pb-4 border-b border-b-[#eee] flex justify-between mb-4">
@@ -120,10 +197,32 @@ interface tableProps {
                 <FaBuffer className="w-4 h-4 mr-2" />
                 Bulk Add Domains
               </button>
-              <button className="bg-danger inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
-                <FaTimes className="w-4 h-4 mr-2" />
-                Delete Selected
-              </button>
+              
+              {confirmDelete?(
+                  <>
+                    <button onClick={deleteRows} className="bg-danger inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
+                        <FaTimes className="w-4 h-4 mr-2" />
+                        Continue Delete?
+                      </button>
+                      <button onClick={() => {
+                        setShowDelete(false)
+                        setConfirmDelete(false)
+                        toggleCheckbox(false)
+                      }} className="bg-success inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
+                      <FaTimes className="w-4 h-4 mr-2" />
+                      Cancel
+                    </button>
+                  </>
+              ):(
+                showDelete?(
+                  <button onClick={() => {
+                    setConfirmDelete(true)
+                  }} className="bg-danger inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
+                    <FaTimes className="w-4 h-4 mr-2" />
+                    Delete Selected
+                  </button>
+                ):''
+              )}
             </div>
           </div>
 
@@ -200,7 +299,7 @@ interface tableProps {
                         ></path>
                       </svg>
                     </button>
-                    <button className="hover:text-primary">
+                    <button onClick={() => deleteSingle(item.id)} className="hover:text-primary">
                       <svg className="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                           d="M13.7535 2.47502H11.5879V1.9969C11.5879 1.15315 10.9129 0.478149 10.0691 0.478149H7.90352C7.05977 0.478149 6.38477 1.15315 6.38477 1.9969V2.47502H4.21914C3.40352 2.47502 2.72852 3.15002 2.72852 3.96565V4.8094C2.72852 5.42815 3.09414 5.9344 3.62852 6.1594L4.07852 15.4688C4.13477 16.6219 5.09102 17.5219 6.24414 17.5219H11.7004C12.8535 17.5219 13.8098 16.6219 13.866 15.4688L14.3441 6.13127C14.8785 5.90627 15.2441 5.3719 15.2441 4.78127V3.93752C15.2441 3.15002 14.5691 2.47502 13.7535 2.47502ZM7.67852 1.9969C7.67852 1.85627 7.79102 1.74377 7.93164 1.74377H10.0973C10.2379 1.74377 10.3504 1.85627 10.3504 1.9969V2.47502H7.70664V1.9969H7.67852ZM4.02227 3.96565C4.02227 3.85315 4.10664 3.74065 4.24727 3.74065H13.7535C13.866 3.74065 13.9785 3.82502 13.9785 3.96565V4.8094C13.9785 4.9219 13.8941 5.0344 13.7535 5.0344H4.24727C4.13477 5.0344 4.02227 4.95002 4.02227 4.8094V3.96565ZM11.7285 16.2563H6.27227C5.79414 16.2563 5.40039 15.8906 5.37227 15.3844L4.95039 6.2719H13.0785L12.6566 15.3844C12.6004 15.8625 12.2066 16.2563 11.7285 16.2563Z"
