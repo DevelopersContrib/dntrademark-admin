@@ -4,7 +4,7 @@ import axios from 'axios';
 export const POST = async (req: Request) => {
   try {
     const data = await req.json();
-    const token = data.token
+    const token = data?.token
     
     const headers = { 'Authorization': 'Bearer '+token }; // auth header with bearer token
     

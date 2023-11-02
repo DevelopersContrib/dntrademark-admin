@@ -26,7 +26,7 @@ export default function PasswordAccountSettings()  {
 
     const updated_pass = await fetch('/api/updatepass', {
       method: 'POST',
-      body: JSON.stringify({ password:  values.password, token:session?.token  }),
+      body: JSON.stringify({ current_password:'z1ps1te123',new_password:values.password,confim_password:values.password,token:session?.token}),
     });
 
     const result = await updated_pass.json();
