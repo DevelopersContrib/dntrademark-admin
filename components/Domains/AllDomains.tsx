@@ -255,25 +255,29 @@ interface tableProps {
           <table className="w-full table-auto">
             <thead>
               <tr className="bg-gray-2 text-left dark:bg-meta-4">
-                <th className="min-w-[20px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                <th className="min-w-[20px] table-th-header">
                   <input type="checkbox" id="" checked={selectAll}
                 onChange={toggleSelectAll} />
                 </th>
-                <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">Domains</th>
-                <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">Last Crawled Date</th>
-                <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Number of Items</th>
-                <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">Notes</th>
-                <th className="py-4 px-4 font-medium text-black dark:text-white">Actions</th>
+                {/* Note:: Add class to "sorting" if sort "sorting_asc or sorting_desc" */}
+                <th className="min-w-[220px] table-th-header sorting sorting_asc">Domains</th>
+                {/* Note:: Add class to "sorting" if sort "sorting_asc or sorting_desc" */}
+                <th className="min-w-[150px] table-th-header sorting">Last Crawled Date</th>
+                {/* Note:: Add class to "sorting" if sort "sorting_asc or sorting_desc" */}
+                <th className="min-w-[120px] table-th-header sorting">Number of Items</th>
+                {/* Note:: Add class to "sorting" if sort "sorting_asc or sorting_desc" */}
+                <th className="min-w-[120px] table-th-header sorting">Notes</th>
+                <th className="table-th-header">Actions</th>
               </tr>
             </thead>
             <tbody>
                {rows.map((item) => (
               <tr key={item.id}>
-                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark">
                   <input type="checkbox" id="" checked={item.selected || false}
                   onChange={() => handleRowCheckboxChange(item.id)} />
                 </td>
-                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark">
                   <h5 className="font-medium text-black dark:text-white">{item.domain_name}</h5>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
