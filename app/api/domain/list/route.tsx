@@ -14,7 +14,6 @@ export const POST = async (req: Request) => {
       '&filter='+data.search+'&limit='+data.limit+'&page='+
       data.page+'&sortBy='+data.sortBy+'&orderBy='+data.orderBy;
     
-      console.log('apiUrl::',apiUrl)
     const res = await axios.get(apiUrl, config);
 
     return new Response(JSON.stringify({ domains: res.data.domains }), { status: 200 });
