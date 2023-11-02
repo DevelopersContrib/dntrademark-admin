@@ -144,7 +144,7 @@ export const authorizeUser = async (credentials: User) => {
   try {
     const apiUrl = process.env.API_URL + '/user/check?api_key=' + process.env.API_KEY + '&email=' + credentials.email;
 
-    const res = await axios.get(apiUrl);
+    const res = await axios.get(apiUrl, {timeout: 4000});
     const result = res.data;
 
     if (result.data.success && result.data.error === '') {
@@ -215,5 +215,7 @@ export const authorizeUser = async (credentials: User) => {
         console.log('error', error);
       }
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log('error', error);
+  }
 };

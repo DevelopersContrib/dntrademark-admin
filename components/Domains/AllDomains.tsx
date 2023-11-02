@@ -16,6 +16,8 @@ interface tableProps {
   const [tableData, setTableData] = useState<domainTable>(tData);
   const [loading, setLoading] = useState(false)  
 
+  const [orderBy, setOrderBy] =  useState<string>('ASC');
+  const [sortBy, setSortBy] =  useState<string>('domain_name');
   const [search, setSearch] =  useState<string>('');
   const [limit, setLimit] =  useState<number>(10);
   const [page, setPage] =  useState<number>(1);
@@ -130,7 +132,7 @@ interface tableProps {
     const getAllDomains = async () => {
       setLoading(true)
      
-      const res = await getDomains(search,limit,page);
+      const res = await getDomains(search,limit,page,sortBy,orderBy);
       const tData = res.domains as domainTable;
       setTableData(tData);
       setRows(tData.data);

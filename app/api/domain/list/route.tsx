@@ -10,7 +10,11 @@ export const POST = async (req: Request) => {
       headers: { Authorization: 'Bearer ' + session?.token },
     };
 
-    const apiUrl = process.env.API_URL + '/domains?api_key=' + process.env.API_KEY + '&filter='+data.search+'&limit='+data.limit+'&page='+data.page;
+    const apiUrl = process.env.API_URL + '/domains?api_key=' + process.env.API_KEY + 
+      '&filter='+data.search+'&limit='+data.limit+'&page='+
+      data.page+'&sortBy='+data.sortBy+'&orderBy='+data.orderBy;
+    
+      console.log('apiUrl::',apiUrl)
     const res = await axios.get(apiUrl, config);
 
     return new Response(JSON.stringify({ domains: res.data.domains }), { status: 200 });

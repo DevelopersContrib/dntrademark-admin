@@ -1,8 +1,8 @@
-export const getDomains = async (search:string,limit:number,page:number) => {
+export const getDomains = async (search:string,limit:number,page:number,sortBy:string,orderBy:string) => {
   try {
     const res = await fetch('/api/domain/list', {
       method: 'POST',
-      body: JSON.stringify({ search: search, limit: limit, page:page })
+      body: JSON.stringify({ search: search, limit: limit, page:page,sortBy:sortBy,orderBy:orderBy })
     });
     return res.json();
   } catch (error) {
