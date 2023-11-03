@@ -1,23 +1,28 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
+import { options } from '@/lib/options';
+import { getServerSession } from 'next-auth/next';
 
 export const POST = async (req: Request) => {
   try {
     const data = await req.json();
-    const token = data?.token
-    console.log(data);
-    const headers = { 'Authorization': 'Bearer '+token }; // auth header with bearer token
-    console.log('Headers:', headers);
+    const session = await getServerSession(options);
+   
+
+    const config = {
+      headers: { Authorization: 'Bearer ' + session?.token },
+    };
+
     const apiUrl = process.env.API_URL + '/account/reset-password?api_key=' + process.env.API_KEY;
-    console.log(apiUrl);
-    //const params = new URLSearchParams();
-    //params.append('is_onboarding', data.is_onboarding);
- 
-    const res = await axios.put(apiUrl, data, { headers });
+    data.token = session?.token;
+
+    const res = await axios.put(apiUrl, data, config);
     const result = res.data;
-    console.log('Response Data:', res.data);
 
     return NextResponse.json(result);
+
+
+    
   } catch (error) {
     console.log(error);
   }
