@@ -4,16 +4,31 @@ import { options } from '@/lib/options';
 import { getServerSession } from 'next-auth/next';
 import { FaDumpster } from 'react-icons/fa6';
 
-export const checkEmail = async (email?: string) => {
+export const checkEmail = async (email: string) => {
   try {
-    const urlCheck = process.env.API_URL + '/user/check?api_key=' + process.env.API_KEY + '&email=' + email;
-
-    console.log('urlCheck', process.env.API_URL);
-    console.log('urlCheck', urlCheck);
+    const urlCheck = 'https://api.dntrademark.com/api/v1/user/check?api_key=6334aed4bdce9855f400653800596920&email=' + email;
 
     const result = await axios.get(urlCheck);
-    return !result.data.error.success && result.data.error === 'Email is available.' ? { isEmailAvailable: true } : { isEmailAvailable: false };
+    //console.log(result.data.data.data.id)
+    return result.data.data.data.id  ? { isEmailAvailable: false } : { isEmailAvailable: true };
     // return { isEmailAvailable: false }
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
+export const getDomainList = async () => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: 'Bearer ' + session?.token },
+    };
+
+    const apiUrl = process.env.API_URL + '/domains?api_key=' + process.env.API_KEY + '&filter=&limit=10&page=1';
+    const res = await axios.get(apiUrl, config);
+
+    return res.data.domains
+
   } catch (error) {
     console.log('Error', error);
   }
@@ -95,6 +110,8 @@ export const getPackages = async () => {
   }
 };
 
+
+
 export const loginUser = async (data: User) => {
   try {
     const res = await fetch('/api/auth/signin', {
@@ -127,7 +144,7 @@ export const authorizeUser = async (credentials: User) => {
   try {
     const apiUrl = process.env.API_URL + '/user/check?api_key=' + process.env.API_KEY + '&email=' + credentials.email;
 
-    const res = await axios.get(apiUrl);
+    const res = await axios.get(apiUrl, {timeout: 4000});
     const result = res.data;
 
     if (result.data.success && result.data.error === '') {
@@ -198,5 +215,7 @@ export const authorizeUser = async (credentials: User) => {
         console.log('error', error);
       }
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log('error', error);
+  }
 };

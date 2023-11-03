@@ -61,9 +61,9 @@ export const options: NextAuthOptions = {
           token: user.token,
           id: user.id,
         };
-
+ 
         const u = await authorizeUser(Newuser);
-
+        console.log('authorizeUser',u)
         user.id = u?.id;
         user.email = u?.email;
         user.name = u?.name;
