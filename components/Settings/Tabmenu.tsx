@@ -29,9 +29,9 @@ export default function Tabmenu(userdetails: any) {
               >
                 Email Address
               </button>
-  
+
               <button
-                className={`bg-gray dark:bg-meta-4 text-black dark:text-white rounded-md py-3 px-4 text-sm font-medium hover:bg-danger hover:text-white dark:hover:bg-danger md:text-base lg:px-6 nav-tabs ${activeTab === 2 ? 'active' : ''}`}
+                className={`bg-gray dark:bg-meta-4 text-black dark:text-white rounded-md py-3 px-4 text-sm font-medium hover:bg-danger hover:text-white dark:hover:bg-danger md:text-base lg:px-6 nav-tabs hidden ${activeTab === 2 ? 'active' : ''}`}
                 onClick={() => handleTabClick(2)}
               >
                 Password
