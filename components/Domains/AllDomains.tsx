@@ -145,6 +145,7 @@ const AllDomains = ({ tData }: tableProps) => {
 
       const res = await getDomains(search, limit, page, sortBy, orderBy);
       const tData = res.domains as domainTable;
+      console.log('tData',tData)
       setTableData(tData);
       setRows(tData.data);
       setLoading(false);
@@ -409,10 +410,10 @@ const AllDomains = ({ tData }: tableProps) => {
           </table>
           <div className="flex w-full py-4 justify-between">
             <div className="font-medium text-[#666] dark:text-white">
-              Showing {tData?.current_page} to {tData?.per_page} of{" "}
-              {tData?.total} entries
+              Showing {tableData?.from} to {tableData?.to} of{" "}
+              {tableData?.total} entries
             </div>
-            {tData ? (
+            {tableData ? (
               <nav>
                 <ul className="flex flex-wrap items-center gap-2">
                   <li>
