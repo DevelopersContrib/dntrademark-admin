@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 import Image from "next/image";
-import { FaBuffer } from "react-icons/fa6";
+import { FaBuffer, FaRegNewspaper } from "react-icons/fa6";
 
 import { useSession } from "next-auth/react";
 
@@ -274,6 +274,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 }}
               </SidebarLinkGroup>
               {/* <!-- Menu Item Forms --> */}
+
+
+              {/* <!-- Medium Blog --> */}
+              <li>
+                <Link
+                  href="https://blog.dntrademark.com/"
+                  target="_blank"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 `}
+                >
+                  <FaRegNewspaper className="w-[18px] h-[18px] mr-1" />
+                  Updates
+                </Link>
+              </li>
+              {/* <!-- Medium Blog --> */}
             </ul>
           </div>
         </nav>
