@@ -149,7 +149,6 @@ export default function ECommerce(stats: any) {
           </svg>
         </CardDataStats>
       </div>
-<<<<<<< HEAD
       <div className="w-full mb-4 text-sm"></div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -425,10 +424,6 @@ export default function ECommerce(stats: any) {
           </div>
         </div>
       </div>
-=======
-
-    
->>>>>>> d587982f7f9dc2daa4642c9679f0e6596db4a544
     </>
   );
 };
