@@ -23,13 +23,11 @@ interface tableProps {
   recent: domainTable;
 }
 
-
   export default function ECommerce({ tData, stats, recent }: tableProps) {
   console.log('client tData:',tData)
   // console.log('client tData.current_page:',tData.current_page)
   // console.log('client stats:',stats)
   // console.log('client stats.domainsCount:',stats.domainsCount)
-
   let initialStats= {
     domainsCount:0,
     hitsCount: 0,
