@@ -8,7 +8,7 @@ export const checkEmail = async (email: string) => {
   try {
     const urlCheck = 'https://api.dntrademark.com/api/v1/user/check?api_key=6334aed4bdce9855f400653800596920&email=' + email;
 
-    const result = await axios.get(urlCheck);
+    const result = await axios.get(urlCheck,{timeout: 4000});
     //console.log(result.data.data.data.id)
     return result.data.data.data.id  ? { isEmailAvailable: false } : { isEmailAvailable: true };
     // return { isEmailAvailable: false }
@@ -17,14 +17,16 @@ export const checkEmail = async (email: string) => {
   }
 };
 
-export const getDomainList = async () => {
+export const getDomainList = async (limit:number=10, page:number=1, sortBy:string='domain_name', orderBy:string='ASC', filter:string='') => {
   try {
     const session = await getServerSession(options);
     const config = {
       headers: { Authorization: 'Bearer ' + session?.token },
+      timeout: 10000
     };
 
-    const apiUrl = process.env.API_URL + '/domains?api_key=' + process.env.API_KEY + '&filter=&limit=10&page=1';
+    const apiUrl = process.env.API_URL + '/domains?api_key=' + process.env.API_KEY + 
+      '&filter='+filter+'&limit='+limit+'&page='+page+'&sortBy='+sortBy+'&orderBy='+orderBy
     const res = await axios.get(apiUrl, config);
 
     return res.data.domains
@@ -56,7 +58,7 @@ export const getDomainStats = async () => {
     const apiUrl = process.env.API_URL + '/domains/stats?api_key=' + process.env.API_KEY;
     const res = await axios.get(apiUrl, config);
 
-    // const res = await axios.get(apiUrl)
+    // console.log('res.data.data',res.data.data);
     return res.data.data;
   } catch (error) {
     console.log('Error', error);
