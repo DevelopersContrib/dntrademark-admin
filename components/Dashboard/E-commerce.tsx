@@ -3,10 +3,11 @@ import { useEffect, useState,use } from 'react';
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 import React from "react";
 import WelcomeNotif from "../Dashboard/WelcomeNotif";
-
+import { domainTable } from "@/types/domainTable";
 import CardDataStats from "../CardDataStats";
-
-import { Stats } from "@/types/stats";
+import DomainList from '@/components/Domains/DomainList';
+import RecentList from '@/components/Domains/RecentDomains';
+import { Stats,Stat } from "@/types/stats";
 
 // import Map from "../Maps/TestMap";
 
@@ -16,11 +17,19 @@ const MapOne = dynamic(() => import("../Maps/MapOne"), {
   ssr: false,
 });
 
+interface tableProps {
+  tData: domainTable;
+  stats: Stat
+  recent: domainTable;
+}
 
 
+  export default function ECommerce({ tData, stats, recent }: tableProps) {
+  console.log('client tData:',tData)
+  // console.log('client tData.current_page:',tData.current_page)
+  // console.log('client stats:',stats)
+  // console.log('client stats.domainsCount:',stats.domainsCount)
 
-export default function ECommerce(stats: any) {
-  const domainStats = stats as Stats;
   let initialStats= {
     domainsCount:0,
     hitsCount: 0,
@@ -28,43 +37,21 @@ export default function ECommerce(stats: any) {
     domainsAtRiskCount:0
   };
 
-  console.log('stats is'+domainStats.stats)
-
-  if( domainStats.stats === undefined){
+  if( stats === undefined){
     
   }else {
      initialStats= {
-        domainsCount:domainStats.stats.domainsCount,
-        hitsCount: domainStats.stats.hitsCount,
-        noHitsCount:domainStats.stats.noHitsCount,
-        domainsAtRiskCount:domainStats.stats.domainsAtRiskCount
+        domainsCount:stats.domainsCount,
+        hitsCount: stats.hitsCount,
+        noHitsCount:stats.noHitsCount,
+        domainsAtRiskCount:stats.domainsAtRiskCount
       };
   }
 
 
-  
-
   const [values, setQuotes] = useState(initialStats)
   const [loading, setLoading] = useState(true)
 
-  
-
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const res = await fetch("/api/domain/stats");
-  //     const data = await res.json();
-  //     console.log(data)
-  //     setQuotes(data)
-  //     setLoading(false)
-  //   }
-  //   getData();
-  //   return () => {
-  //     // here you can clean the effect in case the component gets unmonth before the async function ends
-  //   }
-  // },[])
-
-  
-  
  
   return (
     <>
@@ -91,6 +78,7 @@ export default function ECommerce(stats: any) {
             />
           </svg>
         </CardDataStats>
+        
         <CardDataStats title="Domains with Hits" total={String(values.hitsCount?values.hitsCount:0)} rate="" levelUp>
         <svg
             className="fill-primary dark:fill-white"
@@ -148,149 +136,13 @@ export default function ECommerce(stats: any) {
             />
           </svg>
         </CardDataStats>
+       
       </div>
       <div className="w-full mb-4 text-sm"></div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
-          <h5 className="mb-2 text-lg font-semibold text-dark">Domain Lists</h5>
-          <ul>
-            <li className="text-body-color mb-4 flex text-base">
-              <span className="text-primary mr-2 rounded-full text-base">
-                <svg width="20" height="20" viewBox="0 0 20 20" className="fill-current">
-                  <path
-                    d="M10 19.625C4.6875 19.625 0.40625 15.3125 0.40625 10C0.40625 4.6875 4.6875 0.40625 10 0.40625C15.3125 0.40625 19.625 4.6875 19.625 10C19.625 15.3125 15.3125 19.625 10 19.625ZM10 1.5C5.3125 1.5 1.5 5.3125 1.5 10C1.5 14.6875 5.3125 18.5312 10 18.5312C14.6875 18.5312 18.5312 14.6875 18.5312 10C18.5312 5.3125 14.6875 1.5 10 1.5Z"
-                  ></path>
-                  <path
-                    d="M8.9375 12.1875C8.71875 12.1875 8.53125 12.125 8.34375 11.9687L6.28125 9.96875C6.0625 9.75 6.0625 9.40625 6.28125 9.1875C6.5 8.96875 6.84375 8.96875 7.0625 9.1875L8.9375 11.0312L12.9375 7.15625C13.1563 6.9375 13.5 6.9375 13.7188 7.15625C13.9375 7.375 13.9375 7.71875 13.7188 7.9375L9.5625 12C9.34375 12.125 9.125 12.1875 8.9375 12.1875Z"
-                  ></path>
-                </svg>
-              </span>
-              dntrademark.com
-            </li>
-            <li className="text-body-color mb-4 flex text-base">
-              <span className="text-primary mr-2 rounded-full text-base">
-                <svg width="20" height="20" viewBox="0 0 20 20" className="fill-current">
-                  <path
-                    d="M10 19.625C4.6875 19.625 0.40625 15.3125 0.40625 10C0.40625 4.6875 4.6875 0.40625 10 0.40625C15.3125 0.40625 19.625 4.6875 19.625 10C19.625 15.3125 15.3125 19.625 10 19.625ZM10 1.5C5.3125 1.5 1.5 5.3125 1.5 10C1.5 14.6875 5.3125 18.5312 10 18.5312C14.6875 18.5312 18.5312 14.6875 18.5312 10C18.5312 5.3125 14.6875 1.5 10 1.5Z"
-                  ></path>
-                  <path
-                    d="M8.9375 12.1875C8.71875 12.1875 8.53125 12.125 8.34375 11.9687L6.28125 9.96875C6.0625 9.75 6.0625 9.40625 6.28125 9.1875C6.5 8.96875 6.84375 8.96875 7.0625 9.1875L8.9375 11.0312L12.9375 7.15625C13.1563 6.9375 13.5 6.9375 13.7188 7.15625C13.9375 7.375 13.9375 7.71875 13.7188 7.9375L9.5625 12C9.34375 12.125 9.125 12.1875 8.9375 12.1875Z"
-                  ></path>
-                </svg>
-              </span>
-              dntrademark.com
-            </li>
-            <li className="text-body-color mb-4 flex text-base">
-              <span className="text-primary mr-2 rounded-full text-base">
-                <svg width="20" height="20" viewBox="0 0 20 20" className="fill-current">
-                  <path
-                    d="M10 19.625C4.6875 19.625 0.40625 15.3125 0.40625 10C0.40625 4.6875 4.6875 0.40625 10 0.40625C15.3125 0.40625 19.625 4.6875 19.625 10C19.625 15.3125 15.3125 19.625 10 19.625ZM10 1.5C5.3125 1.5 1.5 5.3125 1.5 10C1.5 14.6875 5.3125 18.5312 10 18.5312C14.6875 18.5312 18.5312 14.6875 18.5312 10C18.5312 5.3125 14.6875 1.5 10 1.5Z"
-                  ></path>
-                  <path
-                    d="M8.9375 12.1875C8.71875 12.1875 8.53125 12.125 8.34375 11.9687L6.28125 9.96875C6.0625 9.75 6.0625 9.40625 6.28125 9.1875C6.5 8.96875 6.84375 8.96875 7.0625 9.1875L8.9375 11.0312L12.9375 7.15625C13.1563 6.9375 13.5 6.9375 13.7188 7.15625C13.9375 7.375 13.9375 7.71875 13.7188 7.9375L9.5625 12C9.34375 12.125 9.125 12.1875 8.9375 12.1875Z"
-                  ></path>
-                </svg>
-              </span>
-              dntrademark.com
-            </li>
-            <li className="text-body-color mb-4 flex text-base">
-              <span className="text-primary mr-2 rounded-full text-base">
-                <svg width="20" height="20" viewBox="0 0 20 20" className="fill-current">
-                  <path
-                    d="M10 19.625C4.6875 19.625 0.40625 15.3125 0.40625 10C0.40625 4.6875 4.6875 0.40625 10 0.40625C15.3125 0.40625 19.625 4.6875 19.625 10C19.625 15.3125 15.3125 19.625 10 19.625ZM10 1.5C5.3125 1.5 1.5 5.3125 1.5 10C1.5 14.6875 5.3125 18.5312 10 18.5312C14.6875 18.5312 18.5312 14.6875 18.5312 10C18.5312 5.3125 14.6875 1.5 10 1.5Z"
-                  ></path>
-                  <path
-                    d="M8.9375 12.1875C8.71875 12.1875 8.53125 12.125 8.34375 11.9687L6.28125 9.96875C6.0625 9.75 6.0625 9.40625 6.28125 9.1875C6.5 8.96875 6.84375 8.96875 7.0625 9.1875L8.9375 11.0312L12.9375 7.15625C13.1563 6.9375 13.5 6.9375 13.7188 7.15625C13.9375 7.375 13.9375 7.71875 13.7188 7.9375L9.5625 12C9.34375 12.125 9.125 12.1875 8.9375 12.1875Z"
-                  ></path>
-                </svg>
-              </span>
-              dntrademark.com
-            </li>
-            <li className="text-body-color mb-4 flex text-base">
-              <span className="text-primary mr-2 rounded-full text-base">
-                <svg width="20" height="20" viewBox="0 0 20 20" className="fill-current">
-                  <path
-                    d="M10 19.625C4.6875 19.625 0.40625 15.3125 0.40625 10C0.40625 4.6875 4.6875 0.40625 10 0.40625C15.3125 0.40625 19.625 4.6875 19.625 10C19.625 15.3125 15.3125 19.625 10 19.625ZM10 1.5C5.3125 1.5 1.5 5.3125 1.5 10C1.5 14.6875 5.3125 18.5312 10 18.5312C14.6875 18.5312 18.5312 14.6875 18.5312 10C18.5312 5.3125 14.6875 1.5 10 1.5Z"
-                  ></path>
-                  <path
-                    d="M8.9375 12.1875C8.71875 12.1875 8.53125 12.125 8.34375 11.9687L6.28125 9.96875C6.0625 9.75 6.0625 9.40625 6.28125 9.1875C6.5 8.96875 6.84375 8.96875 7.0625 9.1875L8.9375 11.0312L12.9375 7.15625C13.1563 6.9375 13.5 6.9375 13.7188 7.15625C13.9375 7.375 13.9375 7.71875 13.7188 7.9375L9.5625 12C9.34375 12.125 9.125 12.1875 8.9375 12.1875Z"
-                  ></path>
-                </svg>
-              </span>
-              dntrademark.com
-            </li>
-          </ul>
-        </div>
-        <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
-          <h5 className="mb-2 text-lg font-semibold text-dark">Recent Domain Uploads</h5>
-          <ul>
-            <li className="text-body-color mb-4 flex text-base">
-              <span className="text-primary mr-2 rounded-full text-base">
-                <svg width="20" height="20" viewBox="0 0 20 20" className="fill-current">
-                  <path
-                    d="M10 19.625C4.6875 19.625 0.40625 15.3125 0.40625 10C0.40625 4.6875 4.6875 0.40625 10 0.40625C15.3125 0.40625 19.625 4.6875 19.625 10C19.625 15.3125 15.3125 19.625 10 19.625ZM10 1.5C5.3125 1.5 1.5 5.3125 1.5 10C1.5 14.6875 5.3125 18.5312 10 18.5312C14.6875 18.5312 18.5312 14.6875 18.5312 10C18.5312 5.3125 14.6875 1.5 10 1.5Z"
-                  ></path>
-                  <path
-                    d="M8.9375 12.1875C8.71875 12.1875 8.53125 12.125 8.34375 11.9687L6.28125 9.96875C6.0625 9.75 6.0625 9.40625 6.28125 9.1875C6.5 8.96875 6.84375 8.96875 7.0625 9.1875L8.9375 11.0312L12.9375 7.15625C13.1563 6.9375 13.5 6.9375 13.7188 7.15625C13.9375 7.375 13.9375 7.71875 13.7188 7.9375L9.5625 12C9.34375 12.125 9.125 12.1875 8.9375 12.1875Z"
-                  ></path>
-                </svg>
-              </span>
-              dntrademark.com
-            </li>
-            <li className="text-body-color mb-4 flex text-base">
-              <span className="text-primary mr-2 rounded-full text-base">
-                <svg width="20" height="20" viewBox="0 0 20 20" className="fill-current">
-                  <path
-                    d="M10 19.625C4.6875 19.625 0.40625 15.3125 0.40625 10C0.40625 4.6875 4.6875 0.40625 10 0.40625C15.3125 0.40625 19.625 4.6875 19.625 10C19.625 15.3125 15.3125 19.625 10 19.625ZM10 1.5C5.3125 1.5 1.5 5.3125 1.5 10C1.5 14.6875 5.3125 18.5312 10 18.5312C14.6875 18.5312 18.5312 14.6875 18.5312 10C18.5312 5.3125 14.6875 1.5 10 1.5Z"
-                  ></path>
-                  <path
-                    d="M8.9375 12.1875C8.71875 12.1875 8.53125 12.125 8.34375 11.9687L6.28125 9.96875C6.0625 9.75 6.0625 9.40625 6.28125 9.1875C6.5 8.96875 6.84375 8.96875 7.0625 9.1875L8.9375 11.0312L12.9375 7.15625C13.1563 6.9375 13.5 6.9375 13.7188 7.15625C13.9375 7.375 13.9375 7.71875 13.7188 7.9375L9.5625 12C9.34375 12.125 9.125 12.1875 8.9375 12.1875Z"
-                  ></path>
-                </svg>
-              </span>
-              dntrademark.com
-            </li>
-            <li className="text-body-color mb-4 flex text-base">
-              <span className="text-primary mr-2 rounded-full text-base">
-                <svg width="20" height="20" viewBox="0 0 20 20" className="fill-current">
-                  <path
-                    d="M10 19.625C4.6875 19.625 0.40625 15.3125 0.40625 10C0.40625 4.6875 4.6875 0.40625 10 0.40625C15.3125 0.40625 19.625 4.6875 19.625 10C19.625 15.3125 15.3125 19.625 10 19.625ZM10 1.5C5.3125 1.5 1.5 5.3125 1.5 10C1.5 14.6875 5.3125 18.5312 10 18.5312C14.6875 18.5312 18.5312 14.6875 18.5312 10C18.5312 5.3125 14.6875 1.5 10 1.5Z"
-                  ></path>
-                  <path
-                    d="M8.9375 12.1875C8.71875 12.1875 8.53125 12.125 8.34375 11.9687L6.28125 9.96875C6.0625 9.75 6.0625 9.40625 6.28125 9.1875C6.5 8.96875 6.84375 8.96875 7.0625 9.1875L8.9375 11.0312L12.9375 7.15625C13.1563 6.9375 13.5 6.9375 13.7188 7.15625C13.9375 7.375 13.9375 7.71875 13.7188 7.9375L9.5625 12C9.34375 12.125 9.125 12.1875 8.9375 12.1875Z"
-                  ></path>
-                </svg>
-              </span>
-              dntrademark.com
-            </li>
-            <li className="text-body-color mb-4 flex text-base">
-              <span className="text-primary mr-2 rounded-full text-base">
-                <svg width="20" height="20" viewBox="0 0 20 20" className="fill-current">
-                  <path
-                    d="M10 19.625C4.6875 19.625 0.40625 15.3125 0.40625 10C0.40625 4.6875 4.6875 0.40625 10 0.40625C15.3125 0.40625 19.625 4.6875 19.625 10C19.625 15.3125 15.3125 19.625 10 19.625ZM10 1.5C5.3125 1.5 1.5 5.3125 1.5 10C1.5 14.6875 5.3125 18.5312 10 18.5312C14.6875 18.5312 18.5312 14.6875 18.5312 10C18.5312 5.3125 14.6875 1.5 10 1.5Z"
-                  ></path>
-                  <path
-                    d="M8.9375 12.1875C8.71875 12.1875 8.53125 12.125 8.34375 11.9687L6.28125 9.96875C6.0625 9.75 6.0625 9.40625 6.28125 9.1875C6.5 8.96875 6.84375 8.96875 7.0625 9.1875L8.9375 11.0312L12.9375 7.15625C13.1563 6.9375 13.5 6.9375 13.7188 7.15625C13.9375 7.375 13.9375 7.71875 13.7188 7.9375L9.5625 12C9.34375 12.125 9.125 12.1875 8.9375 12.1875Z"
-                  ></path>
-                </svg>
-              </span>
-              dntrademark.com
-            </li>
-            <li className="text-body-color mb-4 flex text-base">
-              <span className="text-primary mr-2 rounded-full text-base">
-                <svg width="20" height="20" viewBox="0 0 20 20" className="fill-current">
-                  <path
-                    d="M10 19.625C4.6875 19.625 0.40625 15.3125 0.40625 10C0.40625 4.6875 4.6875 0.40625 10 0.40625C15.3125 0.40625 19.625 4.6875 19.625 10C19.625 15.3125 15.3125 19.625 10 19.625ZM10 1.5C5.3125 1.5 1.5 5.3125 1.5 10C1.5 14.6875 5.3125 18.5312 10 18.5312C14.6875 18.5312 18.5312 14.6875 18.5312 10C18.5312 5.3125 14.6875 1.5 10 1.5Z"
-                  ></path>
-                  <path
-                    d="M8.9375 12.1875C8.71875 12.1875 8.53125 12.125 8.34375 11.9687L6.28125 9.96875C6.0625 9.75 6.0625 9.40625 6.28125 9.1875C6.5 8.96875 6.84375 8.96875 7.0625 9.1875L8.9375 11.0312L12.9375 7.15625C13.1563 6.9375 13.5 6.9375 13.7188 7.15625C13.9375 7.375 13.9375 7.71875 13.7188 7.9375L9.5625 12C9.34375 12.125 9.125 12.1875 8.9375 12.1875Z"
-                  ></path>
-                </svg>
-              </span>
-              dntrademark.com
-            </li>
-          </ul>
-        </div>
+        <DomainList domains={tData.data} />
+        <RecentList domains={recent.data} />
+        
         <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
           <h5 className="mb-2 text-lg font-semibold text-dark">Latest Blogs</h5>
           <ul>

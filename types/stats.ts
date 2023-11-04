@@ -7,3 +7,10 @@ export type Stats = {
     }
     
 }
+
+export type Stat = {
+    domainsCount:number;
+    hitsCount: number;
+    noHitsCount:number;
+    domainsAtRiskCount:number;
+}
