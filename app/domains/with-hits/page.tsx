@@ -1,7 +1,13 @@
+import { Metadata } from 'next';
 import WithHits from "@/components/Domains/WithHits"
 import {getDomainListWithHits} from '@/lib/data'
-
 import { domainTable } from "@/types/domainTable";
+
+export const metadata: Metadata = {
+  title: 'DNTrademark Admin - Domains With Hits',
+  description: 'dntrademark.com is a SaaS platform designed to provide an efficient and user-friendly way to check domain names against global trademark databases.',
+  // other metadata
+};
 
 const page = async() => {
   const domainlist = await getDomainListWithHits();
