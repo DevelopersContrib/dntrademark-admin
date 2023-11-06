@@ -1,7 +1,15 @@
 import WithHits from "@/components/Domains/WithHits"
-const page = () => {
+import {getDomainListWithHits} from '@/lib/data'
+
+import { domainTable } from "@/types/domainTable";
+
+const page = async() => {
+  const domainlist = await getDomainListWithHits();
+  
+  const tData = domainlist as domainTable;
+
   return (
-    <WithHits />
+    <WithHits tData={tData} />
   )
 }
 
