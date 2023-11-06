@@ -303,10 +303,6 @@ th.sorting_desc::after{
   background: rgba(0,0,0,0.09);
 }
 
-.bg-gradient .fill-primary{
-  fill: #fff;
-}
-
 .bg-gradient .text-title-md{
   color: #fff;
 }
