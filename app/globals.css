@@ -290,3 +290,27 @@ th.sorting_asc::before,
 th.sorting_desc::after{
   opacity: 0.6;
 }
+
+.bg-red-gradient-1{
+  background: linear-gradient(102.2deg, rgb(250, 45, 66) 9.6%, rgb(245, 104, 104) 96.1%);
+}
+
+.bg-green-gradient-1{
+  background: linear-gradient(to top, #0ba360 0%, #3cba92 100%);
+}
+
+.bg-gradient .bg-rounded-gradient{
+  background: rgba(0,0,0,0.09);
+}
+
+.bg-gradient .text-title-md{
+  color: #fff;
+}
+
+.bg-gradient .card-desc{
+  color: #fff;
+}
+
+.bg-gradient .stats-icon-color{
+  color: #fff;
+}
