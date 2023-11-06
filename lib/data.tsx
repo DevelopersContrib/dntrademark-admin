@@ -106,6 +106,17 @@ export const getDomainStats = async () => {
   }
 };
 
+export const getFeed = async () => {
+  try {
+    const response = await fetch("https://blog.dntrademark.com/feed");
+    const text = await response.text();
+
+    return text;
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
 export const getUser = async () => {
   try {
     const session = await getServerSession(options);
