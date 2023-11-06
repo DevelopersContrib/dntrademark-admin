@@ -28,6 +28,47 @@ export const getDomainList = async (limit:number=10, page:number=1, sortBy:strin
     const apiUrl = process.env.API_URL + '/domains?api_key=' + process.env.API_KEY + 
       '&filter='+filter+'&limit='+limit+'&page='+page+'&sortBy='+sortBy+'&orderBy='+orderBy
     const res = await axios.get(apiUrl, config);
+    
+
+    return res.data.domains
+
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
+export const getDomainListWithHits = async (limit:number=10, page:number=1, sortBy:string='domain_name', orderBy:string='ASC', filter:string='') => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: 'Bearer ' + session?.token },
+      timeout: 10000
+    };
+
+    const apiUrl = process.env.API_URL + '/domains/hits?api_key=' + process.env.API_KEY + 
+      '&filter='+filter+'&limit='+limit+'&page='+page+'&sortBy='+sortBy+'&orderBy='+orderBy
+    const res = await axios.get(apiUrl, config);
+    console.log(res.data.domains)
+
+    return res.data.domains
+
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
+export const getDomainListWithOutHits = async (limit:number=10, page:number=1, sortBy:string='domain_name', orderBy:string='ASC', filter:string='') => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: 'Bearer ' + session?.token },
+      timeout: 10000
+    };
+
+    const apiUrl = process.env.API_URL + '/domains/no-hits?api_key=' + process.env.API_KEY + 
+      '&filter='+filter+'&limit='+limit+'&page='+page+'&sortBy='+sortBy+'&orderBy='+orderBy
+    const res = await axios.get(apiUrl, config);
+   
 
     return res.data.domains
 
@@ -43,7 +84,7 @@ export const getPackage = async (id: number) => {
     const data = res.data.data.data.find((item: { id: number }) => item.id === id);
     return data;
   } catch (error) {
-    console.log('Error', error);
+   
     return null;
   }
 };
