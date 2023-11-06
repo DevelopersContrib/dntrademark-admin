@@ -96,7 +96,7 @@ interface tableProps {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Domains without Hits" total={String(values.noHitsCount?values.noHitsCount:0)}  rate="" levelUp>
+        <CardDataStats bgCard='bg-green-gradient-1 bg-gradient' title="Domains without Hits" total={String(values.noHitsCount?values.noHitsCount:0)}  rate="" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -115,7 +115,7 @@ interface tableProps {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Domains at Risk" total={String(values.domainsAtRiskCount?values.domainsAtRiskCount:0)} rate="" levelUp>
+        <CardDataStats bgCard="bg-red-gradient-1 bg-gradient" title="Domains at Risk" total={String(values.domainsAtRiskCount?values.domainsAtRiskCount:0)} rate="" levelUp>
         <svg
             className="fill-primary dark:fill-white"
             width="22"
