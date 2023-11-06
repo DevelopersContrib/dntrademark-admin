@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import ECommerce from '@/components/Dashboard/E-commerce';
 import { getDomainStats, getUserPackage } from '@/lib/data';
 import { redirect } from "next/navigation"
-import {getDomainList} from '@/lib/data'
+import {getDomainList,getFeed} from '@/lib/data'
 import { domainTable } from "@/types/domainTable";
 
 
@@ -13,6 +13,8 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
+  const feed = await getFeed(); 
+  const blogFeed = feed as string;
   const domainlist = await getDomainList(); 
  
   const tData = domainlist as domainTable;
@@ -30,7 +32,7 @@ export default async function Home() {
   } else{
     return (
       <>
-        <ECommerce tData={tData} stats={stats} recent={recent} />
+        <ECommerce tData={tData} stats={stats} recent={recent} feed={blogFeed} />
       </>
     );
   }
