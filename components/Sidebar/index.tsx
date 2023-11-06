@@ -231,7 +231,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           </li>
                           {/* End:: Add Domains */}
 
-                          <li className="hidden">
+                          <li className="">
                             <Link
                               href="/domains/with-hits"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${
@@ -249,7 +249,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           </li>
                           {/* End:: Domain with hits */}
 
-                          <li className="hidden">
+                          <li className="">
                             <Link
                               href="/domains/without-hits"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${

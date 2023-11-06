@@ -310,3 +310,7 @@ th.sorting_desc::after{
 .bg-gradient .card-desc{
   color: #fff;
 }
+
+.bg-gradient .stats-icon-color{
+  color: #fff;
+}
