@@ -1,8 +1,12 @@
 import { User } from '@/types/user';
-import axios from 'axios';
+import axios, {AxiosError } from 'axios';
 import { options } from '@/lib/options';
 import { getServerSession } from 'next-auth/next';
 import { FaDumpster } from 'react-icons/fa6';
+interface Error {
+  message: string[];
+  statusCode: number;
+}
 
 export const checkEmail = async (email: string) => {
   try {
@@ -29,11 +33,13 @@ export const getDomainList = async (limit:number=10, page:number=1, sortBy:strin
       '&filter='+filter+'&limit='+limit+'&page='+page+'&sortBy='+sortBy+'&orderBy='+orderBy
     const res = await axios.get(apiUrl, config);
     
-
     return res.data.domains
 
-  } catch (error) {
-    console.log('Error', error);
+  } catch (err) {
+    const error = err as AxiosError<Error>;
+    
+    return error.response?.data.message;
+ 
   }
 };
 
