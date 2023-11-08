@@ -4,7 +4,7 @@ import { getDomainStats, getUserPackage } from '@/lib/data';
 import { redirect } from "next/navigation"
 import {getDomainList,getFeed} from '@/lib/data'
 import { domainTable } from "@/types/domainTable";
-
+import Unauthenticated from '@/components/Unauthenticated';
 
 export const metadata: Metadata = {
   title: 'DNTrademark Admin - Global Trademark Notification Platform',
@@ -16,7 +16,11 @@ export default async function Home() {
   const feed = await getFeed(); 
   const blogFeed = feed as string;
   const domainlist = await getDomainList(); 
- 
+  if(domainlist==='Unauthenticated.'){
+    return (
+      <Unauthenticated />
+    );
+  }
   const tData = domainlist as domainTable;
   
   const recentList = await getDomainList(5,1,'id','DESC');  
