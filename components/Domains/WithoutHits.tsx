@@ -7,6 +7,7 @@ import { getDomainsWithOutHits, deleteDomains } from "@/lib/domain-helper";
 import { domainTable } from "@/types/domainTable";
 import { domains } from "@/types/domains";
 import LoadingRipple from "../Loading/LoadingRipple";
+import Link from 'next/link'
 
 interface tableProps {
   tData: domainTable;
@@ -206,10 +207,12 @@ const WithoutHits = ({ tData }: tableProps) => {
               </div>
             </div> */}
             <div className="space-x-2">
+            <Link href="/domains/add" replace>
               <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
                 <FaBuffer className="w-4 h-4 mr-2" />
                 Bulk Add Domains
               </button>
+              </Link>
 
               {confirmDelete ? (
                 <>
@@ -349,6 +352,7 @@ const WithoutHits = ({ tData }: tableProps) => {
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                         <div className="flex items-center space-x-3.5">
+                        <Link href={'/domains/items/'+item.id} replace>
                           <button className="hover:text-primary">
                             <svg
                               className="fill-current"
@@ -368,6 +372,7 @@ const WithoutHits = ({ tData }: tableProps) => {
                               ></path>
                             </svg>
                           </button>
+                          </Link>
                           <button
                             onClick={() => deleteSingle(item.id)}
                             className="hover:text-primary"

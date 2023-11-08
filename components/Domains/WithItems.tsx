@@ -217,32 +217,32 @@ const WithItems = ({ tData,id }: tableProps) => {
                         </p>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p className="inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium text-success bg-success">
+                      <p className="text-black dark:text-white">
                           {item.serial_number}
                         </p>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p className="inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium text-success bg-success">
+                      <p className="text-black dark:text-white">
                           {item.status_label}
                         </p>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p className="inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium text-success bg-success">
+                      <p className="text-black dark:text-white">
                           {item.status_date}
                         </p>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p className="inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium text-success bg-success">
+                      <p className="text-black dark:text-white">
                           {item.status_definition}
                         </p>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p className="inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium text-success bg-success">
+                      <p className="text-black dark:text-white">
                           {item.filing_date}
                         </p>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p className="inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium text-success bg-success">
+                      <p className="text-black dark:text-white">
                           {item.registration_date}
                         </p>
                       </td>
@@ -252,7 +252,7 @@ const WithItems = ({ tData,id }: tableProps) => {
                         </p>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p className="inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium text-success bg-success">
+                      <p className="text-black dark:text-white">
                           {item.expiration_date}
                         </p>
                       </td>
