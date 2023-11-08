@@ -77,6 +77,26 @@ export const getDomainListWithOutHits = async (limit:number=10, page:number=1, s
   }
 };
 
+export const getDomainItems= async (id:number, limit:number=10, page:number=1, sortBy:string='', orderBy:string='ASC', filter:string='') => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: 'Bearer ' + session?.token },
+      timeout: 10000
+    };
+
+    const apiUrl = process.env.API_URL + '/domains/items/'+id+'?api_key=' + process.env.API_KEY + 
+      '&filter='+filter+'&limit='+limit+'&page='+page+'&sortBy='+sortBy+'&orderBy='+orderBy
+    const res = await axios.get(apiUrl, config);
+    console.log('apiURL'+apiUrl)
+
+    return res.data.items
+
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
 export const getPackage = async (id: number) => {
   try {
     const url = process.env.API_URL + '/packages?api_key=' + process.env.API_KEY;
