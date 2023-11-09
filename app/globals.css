@@ -314,3 +314,11 @@ th.sorting_desc::after{
 .bg-gradient .stats-icon-color{
   color: #fff;
 }
+
+.table-border-boxed td{
+  @apply border-b border-t border-[#eee] py-5 px-4 pl-9 dark:border-strokedark border-l;
+}
+
+.table-border-boxed td:last-child{
+  @apply border-r;
+}

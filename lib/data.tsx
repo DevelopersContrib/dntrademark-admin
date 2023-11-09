@@ -103,6 +103,25 @@ export const getDomainItems= async (id:number, limit:number=10, page:number=1, s
   }
 };
 
+export const getItem = async (id:number) => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: 'Bearer ' + session?.token },
+      timeout: 10000
+    };
+
+    const apiUrl = process.env.API_URL + '/items/'+id+'?api_key=' + process.env.API_KEY 
+    const res = await axios.get(apiUrl, config);
+    console.log('apiURL'+apiUrl)
+
+    return res.data.domainOwner
+
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
 export const getPackage = async (id: number) => {
   try {
     const url = process.env.API_URL + '/packages?api_key=' + process.env.API_KEY;
