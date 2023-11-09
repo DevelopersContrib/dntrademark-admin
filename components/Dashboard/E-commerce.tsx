@@ -41,6 +41,7 @@ export default function ECommerce({ tData, stats, recent, feed }: tableProps) {
     hitsCount: 0,
     noHitsCount: 0,
     domainsAtRiskCount: 0,
+    investorSpaceCount:0
   };
 
   if (stats === undefined) {
@@ -50,6 +51,7 @@ export default function ECommerce({ tData, stats, recent, feed }: tableProps) {
       hitsCount: stats.hitsCount,
       noHitsCount: stats.noHitsCount,
       domainsAtRiskCount: stats.domainsAtRiskCount,
+      investorSpaceCount:stats.investorSpaceCount
     };
   }
 
@@ -117,7 +119,7 @@ export default function ECommerce({ tData, stats, recent, feed }: tableProps) {
           <div className="mt-4 flex items-end justify-between">
             <div>
               <h4 className="text-title-md font-bold text-black dark:text-white">
-                0
+                {values.investorSpaceCount}
               </h4>
               <span className="text-sm font-medium">
                 Total number of domains tracked
