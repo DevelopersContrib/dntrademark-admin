@@ -321,7 +321,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   {/* <!-- Roadmap --> */}
                   <li>
                 <Link
-                  href="https://dntrademark-roadmap.vercel.app/"
+                  href="https://roadmap.dntrademark.com"
                   target="_blank"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 `}
                 >
