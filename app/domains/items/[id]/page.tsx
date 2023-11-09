@@ -4,7 +4,7 @@ import {getDomainItems} from '@/lib/data'
 import { domainItems } from "@/types/domainItems";
 
 export const metadata: Metadata = {
-  title: 'DNTrademark Admin - Domain Ites',
+  title: 'DNTrademark Admin - Domain Items',
   description: 'dntrademark.com is a SaaS platform designed to provide an efficient and user-friendly way to check domain names against global trademark databases.',
   // other metadata
 };

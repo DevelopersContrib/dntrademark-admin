@@ -1,6 +1,26 @@
+"use client";
 import React from "react";
+import { useState, useEffect } from "react";
+import {  getDomainItems } from "@/lib/domain-helper";
+import { domainOwner } from "@/types/domainOwner";
+import { items } from "@/types/items";
 
-const ItemsDetails = () => {
+interface tableProps {
+  tData: domainOwner;
+}
+
+const ItemsDetails = ({ tData }: tableProps) => {
+  const [row, setRows] = useState<items>(tData.item);
+  const [owner, setOwner] = useState<domainOwner>(tData);
+
+  useEffect(() => {
+    (async () => {
+      setRows(tData.item);
+      setOwner(tData);
+
+    })();
+  }, []);
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -12,6 +32,11 @@ const ItemsDetails = () => {
             <li>
               <a className="font-medium" href="/">
                 Dashboard /
+              </a>
+            </li>
+            <li>
+              <a className="font-medium" href={'/domains/items/'+row.domain_id}>
+                Domain Items /
               </a>
             </li>
             <li className="font-medium text-primary">Item Details</li>
@@ -30,10 +55,52 @@ const ItemsDetails = () => {
               <tbody>
                 <tr>
                   <td className=" font-semibold" width={200}>
-                    Status Defination:
+                    Keyword:
                   </td>
                   <td className="">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis atque, dolorum aperiam assumenda quas voluptates.
+                    {row.keyword}
+                  </td>
+                </tr>
+                <tr>
+                  <td className=" font-semibold" width={200}>
+                    Registration Number:
+                  </td>
+                  <td className="">
+                    {row.registration_number}
+                  </td>
+                </tr>
+                <tr>
+                  <td className=" font-semibold" width={200}>
+                    Serial Number:
+                  </td>
+                  <td className="">
+                    {row.serial_number}
+                  </td>
+                </tr>
+                <tr>
+                  <td className=" font-semibold" width={200}>
+                    Status Label:
+                  </td>
+                  <td className="">
+                    {row.status_label}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td className=" font-semibold" width={200}>
+                    Status Date:
+                  </td>
+                  <td className="">
+                    {row.status_date}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td className=" font-semibold" width={200}>
+                    Status Definition:
+                  </td>
+                  <td className="">
+                    {row.status_definition}
                   </td>
                 </tr>
                 <tr>
@@ -41,15 +108,15 @@ const ItemsDetails = () => {
                     Filing Date:
                   </td>
                   <td className="">
-                    2020-11-30
+                    {row.filing_date}
                   </td>
                 </tr>
                 <tr>
                   <td className=" font-semibold" width={200}>
-                    Registration:
+                    Registration Date:
                   </td>
                   <td className="">
-                    
+                    {row.registration_date}
                   </td>
                 </tr>
                 <tr>
@@ -57,15 +124,24 @@ const ItemsDetails = () => {
                     Abandonment Date:
                   </td>
                   <td className="">
-                    
+                    {row.abandonment_date}
                   </td>
                 </tr>
+                <tr>
+                  <td className=" font-semibold" width={200}>
+                    Expiration Date:
+                  </td>
+                  <td className="">
+                    {row.expiration_date}
+                  </td>
+                </tr>
+
                 <tr>
                   <td className=" font-semibold" width={200}>
                     Description:
                   </td>
                   <td className="">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam ipsam aperiam assumenda mollitia est nam ad minima iusto? Perspiciatis aliquam architecto earum ratione eveniet excepturi asperiores deserunt minus praesentium repudiandae.
+                    {row.description}
                   </td>
                 </tr>
                 <tr>
@@ -73,7 +149,7 @@ const ItemsDetails = () => {
                     Last Date Crawled
                   </td>
                   <td className="">
-                    2023-11-30 01:00:02
+                    {row.updated_at}
                   </td>
                 </tr>
               </tbody>
@@ -89,16 +165,25 @@ const ItemsDetails = () => {
           </div>
           <div className="p-4 sm:p-6 xl:p-10">
             <table className="w-full table-auto table-border-boxed">
+              <thead className="min-w-[20px] table-th-header">
+                <th>Name</th>
+                <th>Label</th>
+                <th>Legal Entity</th>
+                <th>Address</th>
+              </thead>
               <tbody>
                 <tr>
                   <td>
-                    STORED ENERGY, INC.
+                   {owner.name}
                   </td>
                   <td>
-                    Owner at Publication Corporation
+                  {owner.owner_label}
                   </td>
                   <td>
-                    HENDERSON NV US 89011
+                    {owner.legal_entity_type}
+                  </td>
+                  <td>
+                    {owner.address1}, {owner.city}, {owner.state}, , {owner.country}, , {owner.postcode}
                   </td>
                 </tr>
               </tbody>

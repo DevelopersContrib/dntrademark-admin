@@ -7,6 +7,7 @@ import {  getDomainItems } from "@/lib/domain-helper";
 import { domainItems } from "@/types/domainItems";
 import { items } from "@/types/items";
 import LoadingRipple from "../Loading/LoadingRipple";
+import Link from 'next/link'
 
 interface tableProps {
   tData: domainItems;
@@ -260,6 +261,7 @@ const WithItems = ({ tData,id }: tableProps) => {
 
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                         <div className="flex items-center space-x-3.5">
+                        <Link href={'/items/'+item.id} replace>
                           <button className="hover:text-primary">
                             <svg
                               className="fill-current"
@@ -279,6 +281,7 @@ const WithItems = ({ tData,id }: tableProps) => {
                               ></path>
                             </svg>
                           </button>
+                          </Link>
                           
                         </div>
                       </td>
