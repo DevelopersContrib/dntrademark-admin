@@ -5,7 +5,7 @@ function TwitterPosts() {
     <h5 className="mb-2 text-lg font-semibold text-dark">
       Latest Twitter Posts
     </h5>
-    <a className="twitter-timeline" href="https://twitter.com/dntrademark?ref_src=twsrc%5Etfw">Tweets by dntrademark</a> 
+    <a className="twitter-timeline" data-height="500" href="https://twitter.com/dntrademark?ref_src=twsrc%5Etfw">Tweets by dntrademark</a> 
     <script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script> 
   </div>
   </>

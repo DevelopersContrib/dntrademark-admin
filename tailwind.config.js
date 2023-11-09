@@ -18,6 +18,7 @@ module.exports = {
       white: "#FFFFFF",
       black: "#1C2434",
       "black-2": "#010101",
+      light: "#f9f9f9",
       body: "#64748B",
       bodydark: "#AEB7C0",
       bodydark1: "#DEE4EE",
@@ -48,6 +49,7 @@ module.exports = {
       success: "#219653",
       danger: "#D34053",
       warning: "#FFA70B",
+      accent: "#D0F8C6",
     },
     screens: {
       "2xsm": "375px",
