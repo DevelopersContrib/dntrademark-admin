@@ -11,43 +11,41 @@ const DomainList = ({ domains }: domainProps) => {
     <>
         <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
           <h4 className="mb-6 text-xl font-bold text-black dark:text-white">Domain Lists</h4>
-          <ul>
+          
             {
               domains.map((item)=>(
-                <li key={item.id} className="text-body-color mb-4 flex text-base">
-                  <span className="text-primary mr-2 rounded-full text-base">
-                    <svg width="20" height="20" viewBox="0 0 20 20" className="fill-current">
-                      <path
-                        d="M10 19.625C4.6875 19.625 0.40625 15.3125 0.40625 10C0.40625 4.6875 4.6875 0.40625 10 0.40625C15.3125 0.40625 19.625 4.6875 19.625 10C19.625 15.3125 15.3125 19.625 10 19.625ZM10 1.5C5.3125 1.5 1.5 5.3125 1.5 10C1.5 14.6875 5.3125 18.5312 10 18.5312C14.6875 18.5312 18.5312 14.6875 18.5312 10C18.5312 5.3125 14.6875 1.5 10 1.5Z"
-                      ></path>
-                      <path
-                        d="M8.9375 12.1875C8.71875 12.1875 8.53125 12.125 8.34375 11.9687L6.28125 9.96875C6.0625 9.75 6.0625 9.40625 6.28125 9.1875C6.5 8.96875 6.84375 8.96875 7.0625 9.1875L8.9375 11.0312L12.9375 7.15625C13.1563 6.9375 13.5 6.9375 13.7188 7.15625C13.9375 7.375 13.9375 7.71875 13.7188 7.9375L9.5625 12C9.34375 12.125 9.125 12.1875 8.9375 12.1875Z"
-                      ></path>
-                    </svg>
-                  </span>
-                  {item.domain_name}
-                </li>
+                <div key={item.id} className="grid grid-cols-2 border-b border-t border-stroke dark:border-strokedark sm:grid-cols-4">
+                 <div className="flex items-center gap-3 p-2.5 xl:p-5">
+                        <div className="h-8 w-full max-w-8 flex-shrink-0">
+                        <svg className="h-8 w-8 text-red-500"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                        </svg>
+
+                        </div>
+                        <p className="hidden font-medium text-black dark:text-white sm:block">
+                        <Link href="/domains/all">{item.domain_name}</Link>
+                        </p>
+                  </div>
+                  
+                
+                </div> 
               ))
             }
             {
               domains.length>15?(
-                <li className="text-body-color mb-4 flex text-base">
-                  <span className="text-primary mr-2 rounded-full text-base">
-                    <svg width="20" height="20" viewBox="0 0 20 20" className="fill-current">
-                      <path
-                        d="M10 19.625C4.6875 19.625 0.40625 15.3125 0.40625 10C0.40625 4.6875 4.6875 0.40625 10 0.40625C15.3125 0.40625 19.625 4.6875 19.625 10C19.625 15.3125 15.3125 19.625 10 19.625ZM10 1.5C5.3125 1.5 1.5 5.3125 1.5 10C1.5 14.6875 5.3125 18.5312 10 18.5312C14.6875 18.5312 18.5312 14.6875 18.5312 10C18.5312 5.3125 14.6875 1.5 10 1.5Z"
-                      ></path>
-                      <path
-                        d="M8.9375 12.1875C8.71875 12.1875 8.53125 12.125 8.34375 11.9687L6.28125 9.96875C6.0625 9.75 6.0625 9.40625 6.28125 9.1875C6.5 8.96875 6.84375 8.96875 7.0625 9.1875L8.9375 11.0312L12.9375 7.15625C13.1563 6.9375 13.5 6.9375 13.7188 7.15625C13.9375 7.375 13.9375 7.71875 13.7188 7.9375L9.5625 12C9.34375 12.125 9.125 12.1875 8.9375 12.1875Z"
-                      ></path>
-                    </svg>
-                  </span>
+                <div className="grid grid-cols-2 border-b border-t border-stroke dark:border-strokedark sm:grid-cols-4">
+                   <div className="h-8 w-full max-w-8 flex-shrink-0">
+                        <svg className="h-8 w-8 text-red-500"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                        </svg>
+
+                        </div>
                 
                   <Link href="/domains/all">View All</Link>
-                </li>
+                </div>
               ):''
             }
-          </ul>
+         
         </div>
     </>
   )
