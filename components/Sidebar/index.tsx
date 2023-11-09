@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 import Image from "next/image";
-import { FaBuffer, FaRegNewspaper } from "react-icons/fa6";
+import { FaBuffer, FaRegNewspaper, FaBookOpen, FaSketch, FaBook, FaDiscord, FaSplotch } from "react-icons/fa6";
 
 import { useSession } from "next-auth/react";
 
@@ -288,6 +288,77 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </Link>
               </li>
               {/* <!-- Medium Blog --> */}
+
+           
+
+               {/* <!-- Knowledgebase --> */}
+               <li>
+                <Link
+                  href="https://dntrademarkguide.tawk.help/"
+                  target="_blank"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 `}
+                >
+                  <FaBook className="w-[18px] h-[18px] mr-1" />
+
+                  Guide
+                </Link>
+              </li>
+              {/* <!-- Knowledgebase --> */}
+
+                  {/* <!-- FAQ --> */}
+                  <li>
+                <Link
+                  href="https://www.dntrademark.com/faq"
+                  target="_blank"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 `}
+                >
+                  <FaBookOpen className="w-[18px] h-[18px] mr-1" />
+                  FAQ
+                </Link>
+              </li>
+              {/* <!-- FAQ --> */}
+
+                  {/* <!-- Roadmap --> */}
+                  <li>
+                <Link
+                  href="https://dntrademark-roadmap.vercel.app/"
+                  target="_blank"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 `}
+                >
+                  <FaSketch className="w-[18px] h-[18px] mr-1" />
+                  Roadmap
+                </Link>
+              </li>
+              {/* <!-- Roadmap --> */}
+                      {/* <!-- Referrals --> */}
+                      <li>
+                <Link
+                  href="https://www.dntrademark.com/referral"
+                  target="_blank"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 `}
+                >
+                  <FaSplotch className="w-[18px] h-[18px] mr-1" />
+
+                  Refer and Get Tokens
+                </Link>
+              </li>
+              {/* <!-- Referrals --> */}
+
+
+               {/* <!-- Discord --> */}
+               <li>
+                <Link
+                  href="https://discord.gg/bFKadX7YBP"
+                  target="_blank"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 `}
+                >
+                  <FaDiscord className="w-[18px] h-[18px] mr-1" />
+
+                  Discord
+                </Link>
+              </li>
+              {/* <!-- Discord --> */}
+
             </ul>
           </div>
         </nav>
