@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import {  getDomainItems } from "@/lib/domain-helper";
 import { domainItems } from "@/types/domainItems";
 import { items } from "@/types/items";
+import { domains } from "@/types/domains";
 import LoadingRipple from "../Loading/LoadingRipple";
 import Link from 'next/link'
 
@@ -27,6 +28,7 @@ const WithItems = ({ tData,id }: tableProps) => {
   const [reload, setReload] = useState<number>(1);
   const [listItems, setListItems] = useState<JSX.Element[]>([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [domain, setDomain] = useState<domains>(tData.data[0].domain);
   const domain_id = id
   
   const sort = (col:string) => {
@@ -102,15 +104,17 @@ const WithItems = ({ tData,id }: tableProps) => {
       setRows(tData.data);
       setLoading(false);
       generateListItems(tData);
+      setDomain(tData.data[0].domain);
     };
     getAllItems();
     // eslint-disable-next-line
   }, [reload]);
 
   return (
+    
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-        <h3 className="font-medium text-black dark:text-white">Items</h3>
+        <h3 className="font-medium text-black dark:text-white">{domain.domain_name} Items</h3>
       </div>
      
 

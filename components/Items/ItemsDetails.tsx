@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import {  getDomainItems } from "@/lib/domain-helper";
 import { domainOwner } from "@/types/domainOwner";
 import { items } from "@/types/items";
+import { domains } from "@/types/domains";
 
 interface tableProps {
   tData: domainOwner;
@@ -12,11 +13,14 @@ interface tableProps {
 const ItemsDetails = ({ tData }: tableProps) => {
   const [row, setRows] = useState<items>(tData.item);
   const [owner, setOwner] = useState<domainOwner>(tData);
+  const [domain, setDomain] = useState<domains>(tData.item.domain);
 
+ 
   useEffect(() => {
     (async () => {
       setRows(tData.item);
       setOwner(tData);
+      setDomain(tData.item.domain);
 
     })();
   }, []);
@@ -36,7 +40,7 @@ const ItemsDetails = ({ tData }: tableProps) => {
             </li>
             <li>
               <a className="font-medium" href={'/domains/items/'+row.domain_id}>
-                Domain Items /
+                {domain.domain_name} Items /
               </a>
             </li>
             <li className="font-medium text-primary">Item Details</li>
@@ -47,7 +51,7 @@ const ItemsDetails = ({ tData }: tableProps) => {
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="border-b border-stroke px-4 py-4 dark:border-strokedark sm:px-6 xl:px-7.5">
             <h3 className="font-medium text-black dark:text-white">
-              Item Details
+            Item Details - Serial Number {row.serial_number}
             </h3>
           </div>
           <div className="p-4 sm:p-6 xl:p-10">

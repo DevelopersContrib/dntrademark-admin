@@ -1,3 +1,4 @@
+import { domains } from "@/types/domains";
 export type items = {
     id: number;
     created_at: string;
@@ -14,4 +15,5 @@ export type items = {
     abandonment_date:string;
     expiration_date:string;
     description:string;
+    domain:domains;
   }
