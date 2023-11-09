@@ -113,9 +113,9 @@ export default function ECommerce({ tData, stats, recent, feed }: tableProps) {
       <div className="w-full mb-4 text-sm"></div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
-          <h5 className="mb-2 text-lg font-semibold text-dark">
+          <h4 className="mb-6 text-xl font-bold text-black dark:text-white">
             Investor Space
-          </h5>
+          </h4>
           <div className="mt-4 flex items-end justify-between">
             <div>
               <h4 className="text-title-md font-bold text-black dark:text-white">

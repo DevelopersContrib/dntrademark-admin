@@ -10,7 +10,7 @@ const DomainList = ({ domains }: domainProps) => {
   return (
     <>
         <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
-          <h5 className="mb-2 text-lg font-semibold text-dark">Domain Lists</h5>
+          <h4 className="mb-6 text-xl font-bold text-black dark:text-white">Domain Lists</h4>
           <ul>
             {
               domains.map((item)=>(
