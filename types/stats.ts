@@ -13,4 +13,5 @@ export type Stat = {
     hitsCount: number;
     noHitsCount:number;
     domainsAtRiskCount:number;
+    investorSpaceCount:number;
 }
