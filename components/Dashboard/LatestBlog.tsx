@@ -6,7 +6,6 @@ interface feedProps {
 function LatestBlog({ feed }: feedProps) {
     const parser = new DOMParser();
     const parsedXML = parser.parseFromString(feed, "text/xml");
-    console.log('parsedXML',parsedXML)
     const items = parsedXML.querySelectorAll("item");
     const arrays = Array.from(items).slice(4)
   return (
