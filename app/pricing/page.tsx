@@ -70,9 +70,7 @@ import { getUserPackage } from '@/lib/data';
 async function Page() {
   const plans = await getPackages();
   const userPackage = await getUserPackage();
-  const userPlanId = userPackage.package.package_id;
-
-  console.log('userpackage', userPlanId);
+  const userPlanId = userPackage?.package.package_id;
 
   return (
     <>
