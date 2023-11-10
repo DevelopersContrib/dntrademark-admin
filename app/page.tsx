@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default async function Home() {
   const feed = await getFeed(); 
   const blogFeed = feed as string;
-  const domainlist = await getDomainList(); 
+  const domainlist = await getDomainList(5); 
   if(domainlist==='Unauthenticated.'){
     return (
       <Unauthenticated />
