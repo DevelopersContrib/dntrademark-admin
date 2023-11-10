@@ -65,14 +65,20 @@ export default Page;
 import { getPackages } from '@/lib/data';
 import { PackagesProps } from "@/types/packages";
 import Packages from "@/components/Pricing/Packages";
+import { getUserPackage } from '@/lib/data';
 
 async function Page() {
   const plans = await getPackages();
+  const userPackage = await getUserPackage();
+  const userPlanId = userPackage.package.package_id;
+
+  console.log('userpackage', userPlanId);
+
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         {plans.data.map((plan: PackagesProps) => (
-            <Packages key={plan.id} {...plan} />
+            <Packages key={plan.id} {...plan} userPlanId={userPlanId} />
         ))}
       </div>
 
