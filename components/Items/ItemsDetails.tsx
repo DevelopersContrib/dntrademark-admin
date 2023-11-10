@@ -7,20 +7,20 @@ import { items } from "@/types/items";
 import { domains } from "@/types/domains";
 
 interface tableProps {
-  tData: domainOwner;
+  tData: items;
 }
 
 const ItemsDetails = ({ tData }: tableProps) => {
-  const [row, setRows] = useState<items>(tData.item);
-  const [owner, setOwner] = useState<domainOwner>(tData);
-  const [domain, setDomain] = useState<domains>(tData.item.domain);
+  const [row, setRows] = useState<items>(tData);
+  const [owner, setOwner] = useState<domainOwner>(tData.owner);
+  const [domain, setDomain] = useState<domains>(tData.domain);
 
  
   useEffect(() => {
     (async () => {
-      setRows(tData.item);
-      setOwner(tData);
-      setDomain(tData.item.domain);
+      setRows(tData);
+      setOwner(tData.owner);
+      setDomain(tData.domain);
 
     })();
   }, []);

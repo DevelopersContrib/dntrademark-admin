@@ -1,4 +1,5 @@
 import { domains } from "@/types/domains";
+import { domainOwner } from "@/types/domainOwner";
 export type items = {
     id: number;
     created_at: string;
@@ -16,4 +17,5 @@ export type items = {
     expiration_date:string;
     description:string;
     domain:domains;
+    owner:domainOwner;
   }
