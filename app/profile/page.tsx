@@ -16,7 +16,7 @@ export default async function Profile() {
   
   
   const userdetails = await getUser();
-
+  
   return (
     <>
       <Breadcrumb pageName="Account Settings" />

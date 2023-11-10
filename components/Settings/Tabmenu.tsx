@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import EmailAccountSettings from '@/components/Settings/EmailAccountSettings';
 import PasswordAccountSettings from '@/components/Settings/PasswordAccountSettings';
 import DeleteAccountSettings from '@/components/Settings/DeleteAccountSettings';
+import BasicInformation from '@/components/Settings/BasicInformation';
 import {details} from "@/types/details";
 
 export default function Tabmenu(userdetails: any) {
@@ -43,6 +44,14 @@ export default function Tabmenu(userdetails: any) {
               >
                 Delete this account
               </button>
+
+              
+              <button
+                className={`bg-gray dark:bg-meta-4 text-black dark:text-white rounded-md py-3 px-4 text-sm font-medium hover:bg-danger hover:text-white dark:hover:bg-danger md:text-base lg:px-6 nav-tabs ${activeTab === 4 ? 'active' : ''}`}
+                onClick={() => handleTabClick(4)}
+              >
+                Basic Information
+              </button>
   
             </div >
             <div>
@@ -69,6 +78,16 @@ export default function Tabmenu(userdetails: any) {
                   <DeleteAccountSettings />
                 </>
               }
+
+              {
+                activeTab === 4
+                &&
+                <>
+                  <BasicInformation userdetails={userdetails.userdetails}/>
+                </>
+              }
+
+              
             </div>
           </div >
         </div>
