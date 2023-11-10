@@ -115,7 +115,7 @@ export const getItem = async (id:number) => {
     const res = await axios.get(apiUrl, config);
     console.log('apiURL'+apiUrl)
 
-    return res.data.domainOwner
+    return res.data.item
 
   } catch (error) {
     console.log('Error', error);
