@@ -22,8 +22,8 @@ const WelcomeNotif = () => {
 
   return (
     session?.user ? (
-      <div className="w-full mb-4 text-sm">
-        Welcome Back {ucfirst(session?.user.name!)},
+      <div className="w-full mb-4">
+        <h2>🎉Welcome Back {ucfirst(session?.user.name!)}</h2>
       </div>
     ) : null
   );
