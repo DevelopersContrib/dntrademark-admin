@@ -6,7 +6,6 @@ interface domainProps {
 }
 
 const DomainList = ({ domains }: domainProps) => {
-  console.log('count:', domains.length)
   return (
     <>
         <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -32,7 +31,7 @@ const DomainList = ({ domains }: domainProps) => {
               ))
             }
             {
-              domains.length>15?(
+              domains.length>4?(
                 <div className="grid grid-cols-2 border-b border-t border-stroke dark:border-strokedark sm:grid-cols-4">
                    <div className="h-8 w-full max-w-8 flex-shrink-0">
                         <svg className="h-8 w-8 text-red-500"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
