@@ -92,9 +92,9 @@ export default function ECommerce({ tData, stats, recent, feed }: tableProps) {
          <AiOutlineLineChart className="w-5 h-5 stats-icon-color" />
         </CardDataStats>
         <CardDataStats
-          title="Domains at Risk"
+          title="Investor Space"
           total={String(
-            values.domainsAtRiskCount ? values.domainsAtRiskCount : 0
+            values.investorSpaceCount ? values.investorSpaceCount : 0
           )}
           rate=""
           levelUp
@@ -110,7 +110,7 @@ export default function ECommerce({ tData, stats, recent, feed }: tableProps) {
         <TwitterPosts />
         
       </div>
-      <div className="w-full mb-4 text-sm"></div>
+      {/* <div className="w-full mb-4 text-sm"></div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
           <h4 className="mb-6 text-xl font-bold text-black dark:text-white">
@@ -144,7 +144,7 @@ export default function ECommerce({ tData, stats, recent, feed }: tableProps) {
             </span>
           </div>
         </div>
-      </div>
+      </div> */}
       {/* Start:: Graph Chart */}
       <div className="w-full mb-4 text-sm"></div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
