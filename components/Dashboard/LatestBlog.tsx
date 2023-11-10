@@ -8,14 +8,15 @@ function LatestBlog({ feed }: feedProps) {
     const parsedXML = parser.parseFromString(feed, "text/xml");
     console.log('parsedXML',parsedXML)
     const items = parsedXML.querySelectorAll("item");
-    
+    const arrays = Array.from(items).slice(4)
   return (
         items?(
             <>
             <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
             <h4 className="mb-6 text-xl font-bold text-black dark:text-white">Latest Blogs</h4>
             
-                {Array.from(items).map((item, index) => (
+                {
+                Array.from(arrays).map((item, index) => (
                    <a key={index} href={item.querySelector("link")?.textContent ?? ''} className="flex items-center gap-5 py-3 px-7.5 hover:bg-gray-3 dark:hover:bg-meta-4">
                    <div className="align-left h-14 w-14 rounded-full">
                    <Image 
