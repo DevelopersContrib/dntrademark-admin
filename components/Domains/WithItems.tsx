@@ -28,7 +28,7 @@ const WithItems = ({ tData,id }: tableProps) => {
   const [reload, setReload] = useState<number>(1);
   const [listItems, setListItems] = useState<JSX.Element[]>([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [domain, setDomain] = useState<domains>(tData.data[0].domain);
+  const [domain, setDomain] = useState("");
   const domain_id = id
   
   const sort = (col:string) => {
@@ -104,7 +104,9 @@ const WithItems = ({ tData,id }: tableProps) => {
       setRows(tData.data);
       setLoading(false);
       generateListItems(tData);
-      setDomain(tData.data[0].domain);
+      if (tData.data.length>0){
+        setDomain(tData.data[0].domain.domain_name);
+      }
     };
     getAllItems();
     // eslint-disable-next-line
@@ -114,7 +116,7 @@ const WithItems = ({ tData,id }: tableProps) => {
     
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-        <h3 className="font-medium text-black dark:text-white">{domain.domain_name} Items</h3>
+        <h3 className="font-medium text-black dark:text-white">{domain} Items</h3>
       </div>
      
 
