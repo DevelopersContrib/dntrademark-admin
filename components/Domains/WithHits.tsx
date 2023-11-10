@@ -7,7 +7,7 @@ import { getDomainsWithHits, deleteDomains } from "@/lib/domain-helper";
 import { domainTable } from "@/types/domainTable";
 import { domains } from "@/types/domains";
 import LoadingRipple from "../Loading/LoadingRipple";
-import Link from 'next/link'
+import Link from "next/link";
 
 interface tableProps {
   tData: domainTable;
@@ -32,11 +32,11 @@ const WithHits = ({ tData }: tableProps) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
 
-  const sort = (col:string) => {
-      setSortBy(col)
-      setOrderBy(orderBy==='ASC'?'DESC':'ASC')
-      callReload(false);
-  }
+  const sort = (col: string) => {
+    setSortBy(col);
+    setOrderBy(orderBy === "ASC" ? "DESC" : "ASC");
+    callReload(false);
+  };
 
   const toggleCheckbox = (check: boolean) => {
     setDeleted(false);
@@ -144,9 +144,15 @@ const WithHits = ({ tData }: tableProps) => {
     const getAllDomains = async () => {
       setLoading(true);
 
-      const res = await getDomainsWithHits(search, limit, page, sortBy, orderBy);
+      const res = await getDomainsWithHits(
+        search,
+        limit,
+        page,
+        sortBy,
+        orderBy
+      );
       const tData = res.domains as domainTable;
-      console.log('tData',tData)
+      console.log("tData", tData);
       setTableData(tData);
       setRows(tData.data);
       setLoading(false);
@@ -159,7 +165,9 @@ const WithHits = ({ tData }: tableProps) => {
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-        <h3 className="font-medium text-black dark:text-white">Domains With Hits</h3>
+        <h3 className="font-medium text-black dark:text-white">
+          Domains With Hits
+        </h3>
       </div>
       {deleted ? (
         <div className="mb-4">
@@ -207,11 +215,11 @@ const WithHits = ({ tData }: tableProps) => {
               </div>
             </div> */}
             <div className="space-x-2">
-            <Link href="/domains/add" replace>
-              <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
-                <FaBuffer className="w-4 h-4 mr-2" />
-                Bulk Add Domains
-              </button>
+              <Link href="/domains/add" replace>
+                <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
+                  <FaBuffer className="w-4 h-4 mr-2" />
+                  Bulk Add Domains
+                </button>
               </Link>
 
               {confirmDelete ? (
@@ -297,30 +305,74 @@ const WithHits = ({ tData }: tableProps) => {
                   />
                 </th>
                 {/* Note:: Add class to "sorting" if sort "sorting_asc or sorting_desc" */}
-                <th onClick={() => sort('domain_name')} className={"min-w-[220px] table-th-header sorting "+(sortBy==='domain_name'?(orderBy==='ASC'?'sorting_asc':'sorting_desc'):'')}>
+                <th
+                  onClick={() => sort("domain_name")}
+                  className={
+                    "min-w-[220px] table-th-header sorting " +
+                    (sortBy === "domain_name"
+                      ? orderBy === "ASC"
+                        ? "sorting_asc"
+                        : "sorting_desc"
+                      : "")
+                  }
+                >
                   Domains
                 </th>
                 {/* Note:: Add class to "sorting" if sort "sorting_asc or sorting_desc" */}
-                <th onClick={() => sort('date_last_crawled')} className={"min-w-[150px] table-th-header sorting "+(sortBy==='date_last_crawled'?(orderBy==='ASC'?'sorting_asc':'sorting_desc'):'')}>
+                <th
+                  onClick={() => sort("date_last_crawled")}
+                  className={
+                    "min-w-[150px] table-th-header sorting " +
+                    (sortBy === "date_last_crawled"
+                      ? orderBy === "ASC"
+                        ? "sorting_asc"
+                        : "sorting_desc"
+                      : "")
+                  }
+                >
                   Last Crawled Date
                 </th>
                 {/* Note:: Add class to "sorting" if sort "sorting_asc or sorting_desc" */}
-                <th onClick={() => sort('no_of_items')} className={"min-w-[120px] table-th-header sorting "+(sortBy==='no_of_items'?(orderBy==='ASC'?'sorting_asc':'sorting_desc'):'')}>
+                <th
+                  onClick={() => sort("no_of_items")}
+                  className={
+                    "min-w-[120px] table-th-header sorting " +
+                    (sortBy === "no_of_items"
+                      ? orderBy === "ASC"
+                        ? "sorting_asc"
+                        : "sorting_desc"
+                      : "")
+                  }
+                >
                   Number of Items
                 </th>
                 {/* Note:: Add class to "sorting" if sort "sorting_asc or sorting_desc" */}
-                <th onClick={() => sort('status')}  className={"min-w-[120px] table-th-header sorting "+(sortBy==='status'?(orderBy==='ASC'?'sorting_asc':'sorting_desc'):'')}>Notes</th>
+                <th
+                  onClick={() => sort("status")}
+                  className={
+                    "min-w-[120px] table-th-header sorting " +
+                    (sortBy === "status"
+                      ? orderBy === "ASC"
+                        ? "sorting_asc"
+                        : "sorting_desc"
+                      : "")
+                  }
+                >
+                  Notes
+                </th>
                 <th className="table-th-header">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {loading ? <tr>
-                <td colSpan={6} align="center">
-                  <div className="flex w-full items-center justify-center py-4 text-[#c5c5c5]">
-                    <LoadingRipple />
-                  </div>
-                </td>
-              </tr> : (
+              {loading ? (
+                <tr>
+                  <td colSpan={6} align="center">
+                    <div className="flex w-full items-center justify-center py-4 text-[#c5c5c5]">
+                      <LoadingRipple />
+                    </div>
+                  </td>
+                </tr>
+              ) : (
                 <>
                   {rows.map((item) => (
                     <tr key={item.id}>
@@ -348,12 +400,13 @@ const WithHits = ({ tData }: tableProps) => {
                         </p>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <p className="text-black dark:text-white">{item.status}</p>
+                        <p className="text-black dark:text-white">
+                          {item.status}
+                        </p>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                         <div className="flex items-center space-x-3.5">
-                        <Link href={'/domains/items/'+item.id} replace>
-                          <button className="hover:text-primary">
+                          <Link href={"/domains/items/" + item.id} replace className="w-8 h-8 inline-flex items-center justify-center rounded border border-[#eee] hover:bg-strokedark hover:text-white hover:border-strokedark">
                             <svg
                               className="fill-current"
                               width="18"
@@ -371,11 +424,10 @@ const WithHits = ({ tData }: tableProps) => {
                                 fill=""
                               ></path>
                             </svg>
-                          </button>
                           </Link>
                           <button
                             onClick={() => deleteSingle(item.id)}
-                            className="hover:text-primary"
+                            className="w-8 h-8 inline-flex items-center justify-center rounded border border-[#eee] hover:bg-meta-1 hover:text-white hover:border-meta-1"
                           >
                             <svg
                               className="fill-current"
@@ -408,15 +460,13 @@ const WithHits = ({ tData }: tableProps) => {
                     </tr>
                   ))}
                 </>
-              )
-              
-              }
+              )}
             </tbody>
           </table>
           <div className="flex w-full py-4 justify-between">
             <div className="font-medium text-[#666] dark:text-white">
-              Showing {tableData?.from} to {tableData?.to} of{" "}
-              {tableData?.total} entries
+              Showing {tableData?.from} to {tableData?.to} of {tableData?.total}{" "}
+              entries
             </div>
             {tableData ? (
               <nav>
