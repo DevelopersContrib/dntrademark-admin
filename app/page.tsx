@@ -16,11 +16,15 @@ export default async function Home() {
   const feed = await getFeed(); 
   const blogFeed = feed as string;
   const domainlist = await getDomainList(5); 
-  if(domainlist==='Unauthenticated.'){
+  
+  if (domainlist === 'Unauthenticated.') {
     return (
       <Unauthenticated />
     );
+  } else if (domainlist === undefined) {
+    redirect('/auth/signin');
   }
+
   const tData = domainlist as domainTable;
   
   const recentList = await getDomainList(5,1,'id','DESC');  
@@ -33,7 +37,7 @@ export default async function Home() {
     redirect('/pricing');
   }else if(usepack?.package_id!==null && parseInt(usepack?.is_onboarding) === 0){
     redirect('/onboarding');
-  } else{
+  } else {
     return (
       <>
         <ECommerce tData={tData} stats={stats} recent={recent} feed={blogFeed} />
