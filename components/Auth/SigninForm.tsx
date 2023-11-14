@@ -60,7 +60,6 @@ const SigninForm = () => {
         {(formik) => (
           <Form>
             <div className="mb-4">
-              <label className="mb-2.5 block font-medium text-black dark:text-white">Email</label>
               <div className="relative">
                 <Field
                   type="text"
@@ -88,7 +87,6 @@ const SigninForm = () => {
             </div>
 
             <div className="mb-6">
-              <label className="mb-2.5 block font-medium text-black dark:text-white">Password</label>
               <div className="relative">
                 <Field
                   type="password"
@@ -126,13 +124,15 @@ const SigninForm = () => {
                 Sign In
               </button>
             </div>
-
-            <div className="space-y-5">
+            <div className='relative after:left-0 after:right-0 after:top-[20px] after:content-[""] after:w-full after:h-[1px] after:border-b after:border-[#ddd] after:absolute text-center '>
+              <div className='font-semibold relative bg-white px-4 py-2 z-10 inline-block mx-auto'>Sign In with via:</div>
+            </div>
+            <div className="space-x-4 mt-4 flex w-full justify-center">
               <button
                 onClick={() => {
                   signIn('google');
                 }}
-                className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
+                className="flex items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
               >
                 <span>
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -161,27 +161,17 @@ const SigninForm = () => {
                     </defs>
                   </svg>
                 </span>
-                Sign in with Google
               </button>
               <button
                 onClick={() => {
                   signIn('github');
                 }}
-                className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
+                className="flex items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
               >
                 <span>
                   <FaGithub className="w-5 h-5" />
                 </span>
-                Sign in with Github
               </button>
-            </div>
-            <div className="mt-6 text-center">
-              <p>
-                Don’t have any account?{' '}
-                <Link href="/auth/signup" className="text-primary">
-                  Sign Up
-                </Link>
-              </p>
             </div>
           </Form>
         )}
