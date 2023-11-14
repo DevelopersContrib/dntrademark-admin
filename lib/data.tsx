@@ -103,6 +103,24 @@ export const getDomainItems= async (id:number, limit:number=10, page:number=1, s
   }
 };
 
+export const getNotification = async (token: any, id:any) => {
+  //const session = await getServerSession(options);
+  const session = token;
+    
+  
+  const config = {
+    headers: { Authorization: 'Bearer ' + session},
+  };
+  console.log(config);
+  const url ='https://api.dntrademark.com/api/v1/notifications/'+id+'?api_key=6334aed4bdce9855f400653800596920';
+  
+  //const url ='https://api.dntrademark.com/api/v1/packages?api_key=6334aed4bdce9855f400653800596920';
+  const res = await axios.get(url,config);
+  
+  return res.data.message;
+};
+
+
 export const getItem = async (id:number) => {
   try {
     const session = await getServerSession(options);
