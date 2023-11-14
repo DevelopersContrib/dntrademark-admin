@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EmailAccountSettings from "@/components/Settings/EmailAccountSettings";
 import PasswordAccountSettings from "@/components/Settings/PasswordAccountSettings";
 import DeleteAccountSettings from "@/components/Settings/DeleteAccountSettings";
@@ -13,6 +13,10 @@ export default function Tabmenu(userdetails: any) {
   const handleTabClick = (tabNumber: number) => {
     setActiveTab(tabNumber);
   };
+
+  useEffect(() => {
+    console.log('userDetails', userdetails);
+  })
 
   return (
     <>

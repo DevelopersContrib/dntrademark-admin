@@ -7,9 +7,27 @@ import { useSession } from "next-auth/react";
 import { details } from "@/types/details";
 import { User } from "@/types/user";
 
-export default function NotificationSettings(userdetails: any) {
+export default function NotificationSettings(userDetails: any) {
   const { data: session } = useSession();
+  const settings = userDetails.userdetails;
+  const {allow_email, allow_sms, sms_number} = settings;
+  const [emailOpt, setEmailOpt] = useState(allow_email);
+  const [smsOpt, setSmsOpt] = useState(allow_sms);
 
+  const handleEmailOptChange = (opt: boolean) => {
+    setEmailOpt(opt);
+  };
+
+  const handleSmsOptChange = (opt: boolean) => {
+    setSmsOpt(opt);
+  };
+
+  useEffect(() => {
+    console.log('allow_email', allow_email)
+    console.log('allow_sms', allow_sms)
+    console.log('sms_number', sms_number)
+    console.log('settings', settings)
+  }, []);
   return (
     <>
       <div className="mb-4">
@@ -24,6 +42,8 @@ export default function NotificationSettings(userdetails: any) {
                 type="radio"
                 id="notificationEmail-yes"
                 name="notificationEmail"
+                checked={ emailOpt ? true : false }
+                onChange={() => handleEmailOptChange(true)}
               />
             </div>
             <span>Yes</span>
@@ -37,6 +57,8 @@ export default function NotificationSettings(userdetails: any) {
                 type="radio"
                 id="notificationEmail-no"
                 name="notificationEmail"
+                checked={ !emailOpt ? true : false }
+                onChange={() => handleEmailOptChange(false)}
               />
             </div>
             <span>No</span>
@@ -55,6 +77,8 @@ export default function NotificationSettings(userdetails: any) {
                 type="radio"
                 id="notificationSms-yes"
                 name="notificationSms"
+                checked={ smsOpt ? true : false }
+                onChange={() => {handleSmsOptChange(true)}}
               />
             </div>
             <span>Yes</span>
@@ -68,6 +92,8 @@ export default function NotificationSettings(userdetails: any) {
                 type="radio"
                 id="notificationSms-no"
                 name="notificationSms"
+                checked={ !smsOpt ? true : false }
+                onChange={() => {handleSmsOptChange(false)}}
               />
             </div>
             <span>No</span>
