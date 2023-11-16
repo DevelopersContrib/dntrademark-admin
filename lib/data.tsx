@@ -113,7 +113,7 @@ export const getNotification = async (token: any, id:any) => {
   };
   console.log(config);
   const url ='https://api.dntrademark.com/api/v1/notifications/'+id+'?api_key=6334aed4bdce9855f400653800596920';
-  
+ 
   //const url ='https://api.dntrademark.com/api/v1/packages?api_key=6334aed4bdce9855f400653800596920';
   const res = await axios.get(url,config);
   
