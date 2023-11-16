@@ -163,7 +163,7 @@ async function Page() {
           <Image className='mx-auto' style={{position: "absolute",right: "15px",top: "15px"}}
               width={150}
               height={150}
-              src={"/images/cover/dn-monitor-lizard-1.png"}
+              src={"https://cdn.vnoc.com/desc/dntrademark/dn-monitor-lizard-1.png"}
               alt="Plan Image 1"
             />
           <button style={{position: "absolute",right: "15px",bottom: "15px"}} type="submit" className='bg-primary inline-flex items-center justify-center rounded-md py-4 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-8 xl:px-10'>
@@ -299,7 +299,7 @@ async function Page() {
           <Image className='mx-auto' style={{position: "absolute",right: "15px",top: "15px"}}
               width={150}
               height={150}
-              src={"/images/cover/dn-monitor-lizard-2.png"}
+              src={"https://cdn.vnoc.com/desc/dntrademark/dn-monitor-lizard-2.png"}
               alt="Plan Image 2"
             />
           <div className='mb-3'>&nbsp;</div>
@@ -347,7 +347,7 @@ async function Page() {
           <Image className='mx-auto' style={{position: "absolute",right: "15px",top: "15px",border: "none"}}
               width={150}
               height={150}
-              src={"/images/cover/dn-monitor-lizard-3.png"}
+              src={"https://cdn.vnoc.com/desc/dntrademark/dn-monitor-lizard-3.png"}
               alt="Plan Image 3"
             />         
           <button style={{position: "absolute",right: "15px",bottom: "15px"}} type="submit" className='bg-primary inline-flex items-center justify-center rounded-md py-4 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-8 xl:px-10'>
