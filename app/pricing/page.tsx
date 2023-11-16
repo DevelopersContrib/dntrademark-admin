@@ -160,9 +160,9 @@ async function Page() {
             </svg>
             &nbsp;Individual domain investors exploring the world of trademarks.
           </div>
-          <Image className='mx-auto' style={{position: "absolute",right: "15px",top: "15px"}}
-              width={150}
-              height={150}
+          <Image className='mx-auto' style={{position: "",right: "15px",top: "15px"}}
+              width={200}
+              height={200}
               src={"https://cdn.vnoc.com/desc/dntrademark/dn-monitor-lizard-1.png"}
               alt="Plan Image 1"
             />
@@ -344,9 +344,9 @@ async function Page() {
             </svg>
             &nbsp;Corporations managing extensive domain portfolios.
           </div> 
-          <Image className='mx-auto' style={{position: "absolute",right: "15px",top: "15px",border: "none"}}
-              width={150}
-              height={150}
+          <Image className='mx-auto' style={{position: "",right: "15px",top: "15px",border: "none"}}
+              width={250}
+              height={250}
               src={"https://cdn.vnoc.com/desc/dntrademark/dn-monitor-lizard-3.png"}
               alt="Plan Image 3"
             />         
