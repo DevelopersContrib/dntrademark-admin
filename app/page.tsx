@@ -2,8 +2,9 @@ import { Metadata } from 'next';
 import ECommerce from '@/components/Dashboard/E-commerce';
 import { getDomainStats, getUserPackage } from '@/lib/data';
 import { redirect } from "next/navigation"
-import {getDomainList,getFeed} from '@/lib/data'
+import {getDomainList,getFeed,getGraph} from '@/lib/data'
 import { domainTable } from "@/types/domainTable";
+import { graph } from "@/types/graph";
 import Unauthenticated from '@/components/Unauthenticated';
 
 export const metadata: Metadata = {
@@ -33,6 +34,9 @@ export default async function Home() {
   const stats = await getDomainStats();
   const usepack = await getUserPackage();
 
+  const graph = await getGraph();
+  const graphData = graph as graph[];
+
   if(usepack?.package_id===null){
     redirect('/pricing');
   }else if(usepack?.package_id!==null && parseInt(usepack?.is_onboarding) === 0){
@@ -40,7 +44,7 @@ export default async function Home() {
   } else {
     return (
       <>
-        <ECommerce tData={tData} stats={stats} recent={recent} feed={blogFeed} />
+        <ECommerce tData={tData} stats={stats} recent={recent} feed={blogFeed} graph={graphData} />
       </>
     );
   }
