@@ -95,9 +95,7 @@ export default function ECommerce({ tData, stats, recent, feed, graph }: tablePr
         </CardDataStats>
         <CardDataStats
           title="Investor Space"
-          total={String(
-            values.investorSpaceCount ? values.investorSpaceCount : 0
-          )}
+          total="+2,7432"
           rate=""
           levelUp
         >
