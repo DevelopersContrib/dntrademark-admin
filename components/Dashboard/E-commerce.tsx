@@ -95,7 +95,7 @@ export default function ECommerce({ tData, stats, recent, feed, graph }: tablePr
         </CardDataStats>
         <CardDataStats
           title="Investor Space"
-          total="+2,7432"
+           total="+2,7432"
           rate=""
           levelUp
         >
