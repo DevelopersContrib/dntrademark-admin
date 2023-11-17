@@ -8,6 +8,21 @@ interface Error {
   statusCode: number;
 }
 
+export const getGraph = async () => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: 'Bearer ' + session?.token, timeout: 10000 },
+    };
+    const apiUrl = process.env.API_URL + '/domains/historical-hits?api_key=' + process.env.API_KEY;
+    const res = await axios.get(apiUrl, config);
+    // console.log('graph',res.data.data)
+    return res.data.data;
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
 export const checkEmail = async (email: string) => {
   try {
     const urlCheck = 'https://api.dntrademark.com/api/v1/user/check?api_key=6334aed4bdce9855f400653800596920&email=' + email;
