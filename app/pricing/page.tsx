@@ -160,7 +160,7 @@ async function Page() {
             </svg>
             &nbsp;Individual domain investors exploring the world of trademarks.
           </div>
-          <Image className='mx-auto' style={{position: "",right: "15px",top: "15px"}}
+          <Image className='mx-auto'
               width={200}
               height={200}
               src={"https://cdn.vnoc.com/desc/dntrademark/dn-monitor-lizard-1.png"}
