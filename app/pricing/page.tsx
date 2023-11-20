@@ -86,8 +86,8 @@ async function Page() {
           </p>
           <h2 className="mb-5 text-[52px] font-bold text-black dark:text-white rounded-md text-center" style={{background: "#DBEAFE",padding: "1.5rem 1rem 1rem"}}>
             <span>Free</span>
-            <span className="text-base font-medium text-body-color dark:text-dark-6">
-            &nbsp;Forever
+            <span className="text-base font-medium text-body-color dark:text-dark-6 ml-1">
+            Forever
             </span>
           </h2> 
           <div className='inline-flex mb-1.5'>
@@ -97,8 +97,8 @@ async function Page() {
                 src={"https://cdn.vnoc.com/desc/dntrademark/dn-check.png"}
                 alt="Check Icon"
               />
-            <h6 className="text-black dark:text-white font-medium text-1xl mb-0">
-              &nbsp;&nbsp;Free 3 domains
+            <h6 className="text-black dark:text-white font-medium text-1xl mb-0 ml-2">
+              Free 3 domains
             </h6>       
           </div><br></br>
           <div className='inline-flex mb-1.5'>
@@ -108,8 +108,8 @@ async function Page() {
                 src={"https://cdn.vnoc.com/desc/dntrademark/dn-check.png"}
                 alt="Check Icon"
               />
-            <h6 className="text-black dark:text-white font-medium text-1xl mb-0">
-              &nbsp;&nbsp;For Starters:
+            <h6 className="text-black dark:text-white font-medium text-1xl mb-0 ml-2">
+              For Starters:
             </h6>       
           </div> 
           <p className='text-primary font-medium'>Benefits:</p>
@@ -117,7 +117,7 @@ async function Page() {
             aria-label="purchase this plan"
             className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-1.5"
           >            
-            &nbsp;&nbsp;<svg className="inline-flex"
+            <svg className="inline-flex mr-1"
               width="14"
               height="14"
               viewBox="0 0 14 14"
@@ -128,13 +128,13 @@ async function Page() {
                 fill="currentColor"
               />
             </svg>
-            <b> Trademark Notifications:</b> Stay informed on trademarks related to your domains.
+            <b>Trademark Notifications:</b> Stay informed on trademarks related to your domains.
           </div>
           <div
             aria-label="purchase this plan"
             className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-1.5"
           >            
-            &nbsp;&nbsp;<svg className="inline-flex"
+            <svg className="inline-flex mr-1"
               width="14"
               height="14"
               viewBox="0 0 14 14"
@@ -145,13 +145,13 @@ async function Page() {
                 fill="currentColor"
               />
             </svg>
-            <b> Basic Analytics:</b> Track key insights on your domains.
+            <b>Basic Analytics:</b> Track key insights on your domains.
           </div>
           <div
             aria-label="purchase this plan"
             className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-1.5"
           >            
-            &nbsp;&nbsp;<svg className="inline-flex"
+            <svg className="inline-flex mr-1"
               width="14"
               height="14"
               viewBox="0 0 14 14"
@@ -162,14 +162,14 @@ async function Page() {
                 fill="currentColor"
               />
             </svg>
-            <b> Community Access:</b> Engage with fellow domain enthusiasts.
+            <b>Community Access:</b> Engage with fellow domain enthusiasts.
           </div>
           <p className='text-primary font-medium'>Ideal For:</p>
           <div
             aria-label="purchase this plan"
             className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-5.5"
           >            
-            &nbsp;&nbsp;<svg className="inline-flex"
+            <svg className="inline-flex mr-1"
               width="14"
               height="14"
               viewBox="0 0 14 14"
@@ -180,7 +180,7 @@ async function Page() {
                 fill="currentColor"
               />
             </svg>
-            &nbsp;Individual domain investors exploring the world of trademarks.
+            Individual domain investors exploring the world of trademarks.
           </div>
           <Image className='mx-auto' style={{position: "absolute",right: "5px",top: "0px"}}
               width={100}
@@ -217,8 +217,8 @@ async function Page() {
                 src={"https://cdn.vnoc.com/desc/dntrademark/dn-check.png"}
                 alt="Check Icon"
               />
-            <h6 className="text-black dark:text-white font-medium text-1xl mb-0">
-              &nbsp;&nbsp;Free 2000 Domains and $.08 cents/domain after
+            <h6 className="text-black dark:text-white font-medium text-1xl mb-0 ml-2">
+              Free 2000 Domains and $.08 cents/domain after
             </h6>       
           </div><br></br>
           <div className='inline-flex mb-1.5'>
@@ -228,8 +228,8 @@ async function Page() {
                 src={"https://cdn.vnoc.com/desc/dntrademark/dn-check.png"}
                 alt="Check Icon"
               />
-            <h6 className="text-black dark:text-white font-medium text-1xl mb-0">
-              &nbsp;&nbsp;For Individuals:
+            <h6 className="text-black dark:text-white font-medium text-1xl mb-0 ml-2">
+              For Individuals:
             </h6>       
           </div>     
           <p className='text-primary font-medium'>Everything in Explorer, Plus:</p>
@@ -237,7 +237,7 @@ async function Page() {
             aria-label="purchase this plan"
             className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-1.5"
           >            
-            &nbsp;&nbsp;<svg className="inline-flex"
+            <svg className="inline-flex mr-1"
               width="14"
               height="14"
               viewBox="0 0 14 14"
@@ -248,13 +248,13 @@ async function Page() {
                 fill="currentColor"
               />
             </svg>
-            <b> Advanced Trademark Notifications:Advanced Trademark Notifications:</b> Comprehensive notifications for nuanced insights.
+            <b>Advanced Trademark Notifications:Advanced Trademark Notifications:</b> Comprehensive notifications for nuanced insights.
           </div>
           <div
             aria-label="purchase this plan"
             className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-1.5"
           >            
-            &nbsp;&nbsp;<svg className="inline-flex"
+            <svg className="inline-flex mr-1"
               width="14"
               height="14"
               viewBox="0 0 14 14"
@@ -265,14 +265,14 @@ async function Page() {
                 fill="currentColor"
               />
             </svg>
-            <b> Priority Support:</b> Fast-track assistance from our support team.
+            <b>Priority Support:</b> Fast-track assistance from our support team.
           </div>
           <p className='text-primary font-medium'>Ideal For:</p>
           <div
             aria-label="purchase this plan"
             className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-5.5"
           >            
-            &nbsp;&nbsp;<svg className="inline-flex"
+            &nbsp;&nbsp;<svg className="inline-flex mr-1"
               width="14"
               height="14"
               viewBox="0 0 14 14"
@@ -283,8 +283,8 @@ async function Page() {
                 fill="currentColor"
               />
             </svg>
-            &nbsp;Individual domain investors with a strong commitment to their endeavors.
-            &nbsp;<a href="" className='text-primary'>&rarr;&nbsp;More</a>
+            Individual domain investors with a strong commitment to their endeavors.
+             <a href="" className='text-primary'>More...</a>
           </div>                        
           <div style={{display: "none"}}>
             <div className='inline-flex mb-1.5'>
@@ -294,8 +294,8 @@ async function Page() {
                   src={"https://cdn.vnoc.com/desc/dntrademark/dn-check.png"}
                   alt="Check Icon"
                 />
-              <h6 className="text-black dark:text-white font-medium text-1xl mb-0">
-                &nbsp;&nbsp;For Small Teams:
+              <h6 className="text-black dark:text-white font-medium text-1xl mb-0 ml-2">
+                For Small Teams:
               </h6>       
             </div>     
             <p className='text-primary font-medium'>Everything in Explorer for Each Team Member, Plus:</p>
@@ -303,7 +303,7 @@ async function Page() {
               aria-label="purchase this plan"
               className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-1.5"
             >            
-              &nbsp;&nbsp;<svg className="inline-flex"
+              <svg className="inline-flex mr-1"
                 width="14"
                 height="14"
                 viewBox="0 0 14 14"
@@ -314,13 +314,13 @@ async function Page() {
                   fill="currentColor"
                 />
               </svg>
-              <b> Dedicated Team Workspace:</b> Enhanced collaboration features for effective team management.
+              <b>Dedicated Team Workspace:</b> Enhanced collaboration features for effective team management.
             </div>
             <div
               aria-label="purchase this plan"
               className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-1.5"
             >            
-              &nbsp;&nbsp;<svg className="inline-flex"
+              &nbsp;&nbsp;<svg className="inline-flex mr-1"
                 width="14"
                 height="14"
                 viewBox="0 0 14 14"
@@ -331,14 +331,14 @@ async function Page() {
                   fill="currentColor"
                 />
               </svg>
-              <b> Priority Support:</b> Quick assistance for uninterrupted workflows.
+              <b>Priority Support:</b> Quick assistance for uninterrupted workflows.
             </div>
             <p className='text-primary font-medium'>Ideal For:</p>
             <div
               aria-label="purchase this plan"
               className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-5.5"
             >            
-              &nbsp;&nbsp;<svg className="inline-flex"
+              &nbsp;&nbsp;<svg className="inline-flex mr-1"
                 width="14"
                 height="14"
                 viewBox="0 0 14 14"
@@ -349,7 +349,7 @@ async function Page() {
                   fill="currentColor"
                 />
               </svg>
-              &nbsp;Small to medium-sized teams requiring advanced features.
+              Small to medium-sized teams requiring advanced features.
             </div>
           </div>  
           <div className='mb-5'>&nbsp;</div>  
@@ -388,8 +388,8 @@ async function Page() {
                 src={"https://cdn.vnoc.com/desc/dntrademark/dn-check.png"}
                 alt="Check Icon"
               />
-            <h6 className="text-black dark:text-white font-medium text-1xl mb-0">
-              &nbsp;&nbsp;Free 4000 Domains and $0.06 cents/domain after
+            <h6 className="text-black dark:text-white font-medium text-1xl mb-0 ml-2">
+              Free 4000 Domains and $0.06 cents/domain after
             </h6>       
           </div><br></br>
           <div className='inline-flex mb-1.5'>
@@ -399,8 +399,8 @@ async function Page() {
                 src={"https://cdn.vnoc.com/desc/dntrademark/dn-check.png"}
                 alt="Check Icon"
               />
-            <h6 className="text-black dark:text-white font-medium text-1xl mb-0">
-              &nbsp;&nbsp;For Corporations:
+            <h6 className="text-black dark:text-white font-medium text-1xl mb-0 ml-2">
+              For Corporations:
             </h6>       
           </div>     
           <p className='text-primary font-medium'>Dedicated Account Manager: A designated expert for personalized support.</p>
@@ -410,7 +410,7 @@ async function Page() {
             aria-label="purchase this plan"
             className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-5.5"
           >            
-            &nbsp;&nbsp;<svg className="inline-flex"
+            <svg className="inline-flex mr-1"
               width="14"
               height="14"
               viewBox="0 0 14 14"
@@ -421,7 +421,7 @@ async function Page() {
                 fill="currentColor"
               />
             </svg>
-            &nbsp;Corporations managing extensive domain portfolios.
+            Corporations managing extensive domain portfolios.
           </div>
           <Image className='mx-auto' style={{position: "absolute",right: "5px",top: "0px"}}
               width={100}
