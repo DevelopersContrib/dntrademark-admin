@@ -8,6 +8,21 @@ interface Error {
   statusCode: number;
 }
 
+export const getGraph = async () => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: 'Bearer ' + session?.token, timeout: 10000 },
+    };
+    const apiUrl = process.env.API_URL + '/domains/historical-hits?api_key=' + process.env.API_KEY;
+    const res = await axios.get(apiUrl, config);
+    // console.log('graph',res.data.data)
+    return res.data.data;
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
 export const checkEmail = async (email: string) => {
   try {
     const urlCheck = 'https://api.dntrademark.com/api/v1/user/check?api_key=6334aed4bdce9855f400653800596920&email=' + email;
@@ -102,6 +117,24 @@ export const getDomainItems= async (id:number, limit:number=10, page:number=1, s
     console.log('Error', error);
   }
 };
+
+export const getNotification = async (token: any, id:any) => {
+  //const session = await getServerSession(options);
+  const session = token;
+    
+  
+  const config = {
+    headers: { Authorization: 'Bearer ' + session},
+  };
+  console.log(config);
+  const url ='https://api.dntrademark.com/api/v1/notifications/'+id+'?api_key=6334aed4bdce9855f400653800596920';
+ 
+  //const url ='https://api.dntrademark.com/api/v1/packages?api_key=6334aed4bdce9855f400653800596920';
+  const res = await axios.get(url,config);
+  
+  return res.data.message;
+};
+
 
 export const getItem = async (id:number) => {
   try {

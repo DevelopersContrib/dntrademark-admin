@@ -4,6 +4,7 @@ import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 import React from "react";
 import WelcomeNotif from "../Dashboard/WelcomeNotif";
 import { domainTable } from "@/types/domainTable";
+import { graph } from "@/types/graph";
 import CardDataStats from "../CardDataStats";
 import TwitterPosts from "@/components/Dashboard/TwitterPosts";
 import DomainList from "@/components/Domains/DomainList";
@@ -28,9 +29,10 @@ interface tableProps {
   stats: Stat;
   recent: domainTable;
   feed: string | "";
+  graph: graph[]
 }
 
-export default function ECommerce({ tData, stats, recent, feed }: tableProps) {
+export default function ECommerce({ tData, stats, recent, feed, graph }: tableProps) {
   // console.log('client tData:',tData)
   // console.log('client tData.current_page:',tData.current_page)
   // console.log('client stats:',stats)
@@ -93,9 +95,7 @@ export default function ECommerce({ tData, stats, recent, feed }: tableProps) {
         </CardDataStats>
         <CardDataStats
           title="Investor Space"
-          total={String(
-            values.investorSpaceCount ? values.investorSpaceCount : 0
-          )}
+           total="+2,7432"
           rate=""
           levelUp
         >
@@ -149,8 +149,8 @@ export default function ECommerce({ tData, stats, recent, feed }: tableProps) {
       <div className="w-full mb-4 text-sm"></div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <div className="col-span-12">
-          <div className="hidden">
-          <ChartOne />
+          <div className="">
+          <ChartOne graph={graph} />
           </div>
         </div>
       </div>

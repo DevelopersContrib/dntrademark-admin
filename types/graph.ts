@@ -1,0 +1,1 @@
+export type graph = { my_y: number, my_month: string, the_year: number, my_x: string }
