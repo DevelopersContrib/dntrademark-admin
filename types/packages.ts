@@ -4,4 +4,5 @@ export type PackagesProps = {
   start_limit: number;
   end_limit: number;
   price: string;
+  userPlanId: number
 }

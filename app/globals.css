@@ -182,7 +182,7 @@ span.flatpickr-weekday,
 
 /* Custom CSS ---------------------- */
 .bg-sidebar-aside {
-  @apply bg-[rgba(255,251,215,1)] lg:bg-[rgba(255,251,215,0.35)] dark:bg-black;
+  @apply bg-[#fffffe] lg:bg-light dark:bg-black;
 }
 
 .fa-spin {
@@ -289,4 +289,36 @@ th.sorting::after{
 th.sorting_asc::before,
 th.sorting_desc::after{
   opacity: 0.6;
+}
+
+.bg-red-gradient-1{
+  background: linear-gradient(102.2deg, rgb(250, 45, 66) 9.6%, rgb(245, 104, 104) 96.1%);
+}
+
+.bg-green-gradient-1{
+  background: linear-gradient(to top, #0ba360 0%, #3cba92 100%);
+}
+
+.bg-gradient .bg-rounded-gradient{
+  background: rgba(0,0,0,0.09);
+}
+
+.bg-gradient .text-title-md{
+  color: #fff;
+}
+
+.bg-gradient .card-desc{
+  color: #fff;
+}
+
+.bg-gradient .stats-icon-color{
+  color: #fff;
+}
+
+.table-border-boxed td{
+  @apply border-b border-t border-[#eee] py-5 px-4 pl-9 dark:border-strokedark border-l;
+}
+
+.table-border-boxed td:last-child{
+  @apply border-r;
 }

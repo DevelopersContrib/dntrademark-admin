@@ -25,6 +25,8 @@ export const POST = async (req: Request) => {
 
     const apiUrl = process.env.API_URL + '/user/update?api_key=' + process.env.API_KEY;
     data.token = session?.token;
+    
+    console.log('data', data);
 
     const res = await axios.put(apiUrl, data, config);
     const result = res.data;

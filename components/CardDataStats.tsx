@@ -7,6 +7,7 @@ interface CardDataStatsProps {
   levelUp?: boolean;
   levelDown?: boolean;
   children: ReactNode;
+  bgCard? :string;
 }
 
 const CardDataStats: React.FC<CardDataStatsProps> = ({
@@ -15,11 +16,12 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
   rate,
   levelUp,
   levelDown,
+  bgCard,
   children,
 }) => {
   return (
-    <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
-      <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
+    <div className={`rounded-sm borde py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark border-stroke  ${ bgCard ? bgCard : 'bg-white' }`}>
+      <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-rounded-gradient bg-meta-2 dark:bg-meta-4">
         {children}
       </div>
 
@@ -28,7 +30,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
           <h4 className="text-title-md font-bold text-black dark:text-white">
             {total}
           </h4>
-          <span className="text-sm font-medium">{title}</span>
+          <span className="text-sm font-medium card-desc">{title}</span>
         </div>
 
         <span
