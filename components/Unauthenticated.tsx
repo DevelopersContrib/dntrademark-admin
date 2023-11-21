@@ -4,9 +4,9 @@ function Unauthenticated() {
     setTimeout(async function(){
         const data = await signOut({redirect: false, callbackUrl: "/auth/signin"})
         window.location.reload()
-    },1000) 
+    },800) 
   return (
-    <div>Session Expired!</div>
+    <div></div>
   )
 }
 
