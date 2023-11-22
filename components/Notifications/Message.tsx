@@ -1,10 +1,7 @@
 "use client";
-type NotifType = {
-    message?: string, // Added colon here
-    url?: string
-}
+import { NotificationType } from "@/types/notificationType";
 
-const Message = ({message, url} : NotifType) => {
+const Message = ({message, url} : NotificationType) => {
   return (
     <>
       <a

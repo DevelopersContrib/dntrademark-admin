@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Message from "./Message";
-
+import { NotificationType } from "@/types/notificationType";
 import { getNotificationsNew } from "@/lib/data";
 
 const Notifications = () => {
@@ -44,7 +44,7 @@ const Notifications = () => {
           </div> */}
         <div className="w-full flex flex-col max-h-[500px] overflow-y-auto">
           {
-            notifications.length > 0 ? notifications.map((notif, index) => (
+            notifications.length > 0 ? notifications.map((notif: NotificationType, index: number) => (
               <Message key={index} {...notif} />
             )) : (
               <h4>Inbox Empty</h4>
