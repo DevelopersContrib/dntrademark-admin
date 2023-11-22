@@ -334,3 +334,13 @@ th.sorting_desc::after{
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+
+/*
+ * Onboarding Task
+ */
+
+.onboarding-link.done{
+  @apply line-through text-[#aaa] opacity-[0.9];
+  pointer-events: none;
+}
