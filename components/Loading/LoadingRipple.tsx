@@ -13,7 +13,7 @@ const LoadingRipple = () => {
           r="0"
           fill="none"
           stroke="#e2e2e2"
-          stroke-width="2"
+          strokeWidth="2"
         >
           <animate
             attributeName="r"
@@ -42,7 +42,7 @@ const LoadingRipple = () => {
           r="0"
           fill="none"
           stroke="#d1d1d1"
-          stroke-width="2"
+          strokeWidth="2"
         >
           <animate
             attributeName="r"

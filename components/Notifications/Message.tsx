@@ -1,7 +1,7 @@
 "use client";
 import { NotificationType } from "@/types/notificationType";
 
-const Message = ({message, url} : NotificationType) => {
+const Message = ({message, url, date_sent} : NotificationType) => {
   return (
     <>
       <a
@@ -10,7 +10,7 @@ const Message = ({message, url} : NotificationType) => {
       >
         <span className="font-medium" dangerouslySetInnerHTML={{ __html: '&middot' + message }}>
         </span>
-        <span className="text-xs">Nov. 21, 2023</span>
+        <span className="text-xs">{date_sent}</span>
       </a>
     </>
   );

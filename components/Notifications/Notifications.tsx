@@ -1,19 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
+import { FaCircleNotch } from "react-icons/fa6";
+
 import Message from "./Message";
+import LoadingRipple from "../Loading/LoadingRipple";
 import { NotificationType } from "@/types/notificationType";
+
 import { getNotificationsNew } from "@/lib/data";
 
 const Notifications = () => {
-  const [ notifications, setNotifications ] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [fetchingData, setFetchingData] = useState(false);
 
-  const getAllNotifications =async () => {
-    getNotificationsNew().then(res => {
+  const getAllNotifications = async () => {
+    setFetchingData(true);
 
+    getNotificationsNew().then((res) => {
       setNotifications(res.message);
-      console.log(res.message);
+      setFetchingData(false);
     });
-  }
+  };
 
   useEffect(() => {
     getAllNotifications();
@@ -39,17 +45,21 @@ const Notifications = () => {
             Notifications
           </h4>
         </div>
-        {/* <div className="py-6 px-4 md:px-6 xl:px-7.5 text-center min-h-[30vh] flex  w-full justify-center items-center font-bold text-[#aaa]">
-            You have 0 notification.
-          </div> */}
         <div className="w-full flex flex-col max-h-[500px] overflow-y-auto">
-          {
-            notifications.length > 0 ? notifications.map((notif: NotificationType, index: number) => (
+          {fetchingData && (
+            <div className="w-full flex flex-col max-h-[500px] overflow-y-auto items-center justify-center">
+              <LoadingRipple />
+            </div>
+          )}
+          {(notifications.length > 0 && !fetchingData) &&
+            notifications.map((notif: NotificationType, index: number) => (
               <Message key={index} {...notif} />
-            )) : (
-              <h4>Inbox Empty</h4>
-            )
-          }
+            ))}
+          {(notifications.length === 0 && !fetchingData) && (
+            <div className="py-6 px-4 md:px-6 xl:px-7.5 text-center min-h-[30vh] flex  w-full justify-center items-center font-bold text-[#aaa]">
+              You have 0 notifications.
+            </div>
+          )}
         </div>
       </div>
     </div>
