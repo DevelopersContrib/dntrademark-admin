@@ -322,3 +322,15 @@ th.sorting_desc::after{
 .table-border-boxed td:last-child{
   @apply border-r;
 }
+
+/*
+ * Text Ellipsis
+ */
+
+.long-and-truncated {
+  flex: 1;
+  
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

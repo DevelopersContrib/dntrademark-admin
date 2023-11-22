@@ -105,10 +105,10 @@ const [ notifications, setNotifications ] = useState([]);
             notifications.length > 0 ? notifications.map((notif: NotificationType, index: number) => (
               <li key={index}>
                 <Link
-                  className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
+                  className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 a-tag"
                   href={notif.url}
                 >
-                  <p className="text-sm" dangerouslySetInnerHTML={{ __html: notif.message }} />
+                  <p className="text-sm long-and-truncated" dangerouslySetInnerHTML={{ __html: notif.message }} />
                 </Link>
               </li>
               
