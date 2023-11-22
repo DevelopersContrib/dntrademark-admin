@@ -1,38 +1,31 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { getNotification } from '@/lib/data';
-import { NotifProps } from "@/types/notif";
+import { getNotificationsNew } from "@/lib/data";
+import { NotificationType } from "@/types/notificationType";
 
 const DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [notifications, setNotifications] =  useState<NotifProps[]>([]);
   const [notifying, setNotifying] = useState(true);
   const { data: session } = useSession();
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
   
+
+const [ notifications, setNotifications ] = useState([]);
+
+  const getAllNotifications =async () => {
+    getNotificationsNew().then(res => {
+
+      setNotifications(res.message);
+      console.log(res.message);
+    });
+  }
+
   useEffect(() => {
-    // Fetch notification data from the API
-    const fetchData = async () => {
-      try {
-        const notification = await getNotification(session?.token, session?.id);
-        setNotifications((prevNotifications: NotifProps[]) => [
-          ...(Array.isArray(prevNotifications) ? prevNotifications : []),
-          ...(Array.isArray(notification) ? notification : [notification as NotifProps]),
-        ]);
-      } catch (error) {
-        console.error('Error fetching notifications', error);
-      }
-    };
-
-    if (session) {
-      fetchData();
-    }
-   
+    getAllNotifications();
   }, []);
-
   
 
   useEffect(() => {
@@ -104,31 +97,23 @@ const DropdownNotification = () => {
       >
         <div className="px-4.5 py-3 flex justify-between w-full">
           <h5 className="text-sm font-medium text-bodydark2">Notification</h5>
-          <a href="" className='text-sm font-medium text-bodydark2'>View All</a>
+          <a href="/notifications" className='text-sm font-medium text-bodydark2'>View All</a>
         </div>
 
         <ul className="flex h-auto flex-col overflow-y-auto">
-          {Array.isArray(notifications) && notifications.length > 0 ? (
-              notifications.map((notif: NotifProps) => (
-                <li key={notif.url}>
-                  <Link
-                    className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                    href={notif.url}
-                  >
-                    <p className="text-sm" dangerouslySetInnerHTML={{ __html: notif.message }} />
-                  </Link>
-                </li>
-              ))
-            ) : (
-              <li>
-                  <Link
-                    className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                    href='#'
-                  >
-                    <p>No notifications available</p>
-                  </Link>
+          {
+            notifications.length > 0 ? notifications.map((notif: NotificationType, index: number) => (
+              <li key={index}>
+                <Link
+                  className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
+                  href={notif.url}
+                >
+                  <p className="text-sm" dangerouslySetInnerHTML={{ __html: notif.message }} />
+                </Link>
               </li>
-            )}
+              
+            )) : ''
+          }
         </ul>
       </div>
     </li>
