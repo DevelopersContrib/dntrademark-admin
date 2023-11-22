@@ -212,6 +212,20 @@ export const getNotification = async (token: any, id: any) => {
   return res.data.message;
 };
 
+export const getNotificationsNew = async () => {
+  try {
+    const res = await fetch("/api/notifications/", {
+      method: "GET"
+    });
+
+    const result = await res.json();
+
+    return result;
+  } catch (error) {
+    console.log("Error", error);
+  }
+};
+
 export const getItem = async (id: number) => {
   try {
     const session = await getServerSession(options);
