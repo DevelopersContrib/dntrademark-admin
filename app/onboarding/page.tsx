@@ -237,7 +237,7 @@ const Page = () => {
                       </span>
                     </div>
                     <div className="w-full">
-                      <a href="/settings" className="mb-1 text-base font-semibold text-[#535353] onboarding-link done">
+                      <a href="/settings" className="mb-1 text-base font-semibold text-[#535353] onboarding-link">
                         Edit your notification settings
                       </a>
                     </div>
