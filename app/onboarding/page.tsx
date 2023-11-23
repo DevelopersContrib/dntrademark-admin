@@ -1,8 +1,10 @@
-"use client"
-import React, { useState } from 'react'
-import Tabs from '@/components/onboarding/Tabs';
-import DomainForm from '@/components/onboarding/DomainForm';
-import UploadForm from '@/components/onboarding/UploadForm';
+"use client";
+import React, { useState } from "react";
+import Tabs from "@/components/onboarding/Tabs";
+import DomainForm from "@/components/onboarding/DomainForm";
+import UploadForm from "@/components/onboarding/UploadForm";
+import { FiGift } from "react-icons/fi";
+import { BsFillClipboardCheckFill } from "react-icons/bs";
 
 const Page = () => {
   const [activeTab, setActiveTab] = useState<number>(1);
@@ -12,12 +14,9 @@ const Page = () => {
   };
   return (
     <>
-      <div
-        className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="border-b border-stroke px-7.5 py-4 dark:border-strokedark">
-          <h3 className="font-medium text-black dark:text-white">
-            Onboarding
-          </h3>
+          <h3 className="font-medium text-black dark:text-white">Onboarding</h3>
         </div>
         <div className="onboard-content mb-0 p-7.5 w-full">
           <div className="flex w-full rounded-lg border-l-[6px] border-[#00B078] bg-[#C4F9E2] bg-opacity-[100%] px-7 py-8 shadow-md md:p-9">
@@ -38,96 +37,170 @@ const Page = () => {
             </div>
             <div className="w-full">
               <h5 className="mb-3 text-lg font-semibold text-[#004434]">
-              Welcome to DNTrademark 
+                Welcome to DNTrademark
               </h5>
               <p className="text-base leading-relaxed text-body-color">
-              We are thrilled to have you join us on this journey to protect your trademarks and intellectual property. Our platform offers a simple suite of tools and services to make trademark registration and management seamless.
+                We are thrilled to have you join us on this journey to protect
+                your trademarks and intellectual property. Our platform offers a
+                simple suite of tools and services to make trademark
+                registration and management seamless.
               </p>
             </div>
           </div>
           <div className="mt-5 mx-auto sm:container">
             <div className="border-stroke">
-              <h5 className="mb-2 text-lg font-semibold text-dark">Why Trademark Matters</h5>
+              <h5 className="mb-2 text-lg font-semibold text-dark">
+                Why Trademark Matters
+              </h5>
               <div className="mb-3">
                 <div className="flex w-full px-1 py-1">
                   <div className="mr-3 flex h-6 w-full max-w-[24px] items-center justify-center rounded-lg bg-[#4C4C4C]">
-                  <span className="font-semibold text-[#ffffff]">1</span> 
+                    <span className="font-semibold text-[#ffffff]">1</span>
                   </div>
                   <div className="w-full">
                     <h5 className="mb-1 text-base font-semibold text-[#535353]">
-                    Trademarks are the cornerstone of brand identity.
+                      Trademarks are the cornerstone of brand identity.
                     </h5>
                   </div>
                 </div>
                 <div className="flex w-full px-1 py-1">
                   <div className="mr-3 flex h-6 w-full max-w-[24px] items-center justify-center rounded-lg bg-[#4C4C4C]">
-                  <span className="font-semibold text-[#ffffff]">2</span>
+                    <span className="font-semibold text-[#ffffff]">2</span>
                   </div>
                   <div className="w-full">
                     <h5 className="mb-1 text-base font-semibold text-[#535353]">
-                    Protecting your trademarks ensures that your unique products and services remain distinguishable in the marketplace.
+                      Protecting your trademarks ensures that your unique
+                      products and services remain distinguishable in the
+                      marketplace.
                     </h5>
                   </div>
                 </div>
                 <div className="flex w-full px-1 py-1">
                   <div className="mr-3 flex h-6 w-full max-w-[24px] items-center justify-center rounded-lg bg-[#4C4C4C]">
-                  <span className="font-semibold text-[#ffffff]">3</span>
+                    <span className="font-semibold text-[#ffffff]">3</span>
                   </div>
                   <div className="w-full">
                     <h5 className="mb-1 text-base font-semibold text-[#535353]">
-                    It prevents others from using your brand identity for their gain.
+                      It prevents others from using your brand identity for
+                      their gain.
                     </h5>
                   </div>
                 </div>
               </div>
-              <h5 className="mb-2 text-lg font-semibold text-dark">What is next?</h5>
+              <h5 className="mb-2 text-lg font-semibold text-dark">
+                What is next?
+              </h5>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-                <div className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-3">                  
+                <div className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-3">
                   <div className="rounded-md bg-[#C4F9E2] p-4">
                     <p className="flex items-center text-sm font-medium text-[#004434]">
                       <span className="pr-3">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <circle cx="10" cy="10" r="10" fill="#00B078"></circle>
-                          <path fill-rule="evenodd" clip-rule="evenodd" d="M14.1203 6.78954C14.3865 7.05581 14.3865 7.48751 14.1203 7.75378L9.12026 12.7538C8.85399 13.02 8.42229 13.02 8.15602 12.7538L5.88329 10.4811C5.61703 10.2148 5.61703 9.78308 5.88329 9.51682C6.14956 9.25055 6.58126 9.25055 6.84753 9.51682L8.63814 11.3074L13.156 6.78954C13.4223 6.52328 13.854 6.52328 14.1203 6.78954Z" fill="white"></path>
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle
+                            cx="10"
+                            cy="10"
+                            r="10"
+                            fill="#00B078"
+                          ></circle>
+                          <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14.1203 6.78954C14.3865 7.05581 14.3865 7.48751 14.1203 7.75378L9.12026 12.7538C8.85399 13.02 8.42229 13.02 8.15602 12.7538L5.88329 10.4811C5.61703 10.2148 5.61703 9.78308 5.88329 9.51682C6.14956 9.25055 6.58126 9.25055 6.84753 9.51682L8.63814 11.3074L13.156 6.78954C13.4223 6.52328 13.854 6.52328 14.1203 6.78954Z"
+                            fill="white"
+                          ></path>
                         </svg>
                       </span>
                       Upload your documents
                     </p>
                   </div>
                 </div>
-                <div className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-3">                  
+                <div className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-3">
                   <div className="rounded-md bg-[#C4F9E2] p-4">
                     <p className="flex items-center text-sm font-medium text-[#004434]">
                       <span className="pr-3">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <circle cx="10" cy="10" r="10" fill="#00B078"></circle>
-                          <path fill-rule="evenodd" clip-rule="evenodd" d="M14.1203 6.78954C14.3865 7.05581 14.3865 7.48751 14.1203 7.75378L9.12026 12.7538C8.85399 13.02 8.42229 13.02 8.15602 12.7538L5.88329 10.4811C5.61703 10.2148 5.61703 9.78308 5.88329 9.51682C6.14956 9.25055 6.58126 9.25055 6.84753 9.51682L8.63814 11.3074L13.156 6.78954C13.4223 6.52328 13.854 6.52328 14.1203 6.78954Z" fill="white"></path>
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle
+                            cx="10"
+                            cy="10"
+                            r="10"
+                            fill="#00B078"
+                          ></circle>
+                          <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14.1203 6.78954C14.3865 7.05581 14.3865 7.48751 14.1203 7.75378L9.12026 12.7538C8.85399 13.02 8.42229 13.02 8.15602 12.7538L5.88329 10.4811C5.61703 10.2148 5.61703 9.78308 5.88329 9.51682C6.14956 9.25055 6.58126 9.25055 6.84753 9.51682L8.63814 11.3074L13.156 6.78954C13.4223 6.52328 13.854 6.52328 14.1203 6.78954Z"
+                            fill="white"
+                          ></path>
                         </svg>
                       </span>
                       Check out our FAQ
                     </p>
                   </div>
                 </div>
-                <div className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-3">                  
+                <div className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-3">
                   <div className="rounded-md bg-[#C4F9E2] p-4">
                     <p className="flex items-center text-sm font-medium text-[#004434]">
                       <span className="pr-3">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <circle cx="10" cy="10" r="10" fill="#00B078"></circle>
-                          <path fill-rule="evenodd" clip-rule="evenodd" d="M14.1203 6.78954C14.3865 7.05581 14.3865 7.48751 14.1203 7.75378L9.12026 12.7538C8.85399 13.02 8.42229 13.02 8.15602 12.7538L5.88329 10.4811C5.61703 10.2148 5.61703 9.78308 5.88329 9.51682C6.14956 9.25055 6.58126 9.25055 6.84753 9.51682L8.63814 11.3074L13.156 6.78954C13.4223 6.52328 13.854 6.52328 14.1203 6.78954Z" fill="white"></path>
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle
+                            cx="10"
+                            cy="10"
+                            r="10"
+                            fill="#00B078"
+                          ></circle>
+                          <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14.1203 6.78954C14.3865 7.05581 14.3865 7.48751 14.1203 7.75378L9.12026 12.7538C8.85399 13.02 8.42229 13.02 8.15602 12.7538L5.88329 10.4811C5.61703 10.2148 5.61703 9.78308 5.88329 9.51682C6.14956 9.25055 6.58126 9.25055 6.84753 9.51682L8.63814 11.3074L13.156 6.78954C13.4223 6.52328 13.854 6.52328 14.1203 6.78954Z"
+                            fill="white"
+                          ></path>
                         </svg>
                       </span>
                       Support
                     </p>
                   </div>
                 </div>
-                <div className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-3">                  
+                <div className="group relative bg-white dark:bg-black rounded-lg shadow-solid-10 dark:shadow-none border border-stroke dark:border-black p-3">
                   <div className="rounded-md bg-[#C4F9E2] p-4">
                     <p className="flex items-center text-sm font-medium text-[#004434]">
                       <span className="pr-3">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <circle cx="10" cy="10" r="10" fill="#00B078"></circle>
-                          <path fill-rule="evenodd" clip-rule="evenodd" d="M14.1203 6.78954C14.3865 7.05581 14.3865 7.48751 14.1203 7.75378L9.12026 12.7538C8.85399 13.02 8.42229 13.02 8.15602 12.7538L5.88329 10.4811C5.61703 10.2148 5.61703 9.78308 5.88329 9.51682C6.14956 9.25055 6.58126 9.25055 6.84753 9.51682L8.63814 11.3074L13.156 6.78954C13.4223 6.52328 13.854 6.52328 14.1203 6.78954Z" fill="white"></path>
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle
+                            cx="10"
+                            cy="10"
+                            r="10"
+                            fill="#00B078"
+                          ></circle>
+                          <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M14.1203 6.78954C14.3865 7.05581 14.3865 7.48751 14.1203 7.75378L9.12026 12.7538C8.85399 13.02 8.42229 13.02 8.15602 12.7538L5.88329 10.4811C5.61703 10.2148 5.61703 9.78308 5.88329 9.51682C6.14956 9.25055 6.58126 9.25055 6.84753 9.51682L8.63814 11.3074L13.156 6.78954C13.4223 6.52328 13.854 6.52328 14.1203 6.78954Z"
+                            fill="white"
+                          ></path>
                         </svg>
                       </span>
                       Refer DNTrademark
@@ -135,47 +208,92 @@ const Page = () => {
                   </div>
                 </div>
               </div>
+              <div className="my-8">
+                <h5 className="mb-2 text-lg font-semibold text-dark">
+                  Onboarding Tasks
+                </h5>
+                <div className="mb-3">
+                  <div className="flex w-full px-1 py-1">
+                    <div className="mr-3 flex h-6 w-full max-w-[24px] items-center justify-center rounded-lg bg-[#4C4C4C]">
+                      <span className="font-semibold text-[#ffffff]">
+                        <BsFillClipboardCheckFill />
+                      </span>
+                    </div>
+                    <div className="w-full">
+                      <a
+                        href="https://t.me/+wjCBcWeUXTdiZTE9"
+                        target="_blank"
+                        className="mb-1 text-base font-semibold text-[#535353] onboarding-link"
+                      >
+                        Join our Telegram discussions! &mdash;{" "}
+                        <span>https://t.me/+wjCBcWeUXTdiZTE9</span>
+                      </a>
+                    </div>
+                  </div>
+                  <div className="flex w-full px-1 py-1">
+                    <div className="mr-3 flex h-6 w-full max-w-[24px] items-center justify-center rounded-lg bg-[#4C4C4C]">
+                      <span className="font-semibold text-[#ffffff]">
+                        <BsFillClipboardCheckFill />
+                      </span>
+                    </div>
+                    <div className="w-full">
+                      <a href="/settings" className="mb-1 text-base font-semibold text-[#535353] onboarding-link">
+                        Edit your notification settings
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h5 className="mb-2 mt-8 text-lg font-semibold text-dark">
+                Refer a Friend to DNTrademark and Get One Month Free!
+              </h5>
+              <a
+                href="https://www.dntrademark.com/referral"
+                target="_blank"
+                className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 xl:px-10"
+              >
+                <FiGift className="mr-2" />
+                Refer a Friend
+              </a>
             </div>
           </div>
-        </div>        
+        </div>
         <div className="mb-4 p-7.5 w-full">
-          <div
-            className="mb-7.5 flex flex-wrap gap-3 rounded-lg border border-stroke py-3 px-4 dark:border-strokedark">
+          <div className="mb-7.5 flex flex-wrap gap-3 rounded-lg border border-stroke py-3 px-4 dark:border-strokedark">
             <button
-              className={`bg-gray dark:bg-meta-4 text-black dark:text-white rounded-md py-3 px-4 text-sm font-medium hover:bg-danger hover:text-white dark:hover:bg-danger md:text-base lg:px-6 nav-tabs ${activeTab === 1 ? 'active' : ''}`}
+              className={`bg-gray dark:bg-meta-4 text-black dark:text-white rounded-md py-3 px-4 text-sm font-medium hover:bg-danger hover:text-white dark:hover:bg-danger md:text-base lg:px-6 nav-tabs ${
+                activeTab === 1 ? "active" : ""
+              }`}
               onClick={() => handleTabClick(1)}
             >
               Add Domains
             </button>
             <button
-              className={`bg-gray dark:bg-meta-4 text-black dark:text-white rounded-md py-3 px-4 text-sm font-medium hover:bg-danger hover:text-white dark:hover:bg-danger md:text-base lg:px-6 nav-tabs ${activeTab === 2 ? 'active' : ''}`}
+              className={`bg-gray dark:bg-meta-4 text-black dark:text-white rounded-md py-3 px-4 text-sm font-medium hover:bg-danger hover:text-white dark:hover:bg-danger md:text-base lg:px-6 nav-tabs ${
+                activeTab === 2 ? "active" : ""
+              }`}
               onClick={() => handleTabClick(2)}
             >
               Upload Domains
             </button>
-
-          </div >
+          </div>
           <div>
-            {
-              activeTab === 1
-              &&
+            {activeTab === 1 && (
               <Tabs>
                 <DomainForm></DomainForm>
               </Tabs>
-            }
+            )}
 
-            {
-              activeTab === 2
-              &&
+            {activeTab === 2 && (
               <Tabs>
                 <UploadForm></UploadForm>
               </Tabs>
-            }
+            )}
           </div>
-        </div >
-      </div >
+        </div>
+      </div>
     </>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;
