@@ -5,6 +5,7 @@ import {  getDomainItems } from "@/lib/domain-helper";
 import { domainOwner } from "@/types/domainOwner";
 import { items } from "@/types/items";
 import { domains } from "@/types/domains";
+import generatePDF from 'react-to-pdf';
 
 interface tableProps {
   tData: items;
@@ -27,6 +28,9 @@ const ItemsDetails = ({ tData }: tableProps) => {
 
   return (
     <>
+    <div >
+      
+        <div >
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-title-md2 font-semibold text-black dark:text-white">
           Item Details
@@ -53,8 +57,34 @@ const ItemsDetails = ({ tData }: tableProps) => {
             <h3 className="font-medium text-black dark:text-white">
             Item Details - Serial Number {row.serial_number}
             </h3>
+            <button onClick={() => {
+              const getTargetElement = () => document.getElementById('for-print')
+              generatePDF(getTargetElement, {filename: row.serial_number+'.pdf'})
+          }} className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
+          Download PDF
+        </button>&nbsp;
+        <button onClick={() => {
+              let pri: Window | null
+              const content = document.getElementById('for-print')
+              const s = content?.innerHTML
+
+              const uniqueIframeId = 'toPrint'
+              const iframe = document.createElement('iframe')
+              iframe.setAttribute('title', uniqueIframeId)
+              iframe.setAttribute('id', uniqueIframeId)
+              iframe.setAttribute('style', 'height: 0px; width: 0px; position: absolute;')
+              document.body.appendChild(iframe)
+              pri = iframe.contentWindow
+              pri?.document.open()
+              pri?.document.write(s as string)
+              pri?.document.close()
+              pri?.focus()
+              pri?.print()
+          }} className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
+          Print
+        </button>
           </div>
-          <div className="p-4 sm:p-6 xl:p-10">
+          <div className="p-4 sm:p-6 xl:p-10" id="for-print">
             <table className="w-full table-auto table-border-boxed ">
               <tbody>
                 <tr>
@@ -194,6 +224,8 @@ const ItemsDetails = ({ tData }: tableProps) => {
             </table>
           </div>
         </div>
+      </div>
+      </div>
       </div>
     </>
   );
