@@ -383,6 +383,12 @@ const WithItems = ({ tData, id }: tableProps) => {
                                 <BsEye className="w-4 h-4" />
                               </button>
                             </Link>
+                            <Link href={"/domains/items/protest/" + item.id} replace>
+                              <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
+                                
+                                Generate Protest Letter
+                              </button>
+                            </Link>
                           </div>
                         </td>
                       </tr>
