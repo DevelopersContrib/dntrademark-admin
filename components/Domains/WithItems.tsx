@@ -11,6 +11,10 @@ import LoadingRipple from "../Loading/LoadingRipple";
 import Link from "next/link";
 import { BsEye } from "react-icons/bs";
 
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { EditorState } from 'draft-js';
+
 interface tableProps {
   tData: domainItems;
   id: number;
@@ -114,6 +118,14 @@ const WithItems = ({ tData, id }: tableProps) => {
     // eslint-disable-next-line
   }, [reload]);
 
+
+
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const onEditorStateChange = (newEditorState:any) => {
+    setEditorState(newEditorState);
+  };
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -138,7 +150,7 @@ const WithItems = ({ tData, id }: tableProps) => {
           </ol>
         </nav>
       </div>
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mb-8">
         <div className="flex flex-col gap-5.5 p-6.5">
           <div className="max-w-full overflow-x-auto">
             <div className="w-full pb-4 flex justify-between mb-4">
@@ -383,10 +395,13 @@ const WithItems = ({ tData, id }: tableProps) => {
                                 <BsEye className="w-4 h-4" />
                               </button>
                             </Link>
-                            <Link href={"/domains/items/protest/" + item.id} replace>
-                              <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
-                                
-                                Generate Protest Letter
+                            <Link
+                              title="Generate Protest Letter"
+                              href={"/domains/items/protest/" + item.id}
+                              replace
+                            >
+                              <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-sm font-normal text-white hover:bg-opacity-90 lg:px-4">
+                                Generate
                               </button>
                             </Link>
                           </div>
@@ -429,6 +444,19 @@ const WithItems = ({ tData, id }: tableProps) => {
                 ""
               )}
             </div>
+          </div>
+        </div>
+      </div>
+      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mb-8">
+        <div className="flex flex-col gap-5.5 p-6.5">
+          <div className="border border-[#f1f1f1] p-1.5">
+          <Editor
+            editorState={editorState}
+            toolbarClassName="toolbarClassName"
+            wrapperClassName="wrapperClassName"
+            editorClassName="editorClassName"
+            onEditorStateChange={onEditorStateChange}
+          />
           </div>
         </div>
       </div>
