@@ -168,7 +168,7 @@ export const getDomainItems = async (
       headers: { Authorization: "Bearer " + session?.token },
       timeout: 10000,
     };
-
+  
     const apiUrl =
       process.env.API_URL +
       "/domains/items/" +
@@ -185,6 +185,7 @@ export const getDomainItems = async (
       sortBy +
       "&orderBy=" +
       orderBy;
+      console.log('apiUrl',apiUrl)
     const res = await axios.get(apiUrl, config);
 
     return res.data.items;

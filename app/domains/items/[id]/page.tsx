@@ -12,7 +12,8 @@ export const metadata: Metadata = {
 const page = async({ params }: { params: { id: number} }) => {
   const id = params.id
   const itemlist = await getDomainItems(id);
-  
+
+
   const tData = itemlist as domainItems;
   
   
