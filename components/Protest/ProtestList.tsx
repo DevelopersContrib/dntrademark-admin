@@ -2,194 +2,262 @@
 import { FaBuffer } from "react-icons/fa6";
 import { FaTimes } from "react-icons/fa";
 import { FaCircleNotch } from "react-icons/fa6";
-import { useState, useEffect } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 // import { getProtestItems } from "@/lib/domain-helper";
 // import { protestItems } from "@/types/protestItems";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+
 import { items } from "@/types/items";
 import LoadingRipple from "../Loading/LoadingRipple";
 import Link from "next/link";
 import { BsEye } from "react-icons/bs";
 
 import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-import { EditorState, ContentState, convertFromHTML } from 'draft-js'
-import {useSession} from "next-auth/react";
+
+import { EditorState, ContentState, convertFromHTML, convertToRaw  } from "draft-js";
+import draftToHtml from 'draftjs-to-html';
+import Swal from 'sweetalert2'
+import { useSession } from "next-auth/react";
 
 interface props {
-    domainItems:items
+  domainItems: items;
   //tData: protestItems;
   id: number;
   template: string;
 }
 
 //const Protest = ({ tData, id }: tableProps) => {
-const ProtestList = ({ id,domainItems,template }: props) => {
-    const { data: session } = useSession();
-    
-    let name: string | null | undefined = session?.user?.name;
-    let email: string | null | undefined = session?.user?.email;
-    
-    if (typeof name === 'string'&& typeof email==='string') {
-        template = template.replaceAll('[Your Name]',name);
-        template = template.replaceAll('[Your Email Address]',email);
+const ProtestList = ({ id, domainItems, template }: props) => {
+  const { data: session } = useSession();
 
-        // Get the current date
-        var currentDate = new Date();
+  let name: string | null | undefined = session?.user?.name;
+  let email: string | null | undefined = session?.user?.email;
 
-        // Define an array of month names
-        var monthNames = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-        ];
+  if (typeof name === "string" && typeof email === "string") {
+    template = template.replaceAll("[Your Name]", name);
+    template = template.replaceAll("[Your Email Address]", email);
 
-        // Get the month, date, and year from the current date
-        var month = monthNames[currentDate.getMonth()];
-        var day = currentDate.getDate();
-        var year = currentDate.getFullYear();
+    // Get the current date
+    var currentDate = new Date();
 
-        // Create the formatted date string
-        var formattedDate = month + ' ' + day + ', ' + year;
+    // Define an array of month names
+    var monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
 
-        // $file = str_replace('[Date]',date("F j, Y")  , $file);
-        template = template.replaceAll('[Date]',formattedDate);
-        template = template.replaceAll('[Application Number]',domainItems.serial_number);
-        template = template.replaceAll('[Applicant Name]',domainItems.owner.name);
-        template = template.replaceAll('[Application Label]',domainItems.owner.owner_label);
-        template = template.replaceAll('[Date of Application]',domainItems.filing_date);
-        template = template.replaceAll('[Domain]',domainItems.domain.domain_name);
-        template = template.replaceAll('[Keyword]',domainItems.keyword);
+    // Get the month, date, and year from the current date
+    var month = monthNames[currentDate.getMonth()];
+    var day = currentDate.getDate();
+    var year = currentDate.getFullYear();
 
-        template = template.split("\n").join("<br />"); 
-    }
-   
-   
-    //console.log('template',template)
-    /*
-  const [rows, setRows] = useState<protest[]>(tData.data);
-  const [tableData, setTableData] = useState<protestItems>(tData);
-  const [loading, setLoading] = useState(false);
+    // Create the formatted date string
+    var formattedDate = month + " " + day + ", " + year;
 
-  const [orderBy, setOrderBy] = useState<string>("");
-  const [sortBy, setSortBy] = useState<string>("");
-  const [search, setSearch] = useState<string>("");
-  const [limit, setLimit] = useState<number>(10);
-  const [page, setPage] = useState<number>(1);
-  const [reload, setReload] = useState<number>(1);
-  const [listItems, setListItems] = useState<JSX.Element[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
-  const [domain, setDomain] = useState("");
-  const item_id = id;
+    // $file = str_replace('[Date]',date("F j, Y")  , $file);
+    template = template.replaceAll("[Date]", formattedDate);
+    template = template.replaceAll(
+      "[Application Number]",
+      domainItems.serial_number
+    );
+    template = template.replaceAll("[Applicant Name]", domainItems.owner.name);
+    template = template.replaceAll(
+      "[Application Label]",
+      domainItems.owner.owner_label
+    );
+    template = template.replaceAll(
+      "[Date of Application]",
+      domainItems.filing_date
+    );
+    template = template.replaceAll("[Domain]", domainItems.domain.domain_name);
+    template = template.replaceAll("[Keyword]", domainItems.keyword);
 
-  const sort = (col: string) => {
-    setSortBy(col);
-    setOrderBy(orderBy === "ASC" ? "DESC" : "ASC");
-  };
+    template = template.split("\n").join("<br />");
+  }
 
-  const callReload = (del: boolean) => {
-    const d = new Date();
-    const time = d.getTime();
-    setReload(time);
-  };
+  //console.log('template',template)
+  /*
+const [rows, setRows] = useState<protest[]>(tData.data);
+const [tableData, setTableData] = useState<protestItems>(tData);
+const [loading, setLoading] = useState(false);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.target.value);
+const [orderBy, setOrderBy] = useState<string>("");
+const [sortBy, setSortBy] = useState<string>("");
+const [search, setSearch] = useState<string>("");
+const [limit, setLimit] = useState<number>(10);
+const [page, setPage] = useState<number>(1);
+const [reload, setReload] = useState<number>(1);
+const [listItems, setListItems] = useState<JSX.Element[]>([]);
+const [selectAll, setSelectAll] = useState(false);
+const [domain, setDomain] = useState("");
+const item_id = id;
+
+const sort = (col: string) => {
+  setSortBy(col);
+  setOrderBy(orderBy === "ASC" ? "DESC" : "ASC");
+};
+
+const callReload = (del: boolean) => {
+  const d = new Date();
+  const time = d.getTime();
+  setReload(time);
+};
+
+const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  setSearch(event.target.value);
+  callReload(false);
+};
+
+const handleLimit = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  setLimit(parseInt(event.target.value));
+  setPage(1);
+  callReload(false);
+};
+
+const handlePrevious = () => {
+  if (page > 1) setPage(page - 1);
+  callReload(false);
+};
+
+const handleNext = () => {
+  if (page < tableData.last_page) setPage(page + 1);
+  callReload(false);
+};
+
+useEffect(() => {
+  const handlePage = (pageNo: number) => {
+    setPage(pageNo);
     callReload(false);
   };
-
-  const handleLimit = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setLimit(parseInt(event.target.value));
-    setPage(1);
-    callReload(false);
-  };
-
-  const handlePrevious = () => {
-    if (page > 1) setPage(page - 1);
-    callReload(false);
-  };
-
-  const handleNext = () => {
-    if (page < tableData.last_page) setPage(page + 1);
-    callReload(false);
-  };
-
-  useEffect(() => {
-    const handlePage = (pageNo: number) => {
-      setPage(pageNo);
-      callReload(false);
-    };
-    const generateListItems = (t: protestItems) => {
-      const items = [];
-      for (let i = 1; i <= t.last_page; i++) {
-        items.push(
-          <li key={i}>
-            <a
-              onClick={() => handlePage(i)}
-              className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white"
-              href="#"
-            >
-              {i}
-            </a>
-          </li>
-        );
-      }
-      setListItems(items);
-    };
-
-    const getAllItems = async () => {
-      setLoading(true);
-
-      const res = await getProtestItems(
-        item_id,
-        search,
-        limit,
-        page,
-        sortBy,
-        orderBy
+  const generateListItems = (t: protestItems) => {
+    const items = [];
+    for (let i = 1; i <= t.last_page; i++) {
+      items.push(
+        <li key={i}>
+          <a
+            onClick={() => handlePage(i)}
+            className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white"
+            href="#"
+          >
+            {i}
+          </a>
+        </li>
       );
-      //console.log('response'+res.items);
-      const tData = res.items as protest;
-      //console.log('tData '+tData.data)
+    }
+    setListItems(items);
+  };
 
-      setTableData(tData);
-      setRows(tData.data);
-      setLoading(false);
-      generateListItems(tData);
-      if (tData.data.length > 0) {
-        setDomain(tData.data[0].domain.domain_name);
-      }
-    };
-    getAllItems();
-    // eslint-disable-next-line
-  }, [reload]);
+  const getAllItems = async () => {
+    setLoading(true);
+
+    const res = await getProtestItems(
+      item_id,
+      search,
+      limit,
+      page,
+      sortBy,
+      orderBy
+    );
+    //console.log('response'+res.items);
+    const tData = res.items as protest;
+    //console.log('tData '+tData.data)
+
+    setTableData(tData);
+    setRows(tData.data);
+    setLoading(false);
+    generateListItems(tData);
+    if (tData.data.length > 0) {
+      setDomain(tData.data[0].domain.domain_name);
+    }
+  };
+  getAllItems();
+  // eslint-disable-next-line
+}, [reload]);
 
 */
 
   //const [editorState, setEditorState] = useState();
-//   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const onEditorStateChange = (newEditorState:any) => {
+  //   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const onEditorStateChange = (newEditorState: any) => {
     setEditorState(newEditorState);
   };
 
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createWithContent(
+      ContentState.createFromBlockArray(convertFromHTML(template))
+    )
+  );
 
-const [editorState, setEditorState] = useState(() =>
-EditorState.createWithContent(
-  ContentState.createFromBlockArray(
-    convertFromHTML(template)
-  )
-)
-);
-  
-//   console.log(template)
-//   useEffect(() => {
-//     setEditorState(template);
-//     },[]);
+  const [protestTitle, setProtestTitle] = useState<string>("");
+
+  //   console.log(template)
+  //   useEffect(() => {
+  //     setEditorState(template);
+  //     },[]);
+
+  const handleProtestTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const {value} = e.target;
+
+    setProtestTitle(value);
+  }
+
+  const htmlEncode = (content: string) => {
+    return String(content)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  const handleSaveProtest = async () => {
+    const contentState = editorState.getCurrentContent();
+    // const contentText = contentState.getPlainText();
+    const rawContentState = convertToRaw(contentState);
+    const html = draftToHtml(rawContentState);
+
+
+    if (protestTitle) {
+      const res = await fetch('/api/domain/items/protests/save', {
+        method: 'POST',
+        body: JSON.stringify({ item_id: id, title: protestTitle, content: html }),
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        Swal.fire(
+          'Saved!',
+          'You have successfully generated a protest letter.',
+          'success'
+        );
+      } else {
+        Swal.fire(
+          'Oops!',
+          'An error occured during saving. Please try again!',
+          'error'
+        );
+      }
+    }
+  }
 
   return (
     <>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-title-md2 font-semibold text-black dark:text-white capitalize">
-          {domainItems.domain.domain_name} Item Serial Number ({domainItems.serial_number}) Protest List
+          {domainItems.domain.domain_name} Item Serial Number (
+          {domainItems.serial_number}) Protest List
         </h2>
         <nav>
           <ol className="flex items-center gap-2">
@@ -380,27 +448,26 @@ EditorState.createWithContent(
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mb-8">
         <div className="flex flex-col gap-5.5 p-6.5">
           <div className="border border-[#f1f1f1] p-1.5">
-          
-         <input
-                        className="w-full rounded border border-stroke py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                        type="text"
-                        name="title"
-                        id="title"
-                        placeholder="Add title to your protest here..."
-                        defaultValue=""
-                      />
-          <Editor
-            editorState={editorState}
-            toolbarClassName="toolbarClassName"
-            wrapperClassName="wrapperClassName"
-            editorClassName="editorClassName"
-            onEditorStateChange={onEditorStateChange}
-          />
+            <input
+              className="w-full rounded border border-stroke py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+              type="text"
+              name="title"
+              id="title"
+              placeholder="Add title to your protest here..."
+              defaultValue={protestTitle}
+              onChange={(e) => {handleProtestTitleChange(e)}}
+            />
+            <Editor
+              editorState={editorState}
+              toolbarClassName="toolbarClassName"
+              wrapperClassName="wrapperClassName"
+              editorClassName="editorClassName"
+              onEditorStateChange={onEditorStateChange}
+            />
           </div>
-          <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
-              
-                Save
-            </button>
+          <button onClick={handleSaveProtest} className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
+            Save
+          </button>
         </div>
       </div>
     </>
