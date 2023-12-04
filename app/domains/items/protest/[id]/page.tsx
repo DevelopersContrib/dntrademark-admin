@@ -2,6 +2,8 @@ import { Metadata } from 'next';
 import {getItemProtests,getItem} from '@/lib/data'
 import { items } from "@/types/items";
 import { protest } from "@/types/protest";
+import { protestTable } from "@/types/protestTable";
+import {getItemProtestList} from '@/lib/data'
 import ProtestList from "@/components/Protest/ProtestList"
 import { promises as fs } from 'fs';
 
@@ -22,8 +24,8 @@ const page = async({ params }: { params: { id: number} }) => {
   const item = await getItem(id);
   const items  = item as items;
 
-  const itemProtests = await getItemProtests(id);
-  const protests  = itemProtests as protest[];
+  const itemProtests = await getItemProtestList(id);
+  const protests  = itemProtests as protestTable
   return (
     <ProtestList domainItems={item} id={params.id} template={file} tData={protests} />
   )
