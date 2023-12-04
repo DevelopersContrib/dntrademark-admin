@@ -3,11 +3,13 @@ import { FaBuffer } from "react-icons/fa6";
 import { FaTimes } from "react-icons/fa";
 import { FaCircleNotch } from "react-icons/fa6";
 import React, { ChangeEvent, useState, useEffect } from "react";
-// import { getProtestItems } from "@/lib/domain-helper";
+import { getItemProtests } from "@/lib/domain-helper";
 // import { protestItems } from "@/types/protestItems";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import { items } from "@/types/items";
+import { protest } from "@/types/protest";
+import { protestTable } from "@/types/protestTable";
 import LoadingRipple from "../Loading/LoadingRipple";
 import Link from "next/link";
 import { BsEye } from "react-icons/bs";
@@ -24,15 +26,15 @@ import htmlToDraft from 'html-to-draftjs';
 
 interface props {
   domainItems: items;
-  //tData: protestItems;
+  tData: protestTable;
   id: number;
   template: string;
 }
 
 //const Protest = ({ tData, id }: tableProps) => {
-const ProtestList = ({ id, domainItems, template }: props) => {
+const ProtestList = ({ id, domainItems, template,tData }: props) => {
   const { data: session } = useSession();
-
+  
   let name: string | null | undefined = session?.user?.name;
   let email: string | null | undefined = session?.user?.email;
 
@@ -88,10 +90,9 @@ const ProtestList = ({ id, domainItems, template }: props) => {
     // template = template.split("\n").join("<br />");
   }
 
-  //console.log('template',template)
-  /*
+
 const [rows, setRows] = useState<protest[]>(tData.data);
-const [tableData, setTableData] = useState<protestItems>(tData);
+const [tableData, setTableData] = useState<protestTable>(tData);
 const [loading, setLoading] = useState(false);
 
 const [orderBy, setOrderBy] = useState<string>("");
@@ -142,7 +143,7 @@ useEffect(() => {
     setPage(pageNo);
     callReload(false);
   };
-  const generateListItems = (t: protestItems) => {
+  const generateListItems = (t: protestTable) => {
     const items = [];
     for (let i = 1; i <= t.last_page; i++) {
       items.push(
@@ -163,7 +164,7 @@ useEffect(() => {
   const getAllItems = async () => {
     setLoading(true);
 
-    const res = await getProtestItems(
+    const res = await getItemProtests(
       item_id,
       search,
       limit,
@@ -171,26 +172,23 @@ useEffect(() => {
       sortBy,
       orderBy
     );
-    //console.log('response'+res.items);
-    const tData = res.items as protest;
+    console.log('response',res.items);
+    const tData = res.items as protestTable;
     //console.log('tData '+tData.data)
 
     setTableData(tData);
     setRows(tData.data);
     setLoading(false);
     generateListItems(tData);
-    if (tData.data.length > 0) {
-      setDomain(tData.data[0].domain.domain_name);
-    }
+    // if (tData.data.length > 0) {
+    //   setDomain(tData.data[0].domain.domain_name);
+    // }
   };
   getAllItems();
   // eslint-disable-next-line
 }, [reload]);
 
-*/
 
-  //const [editorState, setEditorState] = useState();
-  //   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const onEditorStateChange = (newEditorState: any) => {
     setEditorState(newEditorState);
   };
@@ -205,10 +203,6 @@ useEffect(() => {
 
   const [protestTitle, setProtestTitle] = useState<string>("");
 
-  //   console.log(template)
-  //   useEffect(() => {
-  //     setEditorState(template);
-  //     },[]);
 
   const handleProtestTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {value} = e.target;
@@ -227,7 +221,6 @@ useEffect(() => {
 
   const handleSaveProtest = async () => {
     const contentState = editorState.getCurrentContent();
-    // const contentText = contentState.getPlainText();
     const rawContentState = convertToRaw(contentState);
     const html = draftToHtml(rawContentState);
 
@@ -311,7 +304,7 @@ useEffect(() => {
           </div>
         </div>
 </div> */}
-      {/*
+    
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mb-8">
         <div className="flex flex-col gap-5.5 p-6.5">
           <div className="max-w-full overflow-x-auto">
@@ -416,25 +409,17 @@ useEffect(() => {
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                           <p className="text-black dark:text-white">
-                            {item.date}
+                            {item.created_at}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                           <div className="flex items-center space-x-3.5">
-                            <Link href={"/items/" + item.id} replace>
-                              <button className="w-8 h-8 inline-flex items-center justify-center rounded border border-[#eee] hover:bg-strokedark hover:text-white hover:border-strokedark">
-                                <BsEye className="w-4 h-4" />
-                              </button>
-                            </Link>
-                            <Link
-                              title="Generate Protest Letter"
-                              href={"/domains/items/protest/" + item.id}
-                              replace
-                            >
                               <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-sm font-normal text-white hover:bg-opacity-90 lg:px-4">
-                                Generate
+                                Edit
                               </button>
-                            </Link>
+                              <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-sm font-normal text-white hover:bg-opacity-90 lg:px-4">
+                                Download PDF
+                              </button>
                           </div>
                         </td>
                       </tr>
@@ -478,7 +463,7 @@ useEffect(() => {
           </div>
         </div>
       </div>
-      */}
+     
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mb-8">
         <div className="flex flex-col gap-5.5 p-6.5">
           <div className="border border-[#f1f1f1] p-1.5">

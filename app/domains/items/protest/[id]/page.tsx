@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
-// import WithItems from "@/components/Domains/WithItems"
-import {getDomainItems,getItem} from '@/lib/data'
+import {getItemProtests,getItem} from '@/lib/data'
 import { items } from "@/types/items";
+import { protest } from "@/types/protest";
 import ProtestList from "@/components/Protest/ProtestList"
 import { promises as fs } from 'fs';
 
@@ -19,13 +19,13 @@ const page = async({ params }: { params: { id: number} }) => {
   
   // const tData = itemlist as domainItems;
     
-  const domainItems = await getItem(id);
-  // console.log('items',domainItems)
-  const items  = domainItems as items;
-  // console.log('items',items)
+  const item = await getItem(id);
+  const items  = item as items;
+
+  const itemProtests = await getItemProtests(id);
+  const protests  = itemProtests as protest[];
   return (
-    // <WithItems tData={tData} id={params.id}/>
-    <ProtestList domainItems={items} id={params.id} template={file} />
+    <ProtestList domainItems={item} id={params.id} template={file} tData={protests} />
   )
 
   

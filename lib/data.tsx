@@ -245,6 +245,23 @@ export const getItem = async (id: number) => {
   }
 };
 
+export const getItemProtests = async (id: number) => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: "Bearer " + session?.token },
+      timeout: 10000,
+    };
+
+    const apiUrl =
+      process.env.API_URL + "/items/protests/" + id + "?api_key=" + process.env.API_KEY;
+    const res = await axios.get(apiUrl, config);
+    return res.data.item_protests;
+  } catch (error) {
+    console.log("Error", error);
+  }
+};
+
 export const getPackage = async (id: number) => {
   try {
     const url =

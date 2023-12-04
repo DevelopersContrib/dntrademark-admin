@@ -10,6 +10,18 @@ export const getDomains = async (search:string,limit:number,page:number,sortBy:s
   }
 };
 
+export const getItemProtests = async (item_id:number,search:string,limit:number,page:number,sortBy:string,orderBy:string) => {
+  try {
+    const res = await fetch('/api/item/protest', {
+      method: 'POST',
+      body: JSON.stringify({ item_id:item_id,search: search, limit: limit, page:page,sortBy:sortBy,orderBy:orderBy })
+    });
+    return res.json();
+  } catch (error) {
+    return error;
+  }
+};
+
 export const getDomainsWithHits = async (search:string,limit:number,page:number,sortBy:string,orderBy:string) => {
   try {
     const res = await fetch('/api/domain/withhits', {
