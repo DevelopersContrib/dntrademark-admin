@@ -38,6 +38,7 @@
     "react-draft-wysiwyg": "^1.15.0",
     "react-icons": "^4.11.0",
     "react-jvectormap": "^0.0.16",
+    "react-quill": "^2.0.0",
     "react-to-pdf": "^1.0.1",
     "stripe": "^13.10.0",
     "sweetalert2": "^11.7.32",
