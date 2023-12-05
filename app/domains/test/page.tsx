@@ -6,7 +6,7 @@ import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-function page() {
+const Test = () => {
     const onEditorStateChange = (newEditorState: any) => {
         setEditorState(newEditorState);
       };
@@ -31,5 +31,4 @@ function page() {
     </div>
   )
 }
-
-export default page
+export default Test;
