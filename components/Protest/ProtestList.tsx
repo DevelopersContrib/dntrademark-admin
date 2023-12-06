@@ -4,8 +4,8 @@ import { FaTimes } from "react-icons/fa";
 import { FaCircleNotch } from "react-icons/fa6";
 import React, { ChangeEvent, useState, useEffect } from "react";
 import { getItemProtests } from "@/lib/domain-helper";
-// import { protestItems } from "@/types/protestItems";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 import { items } from "@/types/items";
 import { protest } from "@/types/protest";
@@ -13,16 +13,9 @@ import { protestTable } from "@/types/protestTable";
 import LoadingRipple from "../Loading/LoadingRipple";
 import Link from "next/link";
 import { BsEye } from "react-icons/bs";
-
-import { Editor } from "react-draft-wysiwyg";
-
-
-import { EditorState, ContentState, convertFromHTML, convertToRaw  } from "draft-js";
-import draftToHtml from 'draftjs-to-html';
 import Swal from 'sweetalert2'
 import { useSession } from "next-auth/react";
-
-import htmlToDraft from 'html-to-draftjs';
+import { decodedTextSpanIntersectsWith } from "typescript";
 
 interface props {
   domainItems: items;
@@ -31,10 +24,9 @@ interface props {
   template: string;
 }
 
-//const Protest = ({ tData, id }: tableProps) => {
 const ProtestList = ({ id, domainItems, template,tData }: props) => {
   const { data: session } = useSession();
-  
+  let reactQuillRef:any;
   let name: string | null | undefined = session?.user?.name;
   let email: string | null | undefined = session?.user?.email;
 
@@ -87,7 +79,8 @@ const ProtestList = ({ id, domainItems, template,tData }: props) => {
     template = template.replaceAll("[Domain]", domainItems.domain.domain_name);
     template = template.replaceAll("[Keyword]", domainItems.keyword);
 
-    // template = template.split("\n").join("<br />");
+    template = template.split("\n").join("<br />");
+    
   }
 
 
@@ -174,35 +167,19 @@ useEffect(() => {
     );
     console.log('response',res.items);
     const tData = res.items as protestTable;
-    //console.log('tData '+tData.data)
 
     setTableData(tData);
     setRows(tData.data);
     setLoading(false);
     generateListItems(tData);
-    // if (tData.data.length > 0) {
-    //   setDomain(tData.data[0].domain.domain_name);
-    // }
   };
   getAllItems();
   // eslint-disable-next-line
 }, [reload]);
 
-
-  const onEditorStateChange = (newEditorState: any) => {
-    setEditorState(newEditorState);
-  };
-
-  const contentBlock = htmlToDraft(template);
-
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createWithContent(
-      ContentState.createFromBlockArray(contentBlock.contentBlocks)
-    )
-  );
+  const [editorState, setEditorState] = useState(template);
 
   const [protestTitle, setProtestTitle] = useState<string>("");
-
 
   const handleProtestTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {value} = e.target;
@@ -220,9 +197,11 @@ useEffect(() => {
   }
 
   const handleSaveProtest = async () => {
-    const contentState = editorState.getCurrentContent();
-    const rawContentState = convertToRaw(contentState);
-    const html = draftToHtml(rawContentState);
+    const editor = reactQuillRef.getEditor();
+  const unprivilegedEditor = reactQuillRef.makeUnprivilegedEditor(editor);
+  // You may now use the unprivilegedEditor proxy methods
+  const html = unprivilegedEditor.getContents();
+    //const html = draftToHtml(rawContentState);
 
 
     if (protestTitle) {
@@ -246,6 +225,12 @@ useEffect(() => {
           'error'
         );
       }
+    }else{
+      Swal.fire(
+        'Oops!',
+        'Please enter Protest title',
+        'error'
+      );
     }
   }
 
@@ -476,13 +461,13 @@ useEffect(() => {
               defaultValue={protestTitle}
               onChange={(e) => {handleProtestTitleChange(e)}}
             />
-            <Editor
-              editorState={editorState}
-              toolbarClassName="toolbarClassName"
-              wrapperClassName="wrapperClassName"
-              editorClassName="editorClassName"
-              onEditorStateChange={onEditorStateChange}
+           
+            <ReactQuill theme="snow" value={editorState} onChange={setEditorState}
+            ref={(el) => {
+              reactQuillRef = el;
+            }}
             />
+
           </div>
           <button onClick={handleSaveProtest} className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
             Save
