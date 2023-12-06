@@ -4,6 +4,7 @@ import { getItemProtests } from "@/lib/domain-helper";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
+import { FaDumbbell, FaDumpster, FaGithub, FaCircleNotch } from 'react-icons/fa6';
 import { items } from "@/types/items";
 import { protest } from "@/types/protest";
 import { protestTable } from "@/types/protestTable";
@@ -77,7 +78,7 @@ const ProtestList = ({ id, domainItems, template,tData }: props) => {
     
   }
 
-
+  const [saving, setSaving] = useState(false);
 const [rows, setRows] = useState<protest[]>(tData.data);
 const [tableData, setTableData] = useState<protestTable>(tData);
 const [loading, setLoading] = useState(false);
@@ -199,14 +200,16 @@ useEffect(() => {
 
 
     if (protestTitle) {
+      setSaving(true)
       const res = await fetch('/api/domain/items/protests/save', {
         method: 'POST',
         body: JSON.stringify({ item_id: id, title: protestTitle, content: html }),
       });
-
+      setSaving(false)
       const result = await res.json();
 
       if (result.success) {
+        callReload(true);
         Swal.fire(
           'Saved!',
           'You have successfully generated a protest letter.',
@@ -434,7 +437,7 @@ useEffect(() => {
 
           </div>
           <button onClick={handleSaveProtest} className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
-            Save
+          {saving && <FaCircleNotch className="w-4 h-4 fa-spin mr-2" />} Save
           </button>
         </div>
       </div>
