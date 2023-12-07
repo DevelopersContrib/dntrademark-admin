@@ -38,7 +38,7 @@ const PackagesNew = (props: any) => {
               alt="Check Icon"
             />
             <h6 className="text-black dark:text-white font-medium text-1xl mb-0 ml-2">
-              Free 3 domains
+              Free 25 domains
             </h6>
           </div>
           <br></br>
@@ -114,7 +114,7 @@ const PackagesNew = (props: any) => {
           <p className="text-primary font-medium">Ideal For:</p>
           <div
             aria-label="purchase this plan"
-            className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-5.5"
+            className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-1.5"
           >
             <svg
               className="inline-flex mr-1"
@@ -130,6 +130,8 @@ const PackagesNew = (props: any) => {
             </svg>
             Individual domain investors exploring the world of trademarks.
           </div>
+          <p className="text-primary font-medium mb-5.5">$0.10 cents in excess of 25</p>
+          <div className="mb-5">&nbsp;</div>
           <Image
             className="mx-auto"
             style={{ position: "absolute", right: "5px", top: "0px" }}
@@ -155,7 +157,7 @@ const PackagesNew = (props: any) => {
             >
               Current
             </button>
-          )}
+          )}          
         </div>
         {/* End plan 1 */}
 
@@ -186,7 +188,7 @@ const PackagesNew = (props: any) => {
               alt="Check Icon"
             />
             <h6 className="text-black dark:text-white font-medium text-1xl mb-0 ml-2">
-              Free 2000 Domains and $.08 cents/domain after
+              Free 2000 Domains
             </h6>
           </div>
           <br></br>
@@ -249,7 +251,7 @@ const PackagesNew = (props: any) => {
           <p className="text-primary font-medium">Ideal For:</p>
           <div
             aria-label="purchase this plan"
-            className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-5.5"
+            className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-1.5"
           >
             &nbsp;&nbsp;
             <svg
@@ -264,90 +266,9 @@ const PackagesNew = (props: any) => {
                 fill="currentColor"
               />
             </svg>
-            Individual domain investors with a strong commitment to their
-            endeavors.
-            <a href="" className="text-primary">
-              More...
-            </a>
-          </div>
-          <div style={{ display: "none" }}>
-            <div className="inline-flex mb-1.5">
-              <Image
-                className="mx-auto pt-1"
-                style={{ height: "18px", width: "15px" }}
-                width={0}
-                height={0}
-                src={"https://cdn.vnoc.com/desc/dntrademark/dn-check.png"}
-                alt="Check Icon"
-              />
-              <h6 className="text-black dark:text-white font-medium text-1xl mb-0 ml-2">
-                For Small Teams:
-              </h6>
-            </div>
-            <p className="text-primary font-medium">
-              Everything in Explorer for Each Team Member, Plus:
-            </p>
-            <div
-              aria-label="purchase this plan"
-              className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-1.5"
-            >
-              <svg
-                className="inline-flex mr-1"
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10.4767 6.16701L6.00668 1.69701L7.18501 0.518677L13.6667 7.00034L7.18501 13.482L6.00668 12.3037L10.4767 7.83368H0.333344V6.16701H10.4767Z"
-                  fill="currentColor"
-                />
-              </svg>
-              <b>Dedicated Team Workspace:</b> Enhanced collaboration features
-              for effective team management.
-            </div>
-            <div
-              aria-label="purchase this plan"
-              className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-1.5"
-            >
-              &nbsp;&nbsp;
-              <svg
-                className="inline-flex mr-1"
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10.4767 6.16701L6.00668 1.69701L7.18501 0.518677L13.6667 7.00034L7.18501 13.482L6.00668 12.3037L10.4767 7.83368H0.333344V6.16701H10.4767Z"
-                  fill="currentColor"
-                />
-              </svg>
-              <b>Priority Support:</b> Quick assistance for uninterrupted
-              workflows.
-            </div>
-            <p className="text-primary font-medium">Ideal For:</p>
-            <div
-              aria-label="purchase this plan"
-              className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-5.5"
-            >
-              &nbsp;&nbsp;
-              <svg
-                className="inline-flex mr-1"
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10.4767 6.16701L6.00668 1.69701L7.18501 0.518677L13.6667 7.00034L7.18501 13.482L6.00668 12.3037L10.4767 7.83368H0.333344V6.16701H10.4767Z"
-                  fill="currentColor"
-                />
-              </svg>
-              Small to medium-sized teams requiring advanced features.
-            </div>
-          </div>
-          <div className="mb-5">&nbsp;</div>
+            Small to medium-sized teams requiring advanced features.            
+          </div>          
+          <p className="text-primary font-medium mb-5.5">$.08 cents/domain in excess of 2000</p>
           <Image
             className="mx-auto"
             style={{ position: "absolute", right: "5px", top: "0px" }}
@@ -421,7 +342,7 @@ const PackagesNew = (props: any) => {
               alt="Check Icon"
             />
             <h6 className="text-black dark:text-white font-medium text-1xl mb-0 ml-2">
-              Free 4000 Domains and $0.06 cents/domain after
+              Free 4000 Domains
             </h6>
           </div>
           <br></br>
@@ -448,7 +369,7 @@ const PackagesNew = (props: any) => {
           <p className="text-primary font-medium">Ideal For:</p>
           <div
             aria-label="purchase this plan"
-            className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-5.5"
+            className="inline-flex1 items-center gap-2.5 text-dark dark:text-white dark:hover:text-primary font-medium transition-all duration-300 mb-1.5"
           >
             <svg
               className="inline-flex mr-1"
@@ -464,6 +385,7 @@ const PackagesNew = (props: any) => {
             </svg>
             Corporations managing extensive domain portfolios.
           </div>
+          <p className="text-primary font-medium mb-5.5">$.06 cents/domain in excess of 4000</p>
           <Image
             className="mx-auto"
             style={{ position: "absolute", right: "5px", top: "0px" }}
