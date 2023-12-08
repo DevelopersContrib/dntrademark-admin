@@ -1,7 +1,113 @@
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import React from "react";
+import LoadingRipple from "../Loading/LoadingRipple";
+
+type InvoiceType = {
+  additional_amount: string;
+  created_at: string;
+  desc: string;
+  due_date: string;
+  id: number
+  package_amount: string;
+  package_id: number
+  status: string
+  total: string
+  updated_at: string
+  user_id: number
+}
+
+type PaginationLinkType = {
+  active: boolean;
+  label: string;
+  url: string | null
+}
 
 export default function Billing() {
+  const [invoices, setInvoices] = useState<InvoiceType[]>([]);
+  const [invoicesPerPage, setInvoicesPerPage] = useState<number>(10);
+  const [numberOfInvoices, setNumberOfInvoices] = useState<number>(1);
+  const [numberOfPages, setNumberOfPages] = useState<number>(1);
+  const [paginationLinks, setPaginationLinks] = useState<PaginationLinkType[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchKey, setSearchKey] = useState<string>("");
+  const [limit, setLimit] = useState<number>(10);
+  const [isFetchingData, setIsFetchingData] = useState<boolean>(false);
+
+  const abortController = new AbortController();
+  const signal = abortController.signal;
+
+  const handlePagination = (url: string | null) => {
+    if (url) {
+      const urlObj = new URL(url);
+      const page = urlObj.searchParams.get('page');
+
+      if (page && parseInt(page) !== currentPage) {
+        console.log("Get invoices next page");
+      }
+    }
+  }
+
+  const handleSearch: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const { value } = e.target;
+
+    setSearchKey((prev) => (value));
+    getInvoices(signal);
+  }
+
+  const handleLimitChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
+    const { value } = e.target;
+
+    setLimit(parseInt(value));
+    getInvoices(signal);
+  }
+
+  const getInvoices =async (signal: AbortSignal) => {
+    try {
+      setIsFetchingData(true);
+
+      const urlQuery = "?search=" + searchKey + "&limit=" + limit;
+      const res = await fetch("api/invoices" + urlQuery, { signal });
+
+      if (res.ok) {
+        const result = await res.json();
+
+        console.log(result.invoices);
+
+        setInvoices(result.invoices.data);
+        setInvoicesPerPage(result.invoices.per_page);
+        setNumberOfInvoices(result.invoices.total);
+        setPaginationLinks(result.invoices.links);
+        setCurrentPage(result.invoices.currentPage);
+
+        setIsFetchingData(false);
+      } else {
+        console.log("error", res.statusText);
+        setIsFetchingData(false);
+      }
+    } catch (error: any) {
+      console.log("error", error);
+      if (error.name === "AbortError") {
+        // Request was aborted
+        console.log("Request was aborted");
+      } else {
+        // Handle other errors
+        console.error(error);
+      }
+    }
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      getInvoices(signal);
+    };
+
+    fetchData();
+
+    return () => {
+      abortController.abort;
+    };
+  }, []);
   return (
     <>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -43,7 +149,7 @@ export default function Billing() {
             <div className="flex items-center space-x-2">
               <div>
                 <div className="relative">
-                  <select className="border-form-stroke border-[#ddd] text-body-color focus:border-primary active:border-primary w-full appearance-none rounded-lg border-[1.5px] py-2 pl-4 pr-8 font-medium outline-none transition disabled:cursor-default disabled:bg-[#F5F7FD]">
+                  <select onChange={handleLimitChange} className="border-form-stroke border-[#ddd] text-body-color focus:border-primary active:border-primary w-full appearance-none rounded-lg border-[1.5px] py-2 pl-4 pr-8 font-medium outline-none transition disabled:cursor-default disabled:bg-[#F5F7FD]">
                     <option value="10">10</option>
                     <option value="20">20</option>
                     <option value="50">50</option>
@@ -62,6 +168,8 @@ export default function Billing() {
               <div>search:</div>
               <div>
                 <input
+                  onChange={handleSearch}
+                  value={searchKey}
                   type="text"
                   className="border-form-stroke border-[#ddd] text-body-color placeholder-body-color focus:border-primary active:border-primary w-full rounded-lg border-[1.5px] py-2 px-4 font-medium outline-none transition disabled:cursor-default disabled:bg-[#F5F7FD]"
                 />
@@ -94,7 +202,67 @@ export default function Billing() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                {isFetchingData ? (
+                  <>
+                    <tr>
+                      <td colSpan={6}>
+                        <LoadingRipple />
+                      </td>
+                    </tr>
+                  </>
+                ) : (
+                  <>
+                    {invoices.map((invoice: InvoiceType, i: number) => (
+                      <tr key={i}>
+                        <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                          <h5 className="font-medium text-black dark:text-white">
+                            {invoice.desc}
+                          </h5>
+                        </td>
+                        <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                          <h5 className="font-medium text-black dark:text-white">
+                            {"$" + invoice.total}
+                          </h5>
+                        </td>
+                        <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                          <h5 className="font-medium text-black dark:text-white">
+                            {"$" + invoice.additional_amount}
+                          </h5>
+                        </td>
+                        <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                          <div className="inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium text-success bg-success">
+                            {invoice.status}
+                          </div>
+                        </td>
+                        <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                          <div className="inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium text-success bg-success">
+                            {invoice.due_date}
+                          </div>
+                        </td>
+                        <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                          <div className="space-x-2">
+                            {invoice.status === 'pending' ? (
+                              <a
+                                href={"/invoices/details/" + invoice.id}
+                                className="inline-flex items-center justify-center rounded border bg-meta-1 text-white border-meta-1 hover:opacity-70 px-4 py-1"
+                              >
+                                Pay
+                              </a>
+                            ) : (
+                              <a
+                                href={"/invoices/details/" + invoice.id}
+                                className="inline-flex items-center justify-center rounded border bg-strokedark text-white border-strokedark px-4 py-1 hover:opacity-70"
+                              >
+                                View Details
+                              </a>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                )}
+                {/* <tr>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <h5 className="font-medium text-black dark:text-white">
                       Basic Free
@@ -136,7 +304,7 @@ export default function Billing() {
                       </a>
                     </div>
                   </td>
-                </tr>
+                </tr> */}
               </tbody>
             </table>
           </div>
@@ -144,40 +312,33 @@ export default function Billing() {
 
           {/* Start:: Table Footer */}
           <div className="flex w-full py-4 justify-between items-center">
-            <div className="font-medium text-[#666] dark:text-white">
-              Showing 1 to 100 of 5 entries
-            </div>
+            {
+              invoices.length > invoicesPerPage ? (
+                <div className="font-medium text-[#666] dark:text-white">
+                  Showing {invoices.length} to {invoicesPerPage} out of {numberOfInvoices} entries
+                </div>
+              ) : (
+                <div className="font-medium text-[#666] dark:text-white">
+                  Showing {invoices.length} out of {numberOfInvoices} {invoices.length > 1 ? "entries" : "entry"}
+                </div>
+              )
+            }
+            {
+              invoices.length < 1
+            }
             <nav>
               <ul className="flex flex-wrap items-center gap-2">
-                <li>
-                  <a className="flex items-center justify-center rounded bg-[#EDEFF1] py-1.5 px-3 text-xs font-medium text-black hover:bg-primary hover:text-white dark:bg-graydark dark:text-white dark:hover:bg-primary dark:hover:text-white">
-                    Previous
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white"
-                    href="#"
-                  >
-                    1
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="flex items-center justify-center rounded py-1.5 px-3 font-medium hover:bg-primary hover:text-white"
-                    href="#"
-                  >
-                    2
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="flex items-center justify-center rounded bg-[#EDEFF1] py-1.5 px-3 text-xs font-medium text-black hover:bg-primary hover:text-white dark:bg-graydark dark:text-white dark:hover:bg-primary dark:hover:text-white"
-                    href="#"
-                  >
-                    Next
-                  </a>
-                </li>
+                {
+                  paginationLinks.length > 0 && paginationLinks.map((link: PaginationLinkType, i: number) => (
+                    <li key={i}>
+                      {link.url && numberOfPages !== 1 && (
+                        <a onClick={() => {handlePagination(link.url)}} className="flex items-center justify-center rounded bg-[#EDEFF1] py-1.5 px-3 text-xs font-medium text-black hover:bg-primary hover:text-white dark:bg-graydark dark:text-white dark:hover:bg-primary dark:hover:text-white">
+                          {link.label}
+                        </a>
+                      )}
+                    </li>
+                  ))
+                }
               </ul>
             </nav>
           </div>
