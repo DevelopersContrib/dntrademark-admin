@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import WithoutHits from "@/components/Domains/WithoutHits"
-import {getDomainListWithOutHits} from '@/lib/data'
+import {getDomainListWithOutHits,getInvoice} from '@/lib/data'
 import { domainTable } from "@/types/domainTable";
 
 export const metadata: Metadata = {
@@ -13,10 +13,9 @@ const page = async() => {
   const domainlist = await getDomainListWithOutHits();
   
   const tData = domainlist as domainTable;
-  // const invoices = await getInvoice();
-  // const invoiceArr = invoices as []
-  // const deleteDomain = invoiceArr === undefined || invoiceArr.length == 0;
-  const deleteDomain = true;
+  const invoices = await getInvoice();
+  const invoiceArr = invoices as []
+  const deleteDomain = invoiceArr === undefined || invoiceArr.length == 0;
   return (
     <WithoutHits tData={tData} deleteDomain={deleteDomain} />
   )

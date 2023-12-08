@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import AllDomains from "@/components/Domains/AllDomains"
-import {getDomainList} from '@/lib/data'
-import {getInvoice} from '@/lib/data'
+import {getDomainList,getInvoice} from '@/lib/data'
 import { domainTable } from "@/types/domainTable";
 
 export const metadata: Metadata = {
@@ -16,8 +15,7 @@ const page = async() => {
   const tData = domainlist as domainTable;
   const invoices = await getInvoice();
   const invoiceArr = invoices as []
- // const deleteDomain = invoiceArr === undefined || invoiceArr.length == 0;
- const deleteDomain = true;
+  const deleteDomain = invoiceArr === undefined || invoiceArr.length == 0;
   return (
     <AllDomains tData={tData} deleteDomain={deleteDomain}  />
   )
