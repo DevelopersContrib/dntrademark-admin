@@ -11,9 +11,10 @@ import Link from "next/link";
 
 interface tableProps {
   tData: domainTable;
+  deleteDomain: boolean;
 }
 
-const WithHits = ({ tData }: tableProps) => {
+const WithHits = ({ tData,deleteDomain }: tableProps) => {
   const [rows, setRows] = useState<domains[]>(tData.data);
   const [tableData, setTableData] = useState<domainTable>(tData);
   const [loading, setLoading] = useState(false);
@@ -243,7 +244,7 @@ const WithHits = ({ tData }: tableProps) => {
                     Cancel
                   </button>
                 </>
-              ) : showDelete ? (
+              ) : showDelete && deleteDomain ? (
                 <button
                   onClick={() => {
                     setConfirmDelete(true);
@@ -425,7 +426,9 @@ const WithHits = ({ tData }: tableProps) => {
                               ></path>
                             </svg>
                           </Link>
-                          <button
+                          {
+                            deleteDomain?(
+                              <button
                             onClick={() => deleteSingle(item.id)}
                             className="w-8 h-8 inline-flex items-center justify-center rounded border border-[#eee] hover:bg-meta-1 hover:text-white hover:border-meta-1"
                           >
@@ -455,6 +458,9 @@ const WithHits = ({ tData }: tableProps) => {
                               ></path>
                             </svg>
                           </button>
+                            ):null
+                          }
+                          
                         </div>
                       </td>
                     </tr>
