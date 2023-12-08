@@ -508,3 +508,17 @@ export const authorizeUser = async (credentials: User) => {
     console.log("error", error);
   }
 };
+
+export const getInvoice = async () => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: "Bearer " + session?.token, timeout: 10000 },
+    };
+    const apiUrl = process.env.API_URL +"/invoices?api_key=" + process.env.API_KEY;
+    const res = await axios.get(apiUrl, config);
+    return res.data.invoices;
+  } catch (error) {
+    console.log("Error", error);
+  }
+};
