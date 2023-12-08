@@ -15,7 +15,8 @@ const page = async() => {
   const tData = domainlist as domainTable;
   const invoices = await getInvoice();
   const invoiceArr = invoices as []
-  const deleteDomain = invoiceArr === undefined || invoiceArr.length == 0;
+  // const deleteDomain = invoiceArr === undefined || invoiceArr.length == 0;
+  const deleteDomain = true;
   return (
     <WithHits tData={tData} deleteDomain={deleteDomain} />
   )
