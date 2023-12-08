@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import AllDomains from "@/components/Domains/AllDomains"
-import {getDomainList,getInvoice} from '@/lib/data'
+import {getDomainList} from '@/lib/data'
+import {getInvoice} from '@/lib/data'
 import { domainTable } from "@/types/domainTable";
 
 export const metadata: Metadata = {
