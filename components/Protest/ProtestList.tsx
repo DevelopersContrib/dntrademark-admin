@@ -11,6 +11,7 @@ import { protestTable } from "@/types/protestTable";
 import LoadingRipple from "../Loading/LoadingRipple";
 import Swal from 'sweetalert2'
 import { useSession } from "next-auth/react";
+import generatePDF from "react-to-pdf";
 
 interface props {
   domainItems: items;
@@ -92,6 +93,11 @@ const [reload, setReload] = useState<number>(1);
 const [listItems, setListItems] = useState<JSX.Element[]>([]);
 const [selectAll, setSelectAll] = useState(false);
 const [domain, setDomain] = useState("");
+const [protestId, setProtestId] = useState(0);
+const [editorState, setEditorState] = useState(template);
+
+const [protestTitle, setProtestTitle] = useState<string>("");
+
 const item_id = id;
 
 const sort = (col: string) => {
@@ -103,7 +109,59 @@ const callReload = (del: boolean) => {
   const d = new Date();
   const time = d.getTime();
   setReload(time);
+  setProtestId(0)
+  setProtestTitle('')
 };
+const handleEdit = async(id:number) => {
+  Swal.fire({
+    title: 'Please wait',
+    html: 'Retrieving Protest...',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading()
+    }
+});
+
+    const res = await fetch('/api/item/protest/view', {
+      method: 'POST',
+      body: JSON.stringify({ id: id }),
+    });
+    Swal.close();
+    const result = await res.json();
+    const itemProtest  = result.item as protest;
+    setProtestId(itemProtest.id)
+    setProtestTitle(itemProtest.title)
+    setEditorState(result.content.toString()) 
+  }
+
+  const handlePDF = async(id:number) => {
+    Swal.fire({
+      title: 'Please wait',
+      html: 'Retrieving Protest...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading()
+      }
+  });
+  
+    const res = await fetch('/api/item/protest/view', {
+      method: 'POST',
+      body: JSON.stringify({ id: id }),
+    });
+    Swal.close();
+    const result = await res.json();
+    const itemProtest  = result.item as protest;
+    setProtestId(itemProtest.id)
+    setProtestTitle(itemProtest.title)
+    setEditorState(result.content.toString()) 
+
+    var intro = document.getElementsByClassName("ql-editor")[0]
+    intro.setAttribute("id", "forpdfdownload")
+    const getTargetElement = () =>document.getElementById("forpdfdownload");
+    generatePDF(getTargetElement, {
+      filename: itemProtest.title.replace(/\s/g, '') + ".pdf",
+    });
+  }
 
 const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   setSearch(event.target.value);
@@ -172,9 +230,7 @@ useEffect(() => {
   // eslint-disable-next-line
 }, [reload]);
 
-  const [editorState, setEditorState] = useState(template);
-
-  const [protestTitle, setProtestTitle] = useState<string>("");
+  
 
   const handleProtestTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {value} = e.target;
@@ -192,35 +248,55 @@ useEffect(() => {
   }
 
   const handleSaveProtest = async () => {
-    const editor = reactQuillRef.getEditor();
-  const unprivilegedEditor = reactQuillRef.makeUnprivilegedEditor(editor);
-  // You may now use the unprivilegedEditor proxy methods
-  const html = unprivilegedEditor.getContents();
-    //const html = draftToHtml(rawContentState);
-
+ 
+  const html =  reactQuillRef.props.value
 
     if (protestTitle) {
       setSaving(true)
-      const res = await fetch('/api/domain/items/protests/save', {
-        method: 'POST',
-        body: JSON.stringify({ item_id: id, title: protestTitle, content: html }),
-      });
-      setSaving(false)
-      const result = await res.json();
-
-      if (result.success) {
-        callReload(true);
-        Swal.fire(
-          'Saved!',
-          'You have successfully generated a protest letter.',
-          'success'
-        );
-      } else {
-        Swal.fire(
-          'Oops!',
-          'An error occured during saving. Please try again!',
-          'error'
-        );
+      if(protestId==0){
+        const res = await fetch('/api/domain/items/protests/save', {
+          method: 'POST',
+          body: JSON.stringify({ item_id: id, title: protestTitle, content: html }),
+        });
+        setSaving(false)
+        const result = await res.json();
+  
+        if (result.success) {
+          callReload(true);
+          Swal.fire(
+            'Saved!',
+            'You have successfully generated a protest letter.',
+            'success'
+          );
+        } else {
+          Swal.fire(
+            'Oops!',
+            'An error occured during saving. Please try again!',
+            'error'
+          );
+        }
+      }else{
+        const res = await fetch('/api/item/protest/update', {
+          method: 'POST',
+          body: JSON.stringify({id:protestId, item_id: id, title: protestTitle, content: html }),
+        });
+        setSaving(false)
+        const result = await res.json();
+  
+        if (result.success) {
+          callReload(true);
+          Swal.fire(
+            'Saved!',
+            'You have successfully updated the protest letter.',
+            'success'
+          );
+        } else {
+          Swal.fire(
+            'Oops!',
+            'An error occured during saving. Please try again!',
+            'error'
+          );
+        }
       }
     }else{
       Swal.fire(
@@ -366,10 +442,10 @@ useEffect(() => {
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                           <div className="flex items-center space-x-3.5">
-                              <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-sm font-normal text-white hover:bg-opacity-90 lg:px-4">
+                              <button onClick={() => handleEdit(item.id)} className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-sm font-normal text-white hover:bg-opacity-90 lg:px-4">
                                 Edit
                               </button>
-                              <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-sm font-normal text-white hover:bg-opacity-90 lg:px-4">
+                              <button onClick={() => handlePDF(item.id)} className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-sm font-normal text-white hover:bg-opacity-90 lg:px-4">
                                 Download PDF
                               </button>
                           </div>
