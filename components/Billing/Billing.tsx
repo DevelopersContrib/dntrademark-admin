@@ -26,6 +26,8 @@ export default function Billing(props: { invoiceData: any }) {
   const [limit, setLimit] = useState<number>(10);
   const [isFetchingData, setIsFetchingData] = useState<boolean>(false);
   const { invoiceData } = props;
+  const [reload, setReload] = useState<boolean>(false);
+  
 
   const abortController = new AbortController();
   const signal = abortController.signal;
@@ -52,7 +54,8 @@ export default function Billing(props: { invoiceData: any }) {
     const { value } = e.target;
 
     setLimit(parseInt(value));
-    getInvoices();
+    // getInvoices();
+    setReload(true)
   }
 
   const getInvoices =async () => {
@@ -62,7 +65,8 @@ export default function Billing(props: { invoiceData: any }) {
         body: JSON.stringify({search: searchKey, limit: limit})
       });
 
-      console.log("res getInvoices", res);
+      // console.log("res getInvoices", res);
+      
     } catch (error) {
       console.log("Error", error);
     }
@@ -76,6 +80,12 @@ export default function Billing(props: { invoiceData: any }) {
     setPaginationLinks(invoiceData.links);
     setCurrentPage(invoiceData.currentPage);
   }, [invoiceData]);
+
+  useEffect(() => {
+    setReload(false)
+    getInvoices();
+  }, [reload]);
+
   return (
     <>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
