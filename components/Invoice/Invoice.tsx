@@ -1,6 +1,37 @@
-import React from "react";
+'use client';
+import React, { useState } from 'react';
+import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
+import CardSection from './CardSection';
+import { FaCircleNotch } from 'react-icons/fa6';
+import { PackagesProps } from '@/types/packages';
 
-const Invoice = () => {
+// Docs:: https://stripe.com/docs/payments/accept-a-payment-charges?client=react
+
+async function stripeTokenHandler(token: any, pack_id: string) {
+  const paymentData = { token: token.id, pack_id: pack_id };
+
+  // Use fetch to send the token ID and any other payment data to your server.
+  // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+
+  const res = await fetch('/api/charge', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(paymentData),
+  });
+
+  // Return and display the result of the charge.
+  // return response.json();
+  return await res.json();
+}
+
+interface pack {
+  pack: PackagesProps;
+}
+
+
+const Invoice: React.FC<pack> = ({ pack }) => {
   return (
     <>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -83,6 +114,19 @@ const Invoice = () => {
           {/* End:: Table */}
         </div>
       </div>
+      <div className="rounded-sm border border-stroke py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div className="checkoutCard">
+                <form >
+                  <div className="mb-4">
+                 
+                  </div>
+                  <button className="inline-flex w-full items-center justify-center rounded-md bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
+                   
+                    Pay
+                  </button>
+                </form>
+              </div>
+            </div> 
     </>
   );
 };
