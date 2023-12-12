@@ -515,6 +515,7 @@ export const getInvoice = async () => {
     const config = {
       headers: { Authorization: "Bearer " + session?.token, timeout: 10000 },
     };
+
     const apiUrl = process.env.API_URL +"/invoices?api_key=" + process.env.API_KEY;
     const res = await axios.get(apiUrl, config);
     return res.data.invoices;
