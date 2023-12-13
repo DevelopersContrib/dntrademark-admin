@@ -1,8 +1,8 @@
-'use client';
-import React, { useState } from 'react';
-import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
-import CardSection from './CardSection';
-import { FaCircleNotch } from 'react-icons/fa6';
+"use client";
+import React, { useState } from "react";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import CardSection from "./CardSection";
+import { FaCircleNotch } from "react-icons/fa6";
 import { InvoiceProps } from "@/types/invoice";
 
 // Docs:: https://stripe.com/docs/payments/accept-a-payment-charges?client=react
@@ -13,10 +13,10 @@ async function stripeTokenHandler(token: any, pack_id: string) {
   // Use fetch to send the token ID and any other payment data to your server.
   // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 
-  const res = await fetch('/api/charge', {
-    method: 'POST',
+  const res = await fetch("/api/charge", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(paymentData),
   });
@@ -30,11 +30,10 @@ interface pack {
   pack: InvoiceProps;
 }
 
-
 const Invoice: React.FC<pack> = ({ pack }) => {
   return (
     <>
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mb-8">
         <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
           <h3 className="font-medium text-black dark:text-white">
             Invoice Summary
@@ -115,18 +114,17 @@ const Invoice: React.FC<pack> = ({ pack }) => {
         </div>
       </div>
       <div className="rounded-sm border border-stroke py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="checkoutCard">
-                <form >
-                  <div className="mb-4">
-                  <CardSection />
-                  </div>
-                  <button className="inline-flex w-full items-center justify-center rounded-md bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
-                   
-                    Pay
-                  </button>
-                </form>
-              </div>
-            </div> 
+        <div className="checkoutCard">
+          <form>
+            <div className="mb-4">
+              <CardSection />
+            </div>
+            <button className="inline-flex w-full items-center justify-center rounded-md bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+              Pay
+            </button>
+          </form>
+        </div>
+      </div>
     </>
   );
 };
