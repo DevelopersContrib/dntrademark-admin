@@ -14,10 +14,8 @@ export const POST =async (req: Request) => {
             "Content-Type": "application/json",
         }}
 
-        console.log("data", data);
-
         const url = process.env.API_URL + '/invoices?api_key=' + process.env.API_KEY + "&search=" + data.search + "&limit=" + data.limit;
-        console.log('url',url)
+
         const res = await axios.get(url, config);
 
         return NextResponse.json(res.data, { status: 200 });
