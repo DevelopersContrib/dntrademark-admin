@@ -118,7 +118,7 @@ const Invoice: React.FC<pack> = ({ pack }) => {
               <div className="checkoutCard">
                 <form >
                   <div className="mb-4">
-                 
+                  <CardSection />
                   </div>
                   <button className="inline-flex w-full items-center justify-center rounded-md bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
                    
