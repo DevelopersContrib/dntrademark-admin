@@ -2,7 +2,7 @@
 import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
 import Invoice from '@/components/Invoice/Invoice';
-import { StripePackage } from "@/types/stripe";
+import { StripeInvoice } from "@/types/stripe";
 
 // Docs:: https://stripe.com/docs/payments/accept-a-payment-charges?client=react
 
@@ -10,7 +10,7 @@ import { StripePackage } from "@/types/stripe";
 // recreating the `Stripe` object on every render.
 
 const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY!);
-const StripeWrapper: React.FC<StripePackage> = ({ id, pack }) => {
+const StripeWrapper: React.FC<StripeInvoice> = ({ id, pack }) => {
   return (
     <Elements stripe={stripePromise}>
       <Invoice pack={pack} />

@@ -15,7 +15,7 @@ interface Invoice {
 const App: React.FC<Invoice> = async ({ params  }) => {
  
   const pack = await getInvoiceDetails(parseInt(params.invoice_id))
- 
+ // console.log(pack);
   if(pack===undefined){
     redirect('/')
   }else

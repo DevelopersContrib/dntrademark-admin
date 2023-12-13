@@ -4,5 +4,6 @@ export type InvoiceProps = {
     package_amount: string;
     additional_amount: string;
     total: string;
-    status: number
+    status: string;
+    due_date: string
   }

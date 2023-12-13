@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import CardSection from './CardSection';
 import { FaCircleNotch } from 'react-icons/fa6';
-import { PackagesProps } from '@/types/packages';
+import { InvoiceProps } from "@/types/invoice";
 
 // Docs:: https://stripe.com/docs/payments/accept-a-payment-charges?client=react
 
@@ -27,7 +27,7 @@ async function stripeTokenHandler(token: any, pack_id: string) {
 }
 
 interface pack {
-  pack: PackagesProps;
+  pack: InvoiceProps;
 }
 
 
@@ -84,27 +84,27 @@ const Invoice: React.FC<pack> = ({ pack }) => {
                 <tr>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <h5 className="font-medium text-black dark:text-white">
-                      Basic Free
+                      {pack.desc}
                     </h5>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <h5 className="font-medium text-black dark:text-white">
-                      $99.00
+                      ${pack.package_amount}
                     </h5>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <h5 className="font-medium text-black dark:text-white">
-                      $0.10
+                      ${pack.additional_amount}
                     </h5>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <div className="inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium text-success bg-success">
-                      Due
+                      {pack.status}
                     </div>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <div className="inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium text-success bg-success">
-                      Dec. 17, 2023
+                      {pack.due_date}
                     </div>
                   </td>
                 </tr>
