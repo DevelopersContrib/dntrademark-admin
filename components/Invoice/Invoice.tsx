@@ -32,6 +32,49 @@ interface pack {
 
 
 const Invoice: React.FC<pack> = ({ pack }) => {
+
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const handleSubmit = async (event: any) => {
+    // We don't want to let default form submission happen here,
+    // which would refresh the page.
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+      // Stripe.js hasn't yet loaded.
+      // Make  sure to disable form submission until Stripe.js has loaded.
+      return;
+    }
+
+    const card = elements.getElement(CardElement);
+    if (card) {
+      const result = await stripe.createToken(card);
+
+      if (result.error) {
+        // Show error to your customer.
+        console.log(result.error.message);
+      } else {
+        // Send the token to your server.
+        // This function does not exist yet; we will define it in the next step.
+        setLoading(true);
+        const res = await stripeTokenHandler(result.token, pack.id.toString());
+        if (res.success) {
+          setLoading(false);
+          setSuccess(true);
+          setTimeout(function () {
+            window.location.href = '/onboarding';
+          }, 3000);
+        } else {
+          console.log(res);
+        }
+      }
+    }
+  };
+
+
   return (
     <>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -114,19 +157,31 @@ const Invoice: React.FC<pack> = ({ pack }) => {
           {/* End:: Table */}
         </div>
       </div>
+      {pack.status === "pending" ? (
       <div className="rounded-sm border border-stroke py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="checkoutCard">
-                <form >
+                <form  onSubmit={handleSubmit}>
                   <div className="mb-4">
                   <CardSection />
                   </div>
-                  <button className="inline-flex w-full items-center justify-center rounded-md bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
-                   
+                  <button className="inline-flex w-full items-center justify-center rounded-md bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" disabled={!stripe}>
+                    {loading ? <FaCircleNotch className="fa-spin mr-2" /> : null}
                     Pay
                   </button>
                 </form>
               </div>
             </div> 
+      ): (
+        <div className="rounded-sm border border-stroke py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="checkoutCard">
+          <form >
+            <button className="inline-flex w-full items-center justify-center rounded-md bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+              Payment Details
+            </button>
+          </form>
+        </div>
+      </div> 
+      )}
     </>
   );
 };
