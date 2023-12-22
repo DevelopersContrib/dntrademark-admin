@@ -80,7 +80,7 @@ export default function Billing(props: { invoiceData: any }) {
     }
 
     getInvoices();
-  }, [reload]);
+  }, [reload, limit, searchKey]);
 
   // useEffect(() => {
   //   setReload(false)

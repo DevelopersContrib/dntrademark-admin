@@ -11,3 +11,13 @@ export type InvoiceType = {
     updated_at: string
     user_id: number
 }
+
+export type InvoiceProps = {
+    id: number;
+    desc: string;
+    package_amount: string;
+    additional_amount: string;
+    total: string;
+    status: string;
+    due_date: string
+}

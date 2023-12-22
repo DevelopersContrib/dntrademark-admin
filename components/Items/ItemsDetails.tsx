@@ -22,7 +22,7 @@ const ItemsDetails = ({ tData }: tableProps) => {
       setOwner(tData.owner);
       setDomain(tData.domain);
     })();
-  }, []);
+  }, [tData]);
 
   return (
     <>
