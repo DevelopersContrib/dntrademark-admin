@@ -2,28 +2,20 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import LoadingRipple from "../Loading/LoadingRipple";
+import { getInvoice } from "@/lib/data";
 
-type InvoiceType = {
-  additional_amount: string;
-  created_at: string;
-  desc: string;
-  due_date: string;
-  id: number
-  package_amount: string;
-  package_id: number
-  status: string
-  total: string
-  updated_at: string
-  user_id: number
-}
+import { InvoiceType } from "@/types/invoice"
+import { getServerSession } from "next-auth";
+import { options } from "@/lib/options";
+import axios from "axios";
 
 type PaginationLinkType = {
   active: boolean;
   label: string;
-  url: string | null
+  url: string | null;
 }
 
-export default function Billing() {
+export default function Billing(props: { invoiceData: any }) {
   const [invoices, setInvoices] = useState<InvoiceType[]>([]);
   const [invoicesPerPage, setInvoicesPerPage] = useState<number>(10);
   const [numberOfInvoices, setNumberOfInvoices] = useState<number>(1);
@@ -33,6 +25,9 @@ export default function Billing() {
   const [searchKey, setSearchKey] = useState<string>("");
   const [limit, setLimit] = useState<number>(10);
   const [isFetchingData, setIsFetchingData] = useState<boolean>(false);
+  const { invoiceData } = props;
+  const [reload, setReload] = useState<boolean>(false);
+  
 
   const abortController = new AbortController();
   const signal = abortController.signal;
@@ -52,62 +47,45 @@ export default function Billing() {
     const { value } = e.target;
 
     setSearchKey((prev) => (value));
-    getInvoices(signal);
+    getInvoices();
   }
 
   const handleLimitChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
     const { value } = e.target;
 
     setLimit(parseInt(value));
-    getInvoices(signal);
+    // getInvoices();
+    setReload(true)
   }
 
-  const getInvoices =async (signal: AbortSignal) => {
+  const getInvoices =async () => {
     try {
-      setIsFetchingData(true);
+      const res = await fetch("/api/invoices/", {
+        method: "POST",
+        body: JSON.stringify({search: searchKey, limit: limit})
+      });
 
-      const urlQuery = "?search=" + searchKey + "&limit=" + limit;
-      const res = await fetch("api/invoices" + urlQuery, { signal });
-
-      if (res.ok) {
-        const result = await res.json();
-
-        console.log(result.invoices);
-
-        setInvoices(result.invoices.data);
-        setInvoicesPerPage(result.invoices.per_page);
-        setNumberOfInvoices(result.invoices.total);
-        setPaginationLinks(result.invoices.links);
-        setCurrentPage(result.invoices.currentPage);
-
-        setIsFetchingData(false);
-      } else {
-        console.log("error", res.statusText);
-        setIsFetchingData(false);
-      }
-    } catch (error: any) {
-      console.log("error", error);
-      if (error.name === "AbortError") {
-        // Request was aborted
-        console.log("Request was aborted");
-      } else {
-        // Handle other errors
-        console.error(error);
-      }
+      // console.log("res getInvoices", res);
+      
+    } catch (error) {
+      console.log("Error", error);
     }
   }
 
+
   useEffect(() => {
-    const fetchData = async () => {
-      getInvoices(signal);
-    };
+    setInvoices(invoiceData.data);
+    setInvoicesPerPage(invoiceData.per_page);
+    setNumberOfInvoices(invoiceData.total);
+    setPaginationLinks(invoiceData.links);
+    setCurrentPage(invoiceData.currentPage);
+  }, [invoiceData]);
 
-    fetchData();
+  useEffect(() => {
+    setReload(false)
+    getInvoices();
+  }, [reload]);
 
-    return () => {
-      abortController.abort;
-    };
-  }, []);
   return (
     <>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -313,7 +291,7 @@ export default function Billing() {
           {/* Start:: Table Footer */}
           <div className="flex w-full py-4 justify-between items-center">
             {
-              invoices.length > invoicesPerPage ? (
+              numberOfInvoices > 0 && invoices.length > invoicesPerPage ? (
                 <div className="font-medium text-[#666] dark:text-white">
                   Showing {invoices.length} to {invoicesPerPage} out of {numberOfInvoices} entries
                 </div>
