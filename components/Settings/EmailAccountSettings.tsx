@@ -65,10 +65,6 @@ export default function EmailAccountSettings(userdetails: any) {
     }
   };
 
-  useEffect(() => {
-    console.log('userEmail', userEmail);
-  },[])
-
   return (
     <>
       <Formik

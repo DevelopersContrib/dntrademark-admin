@@ -28,10 +28,6 @@ export default function Billing(props: { invoiceData: any }) {
   const { invoiceData } = props;
   const [reload, setReload] = useState<boolean>(false);
   
-
-  const abortController = new AbortController();
-  const signal = abortController.signal;
-
   const handlePagination = (url: string | null) => {
     if (url) {
       const urlObj = new URL(url);
@@ -47,44 +43,49 @@ export default function Billing(props: { invoiceData: any }) {
     const { value } = e.target;
 
     setSearchKey((prev) => (value));
-    getInvoices();
+    setReload(true)
   }
 
   const handleLimitChange: React.ChangeEventHandler<HTMLSelectElement> = (e) => {
     const { value } = e.target;
 
     setLimit(parseInt(value));
-    // getInvoices();
     setReload(true)
   }
 
-  const getInvoices =async () => {
-    try {
-      const res = await fetch("/api/invoices/", {
-        method: "POST",
-        body: JSON.stringify({search: searchKey, limit: limit})
-      });
-
-      // console.log("res getInvoices", res);
-      
-    } catch (error) {
-      console.log("Error", error);
+  useEffect(() => {
+    const getInvoices =async () => {
+      try {
+        setIsFetchingData(true);
+  
+        const res = await fetch("/api/invoices/", {
+          method: "POST",
+          body: JSON.stringify({search: searchKey, limit: limit})
+        });
+  
+        const result = await res.json();
+  
+        setInvoices(result.invoices.data);
+        setInvoicesPerPage(result.invoices.per_page);
+        setNumberOfInvoices(result.invoices.total);
+        setPaginationLinks(result.invoices.links);
+        setCurrentPage(result.invoices.currentPage);
+  
+        setIsFetchingData(false);
+        setReload(false)
+        
+      } catch (error) {
+        console.log("Error", error);
+      }
     }
-  }
 
-
-  useEffect(() => {
-    setInvoices(invoiceData.data);
-    setInvoicesPerPage(invoiceData.per_page);
-    setNumberOfInvoices(invoiceData.total);
-    setPaginationLinks(invoiceData.links);
-    setCurrentPage(invoiceData.currentPage);
-  }, [invoiceData]);
-
-  useEffect(() => {
-    setReload(false)
     getInvoices();
-  }, [reload]);
+  }, [reload, limit, searchKey]);
+
+  // useEffect(() => {
+  //   setReload(false)
+  //   getInvoices();
+  // }, [reload]);
 
   return (
     <>
@@ -190,7 +191,7 @@ export default function Billing(props: { invoiceData: any }) {
                   </>
                 ) : (
                   <>
-                    {invoices.map((invoice: InvoiceType, i: number) => (
+                    {invoices.length > 0 ? invoices.map((invoice: InvoiceType, i: number) => (
                       <tr key={i}>
                         <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                           <h5 className="font-medium text-black dark:text-white">
@@ -237,7 +238,12 @@ export default function Billing(props: { invoiceData: any }) {
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  : (
+                    <tr>
+                      <td colSpan={6}>No results found.</td>
+                    </tr>
+                  )}
                   </>
                 )}
                 {/* <tr>

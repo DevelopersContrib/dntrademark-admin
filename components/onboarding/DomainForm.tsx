@@ -74,7 +74,7 @@ const DomainForm = () => {
       });
 
     })();
-  }, []);
+  }, [session]);
 
   return (
     <>
