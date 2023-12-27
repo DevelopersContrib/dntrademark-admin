@@ -1,38 +1,28 @@
 "use client";
-import { FaBuffer } from "react-icons/fa6";
-import { FaTimes } from "react-icons/fa";
-import { FaCircleNotch } from "react-icons/fa6";
 import React, { ChangeEvent, useState, useEffect } from "react";
-// import { getProtestItems } from "@/lib/domain-helper";
-// import { protestItems } from "@/types/protestItems";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { getItemProtests } from "@/lib/domain-helper";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
+import { FaDumbbell, FaDumpster, FaGithub, FaCircleNotch } from 'react-icons/fa6';
 import { items } from "@/types/items";
+import { protest } from "@/types/protest";
+import { protestTable } from "@/types/protestTable";
 import LoadingRipple from "../Loading/LoadingRipple";
-import Link from "next/link";
-import { BsEye } from "react-icons/bs";
-
-import { Editor } from "react-draft-wysiwyg";
-
-
-import { EditorState, ContentState, convertFromHTML, convertToRaw  } from "draft-js";
-import draftToHtml from 'draftjs-to-html';
 import Swal from 'sweetalert2'
 import { useSession } from "next-auth/react";
-
-import htmlToDraft from 'html-to-draftjs';
+import generatePDF from "react-to-pdf";
 
 interface props {
   domainItems: items;
-  //tData: protestItems;
+  tData: protestTable;
   id: number;
   template: string;
 }
 
-//const Protest = ({ tData, id }: tableProps) => {
-const ProtestList = ({ id, domainItems, template }: props) => {
+const ProtestList = ({ id, domainItems, template,tData }: props) => {
   const { data: session } = useSession();
-
+  let reactQuillRef:any;
   let name: string | null | undefined = session?.user?.name;
   let email: string | null | undefined = session?.user?.email;
 
@@ -85,13 +75,13 @@ const ProtestList = ({ id, domainItems, template }: props) => {
     template = template.replaceAll("[Domain]", domainItems.domain.domain_name);
     template = template.replaceAll("[Keyword]", domainItems.keyword);
 
-    // template = template.split("\n").join("<br />");
+    template = template.split("\n").join("<br />");
+    
   }
 
-  //console.log('template',template)
-  /*
+  const [saving, setSaving] = useState(false);
 const [rows, setRows] = useState<protest[]>(tData.data);
-const [tableData, setTableData] = useState<protestItems>(tData);
+const [tableData, setTableData] = useState<protestTable>(tData);
 const [loading, setLoading] = useState(false);
 
 const [orderBy, setOrderBy] = useState<string>("");
@@ -103,6 +93,11 @@ const [reload, setReload] = useState<number>(1);
 const [listItems, setListItems] = useState<JSX.Element[]>([]);
 const [selectAll, setSelectAll] = useState(false);
 const [domain, setDomain] = useState("");
+const [protestId, setProtestId] = useState(0);
+const [editorState, setEditorState] = useState(template);
+
+const [protestTitle, setProtestTitle] = useState<string>("");
+
 const item_id = id;
 
 const sort = (col: string) => {
@@ -114,7 +109,59 @@ const callReload = (del: boolean) => {
   const d = new Date();
   const time = d.getTime();
   setReload(time);
+  setProtestId(0)
+  setProtestTitle('')
 };
+const handleEdit = async(id:number) => {
+  Swal.fire({
+    title: 'Please wait',
+    html: 'Retrieving Protest...',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading()
+    }
+});
+
+    const res = await fetch('/api/item/protest/view', {
+      method: 'POST',
+      body: JSON.stringify({ id: id }),
+    });
+    Swal.close();
+    const result = await res.json();
+    const itemProtest  = result.item as protest;
+    setProtestId(itemProtest.id)
+    setProtestTitle(itemProtest.title)
+    setEditorState(result.content.toString()) 
+  }
+
+  const handlePDF = async(id:number) => {
+    Swal.fire({
+      title: 'Please wait',
+      html: 'Retrieving Protest...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading()
+      }
+  });
+  
+    const res = await fetch('/api/item/protest/view', {
+      method: 'POST',
+      body: JSON.stringify({ id: id }),
+    });
+    Swal.close();
+    const result = await res.json();
+    const itemProtest  = result.item as protest;
+    setProtestId(itemProtest.id)
+    setProtestTitle(itemProtest.title)
+    setEditorState(result.content.toString()) 
+
+    var intro = document.getElementsByClassName("ql-editor")[0]
+    intro.setAttribute("id", "forpdfdownload")
+    const getTargetElement = () =>document.getElementById("forpdfdownload");
+    generatePDF(getTargetElement, {
+      filename: itemProtest.title.replace(/\s/g, '') + ".pdf",
+    });
+  }
 
 const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   setSearch(event.target.value);
@@ -142,7 +189,7 @@ useEffect(() => {
     setPage(pageNo);
     callReload(false);
   };
-  const generateListItems = (t: protestItems) => {
+  const generateListItems = (t: protestTable) => {
     const items = [];
     for (let i = 1; i <= t.last_page; i++) {
       items.push(
@@ -163,7 +210,7 @@ useEffect(() => {
   const getAllItems = async () => {
     setLoading(true);
 
-    const res = await getProtestItems(
+    const res = await getItemProtests(
       item_id,
       search,
       limit,
@@ -171,44 +218,19 @@ useEffect(() => {
       sortBy,
       orderBy
     );
-    //console.log('response'+res.items);
-    const tData = res.items as protest;
-    //console.log('tData '+tData.data)
+    
+    const tData = res.items as protestTable;
 
     setTableData(tData);
     setRows(tData.data);
     setLoading(false);
     generateListItems(tData);
-    if (tData.data.length > 0) {
-      setDomain(tData.data[0].domain.domain_name);
-    }
   };
   getAllItems();
   // eslint-disable-next-line
 }, [reload]);
 
-*/
-
-  //const [editorState, setEditorState] = useState();
-  //   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const onEditorStateChange = (newEditorState: any) => {
-    setEditorState(newEditorState);
-  };
-
-  const contentBlock = htmlToDraft(template);
-
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createWithContent(
-      ContentState.createFromBlockArray(contentBlock.contentBlocks)
-    )
-  );
-
-  const [protestTitle, setProtestTitle] = useState<string>("");
-
-  //   console.log(template)
-  //   useEffect(() => {
-  //     setEditorState(template);
-  //     },[]);
+  
 
   const handleProtestTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {value} = e.target;
@@ -226,33 +248,62 @@ useEffect(() => {
   }
 
   const handleSaveProtest = async () => {
-    const contentState = editorState.getCurrentContent();
-    // const contentText = contentState.getPlainText();
-    const rawContentState = convertToRaw(contentState);
-    const html = draftToHtml(rawContentState);
-
+ 
+  const html =  reactQuillRef.props.value
 
     if (protestTitle) {
-      const res = await fetch('/api/domain/items/protests/save', {
-        method: 'POST',
-        body: JSON.stringify({ item_id: id, title: protestTitle, content: html }),
-      });
-
-      const result = await res.json();
-
-      if (result.success) {
-        Swal.fire(
-          'Saved!',
-          'You have successfully generated a protest letter.',
-          'success'
-        );
-      } else {
-        Swal.fire(
-          'Oops!',
-          'An error occured during saving. Please try again!',
-          'error'
-        );
+      setSaving(true)
+      if(protestId==0){
+        const res = await fetch('/api/domain/items/protests/save', {
+          method: 'POST',
+          body: JSON.stringify({ item_id: id, title: protestTitle, content: html }),
+        });
+        setSaving(false)
+        const result = await res.json();
+  
+        if (result.success) {
+          callReload(true);
+          Swal.fire(
+            'Saved!',
+            'You have successfully generated a protest letter.',
+            'success'
+          );
+        } else {
+          Swal.fire(
+            'Oops!',
+            'An error occured during saving. Please try again!',
+            'error'
+          );
+        }
+      }else{
+        const res = await fetch('/api/item/protest/update', {
+          method: 'POST',
+          body: JSON.stringify({id:protestId, item_id: id, title: protestTitle, content: html }),
+        });
+        setSaving(false)
+        const result = await res.json();
+  
+        if (result.success) {
+          callReload(true);
+          Swal.fire(
+            'Saved!',
+            'You have successfully updated the protest letter.',
+            'success'
+          );
+        } else {
+          Swal.fire(
+            'Oops!',
+            'An error occured during saving. Please try again!',
+            'error'
+          );
+        }
       }
+    }else{
+      Swal.fire(
+        'Oops!',
+        'Please enter Protest title',
+        'error'
+      );
     }
   }
 
@@ -282,36 +333,6 @@ useEffect(() => {
         </nav>
       </div>
 
-      {/* <div className="mb-4">
-        <div
-          className="flex w-full rounded-lg border-l-[6px] border-[#34D399] bg-[#34D399] bg-opacity-[15%] px-7 py-8 shadow-md md:p-9"
-        >
-          <div
-            className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#34D399]"
-          >
-            <svg
-              width="16"
-              height="12"
-              viewBox="0 0 16 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M15.2984 0.826822L15.2868 0.811827L15.2741 0.797751C14.9173 0.401867 14.3238 0.400754 13.9657 0.794406L5.91888 9.45376L2.05667 5.2868C1.69856 4.89287 1.10487 4.89389 0.747996 5.28987C0.417335 5.65675 0.417335 6.22337 0.747996 6.59026L0.747959 6.59029L0.752701 6.59541L4.86742 11.0348C5.14445 11.3405 5.52858 11.5 5.89581 11.5C6.29242 11.5 6.65178 11.3355 6.92401 11.035L15.2162 2.11161C15.5833 1.74452 15.576 1.18615 15.2984 0.826822Z"
-                fill="white"
-                stroke="white"
-              ></path>
-            </svg>
-          </div>
-          <div className="w-full">
-            <h5 className="mb-3 text-lg font-semibold text-dark">
-              success
-            </h5>
-            
-          </div>
-        </div>
-</div> */}
-      {/*
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mb-8">
         <div className="flex flex-col gap-5.5 p-6.5">
           <div className="max-w-full overflow-x-auto">
@@ -416,25 +437,17 @@ useEffect(() => {
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                           <p className="text-black dark:text-white">
-                            {item.date}
+                            {item.created_at}
                           </p>
                         </td>
                         <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                           <div className="flex items-center space-x-3.5">
-                            <Link href={"/items/" + item.id} replace>
-                              <button className="w-8 h-8 inline-flex items-center justify-center rounded border border-[#eee] hover:bg-strokedark hover:text-white hover:border-strokedark">
-                                <BsEye className="w-4 h-4" />
+                              <button onClick={() => handleEdit(item.id)} className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-sm font-normal text-white hover:bg-opacity-90 lg:px-4">
+                                Edit
                               </button>
-                            </Link>
-                            <Link
-                              title="Generate Protest Letter"
-                              href={"/domains/items/protest/" + item.id}
-                              replace
-                            >
-                              <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-sm font-normal text-white hover:bg-opacity-90 lg:px-4">
-                                Generate
+                              <button onClick={() => handlePDF(item.id)} className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-sm font-normal text-white hover:bg-opacity-90 lg:px-4">
+                                Download PDF
                               </button>
-                            </Link>
                           </div>
                         </td>
                       </tr>
@@ -478,7 +491,7 @@ useEffect(() => {
           </div>
         </div>
       </div>
-      */}
+     
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mb-8">
         <div className="flex flex-col gap-5.5 p-6.5">
           <div className="border border-[#f1f1f1] p-1.5">
@@ -491,16 +504,16 @@ useEffect(() => {
               defaultValue={protestTitle}
               onChange={(e) => {handleProtestTitleChange(e)}}
             />
-            <Editor
-              editorState={editorState}
-              toolbarClassName="toolbarClassName"
-              wrapperClassName="wrapperClassName"
-              editorClassName="editorClassName"
-              onEditorStateChange={onEditorStateChange}
+           
+            <ReactQuill theme="snow" value={editorState} onChange={setEditorState}
+            ref={(el) => {
+              reactQuillRef = el;
+            }}
             />
+
           </div>
           <button onClick={handleSaveProtest} className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
-            Save
+          {saving && <FaCircleNotch className="w-4 h-4 fa-spin mr-2" />} Save
           </button>
         </div>
       </div>

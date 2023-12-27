@@ -81,6 +81,45 @@ export const getDomainList = async (
   }
 };
 
+export const getItemProtestList = async (
+  item_id:number,
+  limit: number = 10,
+  page: number = 1,
+  sortBy: string = "id",
+  orderBy: string = "ASC",
+  filter: string = ""
+) => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: "Bearer " + session?.token },
+      timeout: 10000,
+    };
+
+    const apiUrl =
+      process.env.API_URL +
+      "/items/protests/"+item_id+"?api_key=" +
+      process.env.API_KEY +
+      "&filter=" +
+      filter +
+      "&limit=" +
+      limit +
+      "&page=" +
+      page +
+      "&sortBy=" +
+      sortBy +
+      "&orderBy=" +
+      orderBy;
+    const res = await axios.get(apiUrl, config);
+
+    return res.data.item_protests;
+  } catch (err) {
+    const error = err as AxiosError<Error>;
+
+    return error.response?.data.message;
+  }
+};
+
 export const getDomainListWithHits = async (
   limit: number = 10,
   page: number = 1,
@@ -240,6 +279,41 @@ export const getItem = async (id: number) => {
     const res = await axios.get(apiUrl, config);
 
     return res.data.item;
+  } catch (error) {
+    console.log("Error", error);
+  }
+};
+
+export const getItemProtests = async (id: number) => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: "Bearer " + session?.token },
+      timeout: 10000,
+    };
+
+    const apiUrl =
+      process.env.API_URL + "/items/protests/" + id + "?api_key=" + process.env.API_KEY;
+    const res = await axios.get(apiUrl, config);
+    return res.data.item_protests;
+  } catch (error) {
+    console.log("Error", error);
+  }
+};
+
+export const getInvoiceDetails = async (id: number) => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: "Bearer " + session?.token },
+      timeout: 10000,
+    };
+
+    const apiUrl =
+      process.env.API_URL + "/invoices/" + id + "?api_key=" + process.env.API_KEY;
+    const res = await axios.get(apiUrl, config);
+    //console.log(res);
+    return res.data.invoice;
   } catch (error) {
     console.log("Error", error);
   }
@@ -450,5 +524,20 @@ export const authorizeUser = async (credentials: User) => {
     }
   } catch (error) {
     console.log("error", error);
+  }
+};
+
+export const getInvoice = async () => {
+  try {
+    const session = await getServerSession(options);
+    const config = {
+      headers: { Authorization: "Bearer " + session?.token, timeout: 10000 },
+    };
+
+    const apiUrl = process.env.API_URL +"/invoices?api_key=" + process.env.API_KEY;
+    const res = await axios.get(apiUrl, config);
+    return res.data.invoices;
+  } catch (error) {
+    console.log("Error", error);
   }
 };

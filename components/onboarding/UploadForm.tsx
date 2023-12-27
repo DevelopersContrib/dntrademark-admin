@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useRef } from "react";
+import Swal from "sweetalert2";
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 import Papa, { ParseResult } from "papaparse"
 import ErrorBlock from './ErrorBlock';
@@ -52,6 +53,28 @@ const UploadForm= () => {
           if (!result.success) {
             setError(result.error);
             setUploading(false);
+
+            Swal.fire({
+              title: 'Plan Update',
+              text: "You are qualified for the FREE plan with 0.10/domain billing. Would you like to continue?",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes!'
+            }).then(async (result) => { // Mark the callback function as async
+          
+              if (result.isConfirmed) {
+      
+                const res_add_domain = await fetch('/api/domain/add', {
+                  method: 'POST',
+                  body: JSON.stringify({ domains:  finalDomains, add_domain:true , token:session?.token  }),
+                });
+              
+               
+              }
+            });
+
           } else {
             setSuccess(result.message);
             setUploading(false);

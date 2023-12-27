@@ -1,4 +1,5 @@
 'use client';
+import Swal from "sweetalert2";
 import React, { useEffect, useState  } from "react";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -33,6 +34,29 @@ const DomainForm = () => {
     if (!result.success) {
       setError(result.error);
       setUploading(false);
+      console.log('test');
+     
+
+      Swal.fire({
+        title: 'Plan Update',
+        text: "You are qualified for the FREE plan with 0.10/domain billing. Would you like to continue?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes!'
+      }).then(async (result) => { // Mark the callback function as async
+    
+        if (result.isConfirmed) {
+
+          const res_add_domain = await fetch('/api/domain/add', {
+            method: 'POST',
+            body: JSON.stringify({ domains:  finalDomains.join(","), add_domain:true , token:session?.token  }),
+          });
+        
+         
+        }
+      });
     } else {
       setSuccess(result.message);
       setUploading(false);
@@ -50,7 +74,7 @@ const DomainForm = () => {
       });
 
     })();
-  }, []);
+  }, [session]);
 
   return (
     <>
