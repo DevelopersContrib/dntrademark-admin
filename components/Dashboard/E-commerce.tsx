@@ -157,7 +157,7 @@ export default function ECommerce({
         <div className="">
           <div className="w-full">
             <div className="flex w-full rounded-lg border-l-[6px] border-[#00B078] bg-[#C4F9E2] bg-opacity-[100%] px-7 py-8 shadow-md md:p-9 mb-8">
-              <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#00B078]">
+              <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#00B078] ">
                 <svg
                   width="16"
                   height="12"
