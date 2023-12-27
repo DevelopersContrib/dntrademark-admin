@@ -20,6 +20,7 @@ import ChartOne from "../Charts/ChartOne";
 import { FaCubes } from "react-icons/fa6";
 import { BiSolidBarChartAlt2 } from "react-icons/bi";
 import { AiOutlineBarChart, AiOutlineLineChart } from "react-icons/ai";
+import Feedback from "../Feedback/Feedback";
 const MapOne = dynamic(() => import("../Maps/MapOne"), {
   ssr: false,
 });
@@ -154,7 +155,7 @@ export default function ECommerce({
             <ChartOne graph={graph} />
           </div>
         </div>
-        <div className="">
+        {/* <div className="">
           <div className="w-full">
             <div className="flex w-full rounded-lg border-l-[6px] border-[#00B078] bg-[#C4F9E2] bg-opacity-[100%] px-7 py-8 shadow-md md:p-9 mb-8">
               <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#00B078] ">
@@ -215,7 +216,8 @@ export default function ECommerce({
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
+        <Feedback />
       </div>
       {/* End:: Graph Chart */}
     </>
