@@ -18,21 +18,26 @@ export default function Feedback() {
     message: Yup.string().required("Enter your message.").min(3),
   });
 
-  const handleSubmitFeedback = async (values: { email: string, name: string, message: string }) => {
-
-    const res = await fetch("/api/feedback/save", {
-      method: "POST",
-      body: JSON.stringify(values)
-    });
-
-    const result = await res.json();
-
-    if (res.ok) {
-      setIsSaved(true);
-    }
-
-    setIsSaving(false);
-  }
+  // const handleSubmitFeedback = async (values: { email: string, name: string, message: string }) => {
+  //   const res = await fetch("/api/feedback/save", {
+  //     method: "POST",
+  //     body: JSON.stringify(values)
+  //   });
+  
+  //   const result = await res.json();
+  
+  //   if (res.ok) {
+  //     setIsSaved(true);
+      
+  //     setTimeout(() => {
+  //       setIsSaved(false);
+  //       // Reset the form after a successful submission
+  //       formik.resetForm();
+  //     }, 2000);
+  //   }
+  
+  //   setIsSaving(false);
+  // }
   return (
     <>
       <div className="w-full lg:max-w-[600px] lg:mx-auto">
@@ -41,10 +46,10 @@ export default function Feedback() {
               <div className="flex w-full rounded-lg border-l-[6px] border-[#00B078] bg-[#C4F9E2] bg-opacity-[100%] px-7 py-8 shadow-md md:p-9 mb-8">
                 <div className="w-full">
                   <h5 className="mb-3 text-lg font-semibold text-[#004434]">
-                    Success!
+                    Thank you
                   </h5>
                   <p className="text-base leading-relaxed text-body-color">
-                    Thank you!
+                    for submitting your feedback.
                   </p>
                 </div>
               </div>
@@ -63,11 +68,28 @@ export default function Feedback() {
               message: "",
             }}
             validationSchema={schema}
-            onSubmit={(values: { email: string, name: string, message: string }) => {
+            onSubmit={async (values, { setSubmitting, resetForm }) => {
               setIsSaving(true);
-              setTimeout(() => {
-                handleSubmitFeedback(values);
-              }, 500);
+          
+              const res = await fetch("/api/feedback/save", {
+                method: "POST",
+                body: JSON.stringify(values),
+              });
+          
+              const result = await res.json();
+          
+              if (res.ok) {
+                setIsSaved(true);
+          
+                setTimeout(() => {
+                  setIsSaved(false);
+                  // Reset the form after a successful submission
+                  resetForm();
+                }, 2000);
+              }
+          
+              setIsSaving(false);
+              setSubmitting(false);
             }}
           >
           {(formik) => (
