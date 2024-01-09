@@ -10,9 +10,14 @@ export const POST = async (req: Request) => {
     
     const apiUrl = process.env.API_URL + '/domains/add?api_key=' + process.env.API_KEY;
 
-    const params = new URLSearchParams(); 
-    params.append('domains', data.domains);
-    params.append('add_domain', data.add_domain);
+    // const params = new URLSearchParams(); 
+    // params.append('domains', data.domains);
+    // params.append('add_domain', data.add_domain);
+    
+    const params = {
+      domains: data.domains,
+      add_domain: data.add_domain
+    }
  
     const res = await axios.post(apiUrl, params, { headers });
     const result = res.data;
