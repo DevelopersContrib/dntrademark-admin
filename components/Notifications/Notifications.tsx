@@ -6,7 +6,7 @@ import Message from "./Message";
 import LoadingRipple from "../Loading/LoadingRipple";
 import { NotificationType } from "@/types/notificationType";
 
-import { getNotificationsNew } from "@/lib/data";
+import { getNotificationsNew } from "@/lib/client-api";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -16,7 +16,7 @@ const Notifications = () => {
     setFetchingData(true);
 
     getNotificationsNew().then((res) => {
-      setNotifications(res.message);
+      setNotifications(res?.message ?? []);
       setFetchingData(false);
     });
   };

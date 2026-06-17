@@ -2,7 +2,7 @@ import type { NextAuthOptions } from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
-import { authorizeUser, checkEmail, loginUser } from '@/lib/data';
+import { authorizeUser, checkEmail, loginUser } from '@/lib/auth-api';
 interface User {
   firstName: any;
   lastName: any;

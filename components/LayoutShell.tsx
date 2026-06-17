@@ -1,38 +1,48 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState, type ComponentType, type ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 
 import Loader from '@/components/common/Loader';
-import Sidebar from '@/components/Sidebar';
-import Header from '@/components/Header';
 
-export default function LayoutShell({ children }: { children: React.ReactNode }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [loading, setLoading] = useState<boolean>(true);
+export default function LayoutShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const [loading, setLoading] = useState(true);
+  const [DashboardChrome, setDashboardChrome] =
+    useState<ComponentType<{ children: ReactNode }> | null>(null);
+
+  const isAuthRoute = pathname?.startsWith('/auth');
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    setTimeout(() => setLoading(false), 1000);
   }, []);
+
+  useEffect(() => {
+    if (isAuthRoute) {
+      setDashboardChrome(null);
+      return;
+    }
+
+    import('@/components/DashboardChrome').then((mod) => {
+      setDashboardChrome(() => mod.default);
+    });
+  }, [isAuthRoute]);
+
+  if (isAuthRoute) {
+    return <>{children}</>;
+  }
+
+  if (loading || !DashboardChrome) {
+    return (
+      <div className="dark:bg-boxdark-2 dark:text-bodydark">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div className="dark:bg-boxdark-2 dark:text-bodydark">
-      {loading ? (
-        <Loader />
-      ) : (
-        <div className="flex h-screen overflow-hidden">
-          <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-
-          <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-            <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-
-            <main>
-              <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">{children}</div>
-            </main>
-          </div>
-        </div>
-      )}
+      <DashboardChrome>{children}</DashboardChrome>
     </div>
   );
 }

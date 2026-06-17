@@ -2,12 +2,8 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import LoadingRipple from "../Loading/LoadingRipple";
-import { getInvoice } from "@/lib/data";
 
 import { InvoiceType } from "@/types/invoice"
-import { getServerSession } from "next-auth";
-import { options } from "@/lib/options";
-import axios from "axios";
 
 type PaginationLinkType = {
   active: boolean;

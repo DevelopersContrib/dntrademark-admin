@@ -106,8 +106,8 @@ export default function ECommerce({
       </div>
       <div className="w-full mb-4 text-sm"></div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <DomainList domains={tData.data} />
-        <RecentList domains={recent.data} />
+        <DomainList domains={tData?.data ?? []} />
+        <RecentList domains={recent?.data ?? []} />
         <LatestBlog feed={feed} />
         <TwitterPosts />
       </div>

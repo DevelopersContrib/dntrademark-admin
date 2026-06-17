@@ -21,14 +21,13 @@ interface ChartOneState {
 
 // const ChartOne: React.FC = () => {
 export default function ChartOne({ graph }: graphProps) {
-  // console.log('graph::',graph)
+  const graphData = graph ?? [];
   let graph_x = [];
   let graph_y = [];
   
-  for(var x=0;x<graph.length;x++){
-    console.log('X:'+x+': ',graph[x])
-    graph_x.push(graph[x].my_x)
-    graph_y.push(graph[x].my_y)
+  for(var x=0;x<graphData.length;x++){
+    graph_x.push(graphData[x].my_x)
+    graph_y.push(graphData[x].my_y)
   }
   
   const options: ApexOptions = {

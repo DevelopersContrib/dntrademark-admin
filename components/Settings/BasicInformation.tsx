@@ -6,8 +6,6 @@ import * as Yup from 'yup';
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react';
 import {details} from "@/types/details";
 import { User } from '@/types/user';
-import { checkEmail } from '@/lib/data';
-
 
 import dynamic from "next/dynamic";
 const MapOne = dynamic(() => import("../Maps/MapOne"), {

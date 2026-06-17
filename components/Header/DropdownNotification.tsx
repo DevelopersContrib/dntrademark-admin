@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { getNotificationsNew } from "@/lib/data";
 import { NotificationType } from "@/types/notificationType";
+
+import { getNotificationsNew } from '@/lib/client-api';
 
 const DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -13,14 +14,11 @@ const DropdownNotification = () => {
   const dropdown = useRef<any>(null);
   
 
-const [ notifications, setNotifications ] = useState([]);
+const [ notifications, setNotifications ] = useState<NotificationType[]>([]);
 
-  const getAllNotifications =async () => {
-    getNotificationsNew().then(res => {
-
-      setNotifications(res.message);
-      console.log(res.message);
-    });
+  const getAllNotifications = async () => {
+    const res = await getNotificationsNew();
+    setNotifications(res?.message ?? []);
   }
 
   useEffect(() => {

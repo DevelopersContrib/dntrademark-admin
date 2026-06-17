@@ -5,7 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 import { details } from "@/types/details";
-import { checkEmail } from "@/lib/data";
+import { checkEmail } from "@/lib/client-api";
 
 import dynamic from "next/dynamic";
 const MapOne = dynamic(() => import("../Maps/MapOne"), {
