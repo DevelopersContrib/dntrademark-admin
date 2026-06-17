@@ -1,0 +1,25 @@
+# ── Auth ──────────────────────────────────────────────────
+NEXTAUTH_SECRET=qzt2tq4Wj6YR0tvid+9nzsiqs8zntDJmq9Z4z+C/zRU=
+NEXTAUTH_URL=https://dash.dntrademark.com
+
+# GitHub OAuth — create at https://github.com/settings/developers
+# Callback: https://dash.dntrademark.com/api/auth/callback/github
+GITHUB_ID=Ov23liWmGz8YDO09G4xX
+GITHUB_SECRET=d3628f57c3c5f767f4369a501418ff155bd828e2
+
+# Google OAuth — create at https://console.cloud.google.com/apis/credentials
+# Callback: https://dash.dntrademark.com/api/auth/callback/google
+GOOGLE_ID=684545833851-kf1lujtqp4fl2pjnisdi3fj1bbblmfj7.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+
+# ── dntrademark REST API ──────────────────────────────────
+# Found hardcoded in lib/data.tsx — this is the Laravel backend
+API_URL=https://api.dntrademark.com/api/v1
+API_KEY=6334aed4bdce9855f400653800596920
+
+# ── Stripe ────────────────────────────────────────────────
+STRIPE_PUBLISHABLE_KEY=pk_live_lvZPm7sekbdhqIAsdUpqh9pP
+STRIPE_SECRET_KEY=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
+
+# ── App ───────────────────────────────────────────────────
+BASE_URL=https://dash.dntrademark.com
