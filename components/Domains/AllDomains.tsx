@@ -8,16 +8,31 @@ import { domainTable } from "@/types/domainTable";
 import { domains } from "@/types/domains";
 import LoadingRipple from "../Loading/LoadingRipple";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 interface tableProps {
   tData: domainTable;
   deleteDomain: boolean;
 }
 
+const emptyTable: domainTable = {
+  current_page: 1,
+  data: [],
+  first_page_url: '',
+  from: 0,
+  last_page: 1,
+  last_page_url: '',
+  next_page_url: '',
+  path: '',
+  per_page: 10,
+  prev_page_url: '',
+  to: 0,
+  total: 0,
+};
+
 const AllDomains = ({ tData,deleteDomain }: tableProps) => {
-  const [rows, setRows] = useState<domains[]>(tData.data);
-  const [tableData, setTableData] = useState<domainTable>(tData);
+  const safeData = tData?.data ? tData : emptyTable;
+  const [rows, setRows] = useState<domains[]>(safeData.data ?? []);
+  const [tableData, setTableData] = useState<domainTable>(safeData);
   const [loading, setLoading] = useState(false);
 
   const [orderBy, setOrderBy] = useState<string>("DESC");
@@ -147,8 +162,8 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
       setLoading(true);
 
       const res = await getDomains(search, limit, page, sortBy, orderBy);
-      const tData = res.domains as domainTable;
-      console.log("tData", tData);
+      const tData = res?.domains as domainTable;
+      if (!tData?.data) return;
       setTableData(tData);
       setRows(tData.data);
       setLoading(false);

@@ -60,7 +60,9 @@ export default function Billing(props: { invoiceData: any }) {
         });
   
         const result = await res.json();
-  
+
+        if (!result?.invoices?.data) return;
+
         setInvoices(result.invoices.data);
         setInvoicesPerPage(result.invoices.per_page);
         setNumberOfInvoices(result.invoices.total);

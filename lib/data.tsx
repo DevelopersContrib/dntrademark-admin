@@ -134,8 +134,10 @@ export const getDomainListWithHits = async (
     console.log(res.data.domains);
 
     return res.data.domains;
-  } catch (error) {
-    console.log("Error", error);
+  } catch (err) {
+    const error = err as AxiosError<Error>;
+
+    return error.response?.data.message;
   }
 };
 
@@ -170,8 +172,10 @@ export const getDomainListWithOutHits = async (
     const res = await axios.get(apiUrl, config);
 
     return res.data.domains;
-  } catch (error) {
-    console.log("Error", error);
+  } catch (err) {
+    const error = err as AxiosError<Error>;
+
+    return error.response?.data.message;
   }
 };
 
@@ -210,8 +214,10 @@ export const getDomainItems = async (
     const res = await axios.get(apiUrl, config);
 
     return res.data.items;
-  } catch (error) {
-    console.log("Error", error);
+  } catch (err) {
+    const error = err as AxiosError<Error>;
+
+    return error.response?.data.message;
   }
 };
 
@@ -248,8 +254,10 @@ export const getItem = async (id: number) => {
     const res = await axios.get(apiUrl, config);
 
     return res.data.item;
-  } catch (error) {
-    console.log("Error", error);
+  } catch (err) {
+    const error = err as AxiosError<Error>;
+
+    return error.response?.data.message;
   }
 };
 
@@ -265,8 +273,10 @@ export const getItemProtests = async (id: number) => {
       process.env.API_URL + "/items/protests/" + id + "?api_key=" + process.env.API_KEY;
     const res = await axios.get(apiUrl, config);
     return res.data.item_protests;
-  } catch (error) {
-    console.log("Error", error);
+  } catch (err) {
+    const error = err as AxiosError<Error>;
+
+    return error.response?.data.message;
   }
 };
 

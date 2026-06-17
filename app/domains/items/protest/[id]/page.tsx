@@ -1,31 +1,44 @@
 import { Metadata } from 'next';
-import {getItemProtests,getItem} from '@/lib/data'
-import { items } from "@/types/items";
-import { protest } from "@/types/protest";
-import { protestTable } from "@/types/protestTable";
-import {getItemProtestList} from '@/lib/data'
+import { redirect } from 'next/navigation';
+import {getItemProtestList,getItem} from '@/lib/data'
+import Unauthenticated from '@/components/Unauthenticated';
 import ProtestList from "@/components/Protest/ProtestList"
 import { template } from "@/lib/template";
+import { resolveProtestTable } from '@/lib/domain-page';
+import { items } from "@/types/items";
+
 export const metadata: Metadata = {
   title: 'DNTrademark Admin - Domain Items',
   description: 'dntrademark.com is a SaaS platform designed to provide an efficient and user-friendly way to check domain names against global trademark databases.',
-  // other metadata
 };
 
-const page = async({ params }: { params: { id: number} }) => {
+const page = async({ params }: { params: { id: string } }) => {
   const file = template;
-   const id = params.id
+  const id = parseInt(params.id, 10);
 
   const item = await getItem(id);
-  const items  = item as items;
+  if (item === 'Unauthenticated.') {
+    return <Unauthenticated />;
+  }
+
+  if (!item) {
+    redirect('/auth/signin');
+  }
 
   const itemProtests = await getItemProtestList(id);
-  const protests  = itemProtests as protestTable
-  return (
-    <ProtestList domainItems={item} id={params.id} template={file} tData={protests} />
-  )
+  const resolved = resolveProtestTable(itemProtests);
 
-  
+  if (resolved === 'unauthenticated') {
+    return <Unauthenticated />;
+  }
+
+  if (resolved === null) {
+    redirect('/auth/signin');
+  }
+
+  return (
+    <ProtestList domainItems={item as items} id={id} template={file} tData={resolved} />
+  )
 }
 
 export default page

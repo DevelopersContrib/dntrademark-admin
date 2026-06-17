@@ -79,9 +79,25 @@ const ProtestList = ({ id, domainItems, template,tData }: props) => {
     
   }
 
+  const emptyProtestTable: protestTable = {
+    current_page: 1,
+    data: [],
+    first_page_url: '',
+    from: 0,
+    last_page: 1,
+    last_page_url: '',
+    next_page_url: '',
+    path: '',
+    per_page: 10,
+    prev_page_url: '',
+    to: 0,
+    total: 0,
+  };
+  const safeProtestData = tData?.data ? tData : emptyProtestTable;
+
   const [saving, setSaving] = useState(false);
-const [rows, setRows] = useState<protest[]>(tData.data);
-const [tableData, setTableData] = useState<protestTable>(tData);
+const [rows, setRows] = useState<protest[]>(safeProtestData.data ?? []);
+const [tableData, setTableData] = useState<protestTable>(safeProtestData);
 const [loading, setLoading] = useState(false);
 
 const [orderBy, setOrderBy] = useState<string>("");

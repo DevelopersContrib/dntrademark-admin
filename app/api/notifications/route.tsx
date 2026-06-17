@@ -8,12 +8,17 @@ import { getServerSession } from 'next-auth/next';
 export const GET = async () => {
   try {
     const session = await getServerSession(options);
+
+    if (!session?.token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const url =
       process.env.API_URL + '/notifications?api_key=' + process.env.API_KEY;
 
     const res = await axios.get(url, {
       headers: {
-        Authorization: 'Bearer ' + session?.token,
+        Authorization: 'Bearer ' + session.token,
         'Content-Type': 'application/json',
       },
     });

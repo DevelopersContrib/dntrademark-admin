@@ -12,17 +12,20 @@ interface tableProps {
 }
 
 const ItemsDetails = ({ tData }: tableProps) => {
-  const [row, setRows] = useState<items>(tData);
-  const [owner, setOwner] = useState<domainOwner>(tData.owner);
-  const [domain, setDomain] = useState<domains>(tData.domain);
+  const [row, setRows] = useState<items | null>(tData ?? null);
+  const [owner, setOwner] = useState<domainOwner | null>(tData?.owner ?? null);
+  const [domain, setDomain] = useState<domains | null>(tData?.domain ?? null);
 
   useEffect(() => {
-    (async () => {
-      setRows(tData);
-      setOwner(tData.owner);
-      setDomain(tData.domain);
-    })();
+    if (!tData) return;
+    setRows(tData);
+    setOwner(tData.owner);
+    setDomain(tData.domain);
   }, [tData]);
+
+  if (!row || !owner || !domain) {
+    return null;
+  }
 
   return (
     <>

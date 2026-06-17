@@ -17,8 +17,22 @@ interface tableProps {
 }
 
 const WithItems = ({ tData, id }: tableProps) => {
-  const [rows, setRows] = useState<items[]>(tData.data);
-  const [tableData, setTableData] = useState<domainItems>(tData);
+  const safeData = tData?.data ? tData : {
+    current_page: 1,
+    data: [],
+    first_page_url: '',
+    from: 0,
+    last_page: 1,
+    last_page_url: '',
+    next_page_url: '',
+    path: '',
+    per_page: 10,
+    prev_page_url: '',
+    to: 0,
+    total: 0,
+  };
+  const [rows, setRows] = useState<items[]>(safeData.data ?? []);
+  const [tableData, setTableData] = useState<domainItems>(safeData);
   const [loading, setLoading] = useState(false);
 
   const [orderBy, setOrderBy] = useState<string>("");
@@ -99,8 +113,8 @@ const WithItems = ({ tData, id }: tableProps) => {
         orderBy
       );
       //console.log('response'+res.items);
-      const tData = res.items as domainItems;
-      //console.log('tData '+tData.data)
+      const tData = res?.items as domainItems;
+      if (!tData?.data) return;
 
       setTableData(tData);
       setRows(tData.data);
