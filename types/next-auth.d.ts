@@ -15,7 +15,7 @@ declare module "next-auth" {
       image?: string | null
     }
     token?: string | null
-    id?: integer | null
+    id?: string | null
 
   }
 
@@ -33,5 +33,6 @@ declare module "next-auth/jwt" {
     /** OpenID ID Token */
     idToken?: string
     token?: string
+    id?: string | null
   }
 }

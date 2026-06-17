@@ -12,8 +12,15 @@ const nextConfig = {
                 port: '',
                 pathname: '/u/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'lh3.googleusercontent.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'cdn.vnoc.com',
+            },
         ],
-        domains: ['lh3.googleusercontent.com', 'localhost', 'cdn.vnoc.com'] // <== Domain name
     },
 }
 

@@ -1,26 +1,26 @@
-import axios from "axios";
+export const dynamic = 'force-dynamic';
 
-import { options } from "@/lib/options";
-import { getServerSession } from "next-auth/next";
+import axios from 'axios';
+import { NextResponse } from 'next/server';
+import { options } from '@/lib/options';
+import { getServerSession } from 'next-auth/next';
 
-export const GET = async (req: Request) => {
+export const GET = async () => {
   try {
     const session = await getServerSession(options);
     const url =
-      process.env.API_URL + "/notifications?api_key=" + process.env.API_KEY;
+      process.env.API_URL + '/notifications?api_key=' + process.env.API_KEY;
 
     const res = await axios.get(url, {
       headers: {
-        Authorization: "Bearer " + session?.token,
-        "Content-Type": "application/json",
+        Authorization: 'Bearer ' + session?.token,
+        'Content-Type': 'application/json',
       },
     });
 
-    const result = res.data;
-
-    return new Response(JSON.stringify(result), { status: 200 });
+    return NextResponse.json(res.data, { status: 200 });
   } catch (error) {
     console.log(error);
-    throw error;
+    return NextResponse.json({ error: 'Failed to fetch notifications' }, { status: 500 });
   }
 };

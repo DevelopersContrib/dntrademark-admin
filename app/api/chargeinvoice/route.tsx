@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 //https://sultanoveli.medium.com/how-to-add-stripe-payments-to-your-next-js-app-d1cfced7c8a5
 import { NextResponse, NextRequest } from 'next/server';
 import Stripe from 'stripe';

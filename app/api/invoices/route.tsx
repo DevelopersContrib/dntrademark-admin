@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { options } from '@/lib/options';
 import { getServerSession } from 'next-auth/next';
 import axios from 'axios';

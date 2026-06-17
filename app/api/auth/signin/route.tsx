@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 
@@ -17,6 +19,7 @@ export const POST = async (req: Request) => {
 
     return NextResponse.redirect(new URL('/new', req.url));
   } catch (error) {
-    return error;
+    console.log(error);
+    return NextResponse.json({ error: 'Sign in failed' }, { status: 500 });
   }
 };
