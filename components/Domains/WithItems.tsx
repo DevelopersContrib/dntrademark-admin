@@ -152,7 +152,7 @@ const WithItems = ({ tData, id }: tableProps) => {
           </ol>
         </nav>
       </div>
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="panel-card">
         <div className="flex flex-col gap-5.5 p-6.5">
           <div className="max-w-full overflow-x-auto">
             <div className="w-full pb-4 flex justify-between mb-4">

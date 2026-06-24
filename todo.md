@@ -10,7 +10,7 @@ Handoff notes for next week (Kareen / team). Items are ordered by priority.
   - `/domains/all`, `/domains/with-hits`, `/domains/without-hits`
   - `/domains/add`, `/billing`, `/settings`, `/notifications`, `/feedback`
 - [ ] **Confirm Vercel env vars** are set: `NEXTAUTH_URL=https://dash.dntrademark.com`, `NEXTAUTH_SECRET`, `API_URL`, `API_KEY`, OAuth keys, Stripe keys
-- [ ] **Set Vercel package manager to pnpm** (see tooling section below) and confirm build succeeds on deploy
+- [ ] **Set Vercel package manager to pnpm** and confirm build succeeds on deploy
 
 ---
 
@@ -37,12 +37,9 @@ Handoff notes for next week (Kareen / team). Items are ordered by priority.
 
 ## P2 — Tooling alignment
 
-- [ ] **Pick one package manager** — `package.json` declares `pnpm@9.15.4` but `package-lock.json` exists and no `pnpm-lock.yaml`:
-  ```bash
-  pnpm install          # creates pnpm-lock.yaml
-  rm package-lock.json  # if committing to pnpm
-  ```
-- [ ] **Update browserslist DB**: `npx update-browserslist-db@latest`
+- [x] **Standardized on pnpm** — `pnpm-lock.yaml` committed; removed `package-lock.json`. Local commands: `pnpm install`, `pnpm dev`, `pnpm build`
+- [ ] **Vercel**: Project Settings → General → Package Manager → **pnpm**
+- [ ] **Update browserslist DB**: `pnpm exec update-browserslist-db@latest`
 
 ---
 
@@ -81,7 +78,31 @@ Before upgrading:
 
 ---
 
-## Done recently (for context)
+## Crons & automation audit (2026-06-17)
+
+**This repo (`dntrademark-admin`) has no scheduled jobs.** There is no `vercel.json` cron config, no GitHub Actions schedules, no `node-cron`, and no background workers. The dashboard is a Next.js UI + API proxy to `https://api.dntrademark.com/api/v1`.
+
+Domain scanning, hit detection, email/SMS alerts, and billing renewals (if any) must live on the **Laravel API / server infra** — not in this repo. That backend is not in this workspace; verify crons there separately (e.g. `php artisan schedule:list`, server crontab, queue workers).
+
+### Gaps in this app (things that never auto-run)
+
+| Area | Current behavior | Gap |
+|------|------------------|-----|
+| **Notifications** | Fetched once on mount (`DropdownNotification`, `/notifications`) | No polling, WebSocket, or push — users won't see new hits until refresh |
+| **Dashboard stats / domain lists** | Loaded on page load or manual table actions | No background refresh of hit counts |
+| **Blog feed** | `getFeed()` on dashboard SSR only | Stale until full page reload |
+| **Stripe** | Payment Intents via `/api/charge` → Laravel `/payment/charge` | **No Stripe webhook** route in this app — failed/async payments may not reconcile if user closes browser |
+| **CI/CD** | None in repo | No automated deploy checks, lint, or smoke tests on push |
+
+### Recommended follow-ups
+
+- [ ] **Audit `api.dntrademark.com`** for: domain scan schedule, notification queue, failed-job retry, Laravel scheduler cron (`* * * * * php artisan schedule:run`)
+- [ ] **Confirm queue workers** are running if API uses `ShouldQueue` jobs (email/SMS)
+- [ ] **Add notification polling** (e.g. 60s interval while dashboard open) or move to push/SSE from API
+- [ ] **Add Stripe webhook** (on API or admin) for `payment_intent.succeeded` / subscription events
+- [ ] **Optional Vercel Cron** only if you add a route here (e.g. health check) — not needed for domain scans; those belong on the API
+
+---
 
 - Split server/client auth modules (`lib/auth-api.ts`, `lib/client-api.ts`)
 - Fixed sign-in webpack crash and dashboard `.map()` null crashes

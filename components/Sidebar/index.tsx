@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,6 +12,22 @@ import { useSession } from "next-auth/react";
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
+}
+
+function sidebarLink(active: boolean) {
+  return `group relative flex items-center gap-2.5 rounded-xl py-2.5 px-4 font-medium transition-all duration-200 ${
+    active
+      ? "text-white bg-white/10 before:absolute before:left-0 before:top-1/2 before:h-6 before:w-1 before:-translate-y-1/2 before:rounded-r-full before:bg-brand"
+      : "text-bodydark2 hover:bg-white/10 hover:text-white"
+  }`;
+}
+
+function sidebarSubLink(active: boolean) {
+  return `relative flex items-center gap-2 rounded-lg py-2 pl-4 pr-3 text-sm font-medium transition-colors duration-200 ${
+    active
+      ? "text-white bg-white/5 before:absolute before:left-0 before:top-1/2 before:h-4 before:w-0.5 before:-translate-y-1/2 before:rounded-full before:bg-brand"
+      : "text-bodydark2 hover:text-white"
+  }`;
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
@@ -62,7 +80,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return session?.user ? (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black bg-sidebar-aside duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
+      className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden border-r border-white/5 bg-sidebar-aside shadow-xl duration-300 ease-out lg:static lg:translate-x-0 ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
@@ -106,8 +124,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
           {/* <!-- Menu Group --> */}
           <div>
-            <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
-              MENU
+            <h3 className="mb-4 ml-4 text-xs font-semibold uppercase tracking-wider text-white/40">
+              Menu
             </h3>
 
             <ul className="mb-6 flex flex-col gap-1.5">
@@ -115,10 +133,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <Link
                   href="/"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 ${
-                    (pathname === "/" || pathname.includes("dashboard")) &&
-                    "text-white bg-graydark dark:bg-meta-4"
-                  }`}
+                  className={sidebarLink(
+                    pathname === "/" || pathname.includes("dashboard")
+                  )}
                 >
                   <svg
                     className="fill-current"
@@ -161,11 +178,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     <React.Fragment>
                       <Link
                         href="#"
-                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 ${
-                          (pathname === "/forms" ||
-                            pathname.includes("forms")) &&
-                          "bg-graydark dark:bg-meta-4"
-                        }`}
+                        className={sidebarLink(
+                          pathname === "/forms" || pathname.includes("forms") || pathname.startsWith("/domains")
+                        )}
                         onClick={(e) => {
                           e.preventDefault();
                           sidebarExpanded
@@ -203,10 +218,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           <li>
                             <Link
                               href="/domains/all"
-                              className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${
-                                pathname === "/domains/all" &&
-                                "text-[#212539] dark:text-white"
-                              }`}
+                              className={sidebarSubLink(pathname === "/domains/all")}
                             >
                               All Domains
                               <div className="hidden">
@@ -221,10 +233,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           <li>
                             <Link
                               href="/domains/add"
-                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${
-                                pathname === "/domains/add" &&
-                                "text-[#212539] dark:text-white"
-                              }`}
+                              className={sidebarSubLink(pathname === "/domains/add")}
                             >
                               Add Domains
                             </Link>
@@ -234,10 +243,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           <li className="">
                             <Link
                               href="/domains/with-hits"
-                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${
-                                pathname === "/domains/with-hits" &&
-                                "text-[#212539] dark:text-white"
-                              }`}
+                              className={sidebarSubLink(pathname === "/domains/with-hits")}
                             >
                               Domain w/ Hits
                               <div className="hidden">
@@ -252,10 +258,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           <li className="">
                             <Link
                               href="/domains/without-hits"
-                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-[#212539] dark:hover:text-white ${
-                                pathname === "/domains/without-hits" &&
-                                "text-[#212539] dark:text-white"
-                              }`}
+                              className={sidebarSubLink(pathname === "/domains/without-hits")}
                             >
                               Domain w/out Hits
                               <div className="hidden">

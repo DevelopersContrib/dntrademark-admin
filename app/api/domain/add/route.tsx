@@ -27,5 +27,6 @@ export const POST = async (req: Request) => {
     return NextResponse.json(result);
   } catch (error) {
     console.log(error);
+    return NextResponse.json({ error: 'Failed to add domain' }, { status: 500 });
   }
 };

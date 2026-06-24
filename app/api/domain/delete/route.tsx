@@ -18,6 +18,6 @@ export const POST = async (req: Request) => {
           return new Response(JSON.stringify({ domains: res.data }), { status: 200 });
         } catch (error) {
           console.log(error);
-          return error;
+          return new Response(JSON.stringify({ error: 'Request failed' }), { status: 500 });
         }
 };

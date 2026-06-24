@@ -17,8 +17,9 @@ export const POST = async (req: Request) => {
     const res = await axios.post(apiUrl, params);
     const result = res.data;
 
-    return NextResponse.json(result.data);
+    return NextResponse.json(result.data ?? { success: true }, { status: 201 });
   } catch (error) {
     console.log(error);
+    return NextResponse.json({ error: 'Sign up failed' }, { status: 500 });
   }
 };

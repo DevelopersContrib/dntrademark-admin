@@ -1,31 +1,29 @@
-import { signOut, useSession, getProviders } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
+import { useSession } from "next-auth/react";
 
 const ucfirst = (str: string) => {
-  if (str != null){
+  if (str != null) {
     return str.charAt(0).toUpperCase() + str.slice(1);
-  }else {
-    return 'User';
   }
+  return "User";
 };
 
 const WelcomeNotif = () => {
   const { data: session } = useSession();
-  const [providers, setProviders] = useState<any>(null);
 
-  useEffect(() => {
-    (async () => {
-      const res = await getProviders();
-      setProviders(res);
-    })();
-  }, []);
+  if (!session?.user) return null;
 
   return (
-    session?.user ? (
-      <div className="w-full mb-4">
-        <h2>🎉Welcome Back {ucfirst(session?.user.name!)}</h2>
-      </div>
-    ) : null
+    <div className="mb-6 rounded-2xl border border-brand/20 bg-gradient-to-r from-brand/10 via-white to-white px-6 py-5 shadow-card dark:border-brand/30 dark:from-brand/10 dark:via-boxdark dark:to-boxdark">
+      <p className="text-sm font-medium text-brand-dark dark:text-brand-light">
+        Welcome back
+      </p>
+      <h2 className="mt-1 text-2xl font-bold tracking-tight text-black dark:text-white">
+        {ucfirst(session.user.name ?? "User")}
+      </h2>
+      <p className="mt-2 text-sm text-body dark:text-bodydark">
+        Here&apos;s an overview of your trademark monitoring activity.
+      </p>
+    </div>
   );
 };
 

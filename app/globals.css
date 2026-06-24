@@ -6,7 +6,49 @@
 
 @layer base {
   body {
-    @apply font-satoshi font-normal text-base text-body bg-whiten relative z-1;
+    @apply font-satoshi font-normal text-base text-body bg-whiten relative z-1 antialiased;
+  }
+}
+
+@layer components {
+  .auth-shell {
+    @apply min-h-screen bg-white dark:bg-boxdark-2;
+  }
+
+  .auth-split-layout {
+    @apply bg-white dark:bg-boxdark-2;
+  }
+
+  .auth-features-panel {
+    @apply bg-gradient-to-br from-brand-dark via-brand to-brand/90 text-white;
+  }
+
+  .auth-form-panel {
+    @apply bg-white dark:bg-boxdark;
+  }
+
+  .panel-card {
+    @apply rounded-2xl border border-stroke/70 bg-white shadow-card dark:border-strokedark/70 dark:bg-boxdark;
+  }
+
+  .panel-card-header {
+    @apply border-b border-stroke/60 px-6 py-5 dark:border-strokedark/60;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand/90 focus:outline-none focus:ring-2 focus:ring-brand/30;
+  }
+
+  .input-modern {
+    @apply w-full rounded-xl border border-stroke bg-transparent py-3.5 pl-5 pr-10 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 dark:border-form-strokedark dark:bg-form-input dark:focus:border-brand;
+  }
+
+  .btn-oauth-primary {
+    @apply flex w-full items-center justify-center gap-3 rounded-xl border border-stroke bg-white px-5 py-3.5 text-sm font-semibold text-black shadow-sm transition hover:border-brand/40 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 dark:border-strokedark dark:bg-boxdark dark:text-white;
+  }
+
+  .btn-oauth-secondary {
+    @apply flex w-full items-center justify-center gap-3 rounded-xl border border-stroke bg-gray/80 px-5 py-3 text-sm font-medium text-body transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60 dark:border-strokedark dark:bg-meta-4 dark:text-bodydark dark:hover:bg-boxdark;
   }
 }
 
@@ -182,7 +224,7 @@ span.flatpickr-weekday,
 
 /* Custom CSS ---------------------- */
 .bg-sidebar-aside {
-  @apply bg-[#fffffe] lg:bg-light dark:bg-black;
+  background: linear-gradient(180deg, #12151c 0%, #0d1017 100%);
 }
 
 .fa-spin {

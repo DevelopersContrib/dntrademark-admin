@@ -17,6 +17,7 @@ export const POST = async (req: Request) => {
 
     return new Response(JSON.stringify(result), { status: 200 });
   } catch (error) {
-    return error;
+    console.log(error);
+    return new Response(JSON.stringify({ error: 'Request failed' }), { status: 500 });
   }
 };

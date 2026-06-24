@@ -46,31 +46,27 @@ ___
 
 ## Installation
 
-Here are the steps you need to follow to install the dependencies.
+Use **pnpm** (see `packageManager` in `package.json`).
 
 1. Download and extract the template from Next.js Templates.
 
-2. After that **cd** into the template directory then run this command to install all the dependencies
+2. Install dependencies:
 
-```
-npm install
-```
-or
-
-```
-yarn install
+```bash
+pnpm install
 ```
 
-3. Now run this command to start the developement server
+3. Start the development server:
 
-```
-npm run dev
+```bash
+pnpm dev
 ```
 
-or 
+4. Production build:
 
-```
-yarn dev
+```bash
+pnpm build
+pnpm start
 ```
 
 

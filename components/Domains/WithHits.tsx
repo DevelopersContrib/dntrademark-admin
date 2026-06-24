@@ -180,9 +180,9 @@ const WithHits = ({ tData,deleteDomain }: tableProps) => {
   }, [reload]);
 
   return (
-    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-      <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-        <h3 className="font-medium text-black dark:text-white">
+    <div className="panel-card">
+      <div className="panel-card-header">
+        <h3 className="text-lg font-semibold text-black dark:text-white">
           Domains With Hits
         </h3>
       </div>

@@ -28,9 +28,9 @@ export const POST =async (req: Request) => {
 
             console.log('Error Response Data:', axiosError.response?.data);
 
-            return axiosError.response?.data;
+            return NextResponse.json(axiosError.response?.data ?? { error: 'Request failed' }, { status: axiosError.response?.status ?? 500 });
         } else {
-            return error;
+            return NextResponse.json({ error: 'Request failed' }, { status: 500 });
         }
     }
 }
