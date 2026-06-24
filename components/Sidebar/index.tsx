@@ -5,7 +5,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 import Image from "next/image";
-import { FaBuffer, FaRegNewspaper, FaBookOpen, FaSketch, FaBook, FaDiscord, FaSplotch } from "react-icons/fa6";
+import {
+  FaBuffer,
+  FaRegNewspaper,
+  FaBookOpen,
+  FaDiscord,
+  FaSplotch,
+  FaShieldHalved,
+  FaList,
+  FaPlus,
+  FaTriangleExclamation,
+  FaCircleCheck,
+  FaCrown,
+  FaUserShield,
+  FaUsers,
+  FaEnvelopeOpenText,
+} from "react-icons/fa6";
 
 import { useSession } from "next-auth/react";
 
@@ -33,6 +48,7 @@ function sidebarSubLink(active: boolean) {
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const { data: session } = useSession();
   const pathname = usePathname();
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
@@ -76,6 +92,26 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       document.querySelector("body")?.classList.remove("sidebar-expanded");
     }
   }, [sidebarExpanded]);
+
+  // Only surface the Admin section to users flagged is_admin (checked server-side).
+  useEffect(() => {
+    let cancelled = false;
+    if (!session?.user) {
+      setIsAdmin(false);
+      return;
+    }
+    fetch("/api/admin/check", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : { isAdmin: false }))
+      .then((data) => {
+        if (!cancelled) setIsAdmin(Boolean(data?.isAdmin));
+      })
+      .catch(() => {
+        if (!cancelled) setIsAdmin(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.user]);
 
   return session?.user ? (
     <aside
@@ -217,9 +253,21 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                           <li>
                             <Link
+                              href="/domains/monitor"
+                              className={sidebarSubLink(pathname === "/domains/monitor")}
+                            >
+                              <FaShieldHalved className="h-3.5 w-3.5" />
+                              Monitoring
+                            </Link>
+                          </li>
+                          {/* End:: Monitoring */}
+
+                          <li>
+                            <Link
                               href="/domains/all"
                               className={sidebarSubLink(pathname === "/domains/all")}
                             >
+                              <FaList className="h-3.5 w-3.5" />
                               All Domains
                               <div className="hidden">
                                 <span className="absolute right-4 block rounded bg-primary py-1 px-2 text-xs font-medium text-white">
@@ -235,6 +283,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               href="/domains/add"
                               className={sidebarSubLink(pathname === "/domains/add")}
                             >
+                              <FaPlus className="h-3.5 w-3.5" />
                               Add Domains
                             </Link>
                           </li>
@@ -245,6 +294,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               href="/domains/with-hits"
                               className={sidebarSubLink(pathname === "/domains/with-hits")}
                             >
+                              <FaTriangleExclamation className="h-3.5 w-3.5" />
                               Domain w/ Hits
                               <div className="hidden">
                                 <span className="absolute right-4 block rounded bg-primary py-1 px-2 text-xs font-medium text-white">
@@ -260,6 +310,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               href="/domains/without-hits"
                               className={sidebarSubLink(pathname === "/domains/without-hits")}
                             >
+                              <FaCircleCheck className="h-3.5 w-3.5" />
                               Domain w/out Hits
                               <div className="hidden">
                                 <span className="absolute right-4 block rounded bg-primary py-1 px-2 text-xs font-medium text-white">
@@ -278,7 +329,95 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </SidebarLinkGroup>
               {/* <!-- Menu Item Forms --> */}
 
+              {/* <!-- Admin (admins only) --> */}
+              {isAdmin ? (
+                <SidebarLinkGroup activeCondition={pathname.startsWith("/admin")}>
+                  {(handleClick, open) => {
+                    return (
+                      <React.Fragment>
+                        <Link
+                          href="#"
+                          className={sidebarLink(pathname.startsWith("/admin"))}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            sidebarExpanded ? handleClick() : setSidebarExpanded(true);
+                          }}
+                        >
+                          <FaUserShield className="w-4 h-4" />
+                          Admin
+                          <svg
+                            className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                              open && "rotate-180"
+                            }`}
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                              fill=""
+                            />
+                          </svg>
+                        </Link>
+                        <div className={`translate transform overflow-hidden ${!open && "hidden"}`}>
+                          <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                            <li>
+                              <Link
+                                href="/admin"
+                                className={sidebarSubLink(pathname === "/admin")}
+                              >
+                                <FaCrown className="h-3.5 w-3.5" />
+                                Overview
+                              </Link>
+                            </li>
+                            <li>
+                              <Link
+                                href="/admin/users"
+                                className={sidebarSubLink(pathname === "/admin/users")}
+                              >
+                                <FaUsers className="h-3.5 w-3.5" />
+                                Users
+                              </Link>
+                            </li>
+                            <li>
+                              <Link
+                                href="/admin/autoresponders"
+                                className={sidebarSubLink(pathname === "/admin/autoresponders")}
+                              >
+                                <FaEnvelopeOpenText className="h-3.5 w-3.5" />
+                                Autoresponders
+                              </Link>
+                            </li>
+                          </ul>
+                        </div>
+                      </React.Fragment>
+                    );
+                  }}
+                </SidebarLinkGroup>
+              ) : null}
+              {/* <!-- Admin --> */}
 
+
+              {/* <!-- Upgrade --> */}
+              <li>
+                <Link href="/pricing" className={sidebarLink(pathname === "/pricing")}>
+                  <FaCrown className="w-4 h-4" />
+                  Upgrade
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* <!-- Resources Group --> */}
+          <div>
+            <h3 className="mb-4 ml-4 text-xs font-semibold uppercase tracking-wider text-white/40">
+              Resources
+            </h3>
+            <ul className="mb-6 flex flex-col gap-1.5">
               {/* <!-- Medium Blog --> */}
               <li>
                 <Link
@@ -294,20 +433,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
            
 
-               {/* <!-- Knowledgebase --> */}
-               <li>
-                <Link
-                  href="https://dntrademarkguide.tawk.help/"
-                  target="_blank"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 `}
-                >
-                  <FaBook className="w-[18px] h-[18px] mr-1" />
-
-                  Guide
-                </Link>
-              </li>
-              {/* <!-- Knowledgebase --> */}
-
                   {/* <!-- FAQ --> */}
                   <li>
                 <Link
@@ -320,21 +445,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </Link>
               </li>
               {/* <!-- FAQ --> */}
+            </ul>
+          </div>
 
-                  {/* <!-- Roadmap --> */}
-                  <li>
-                <Link
-                  href="https://roadmap.dntrademark.com"
-                  target="_blank"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium hover:text-white duration-300 ease-in-out hover:bg-[#212539] dark:hover:bg-meta-4 `}
-                >
-                  <FaSketch className="w-[18px] h-[18px] mr-1" />
-                  Roadmap
-                </Link>
-              </li>
-              {/* <!-- Roadmap --> */}
-                      {/* <!-- Referrals --> */}
-                      <li>
+          {/* <!-- Community Group --> */}
+          <div>
+            <h3 className="mb-4 ml-4 text-xs font-semibold uppercase tracking-wider text-white/40">
+              Community
+            </h3>
+            <ul className="mb-6 flex flex-col gap-1.5">
+              {/* <!-- Referrals --> */}
+              <li>
                 <Link
                   href="https://www.dntrademark.com/referral"
                   target="_blank"

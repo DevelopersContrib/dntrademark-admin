@@ -2,6 +2,19 @@ import { User } from "@/types/user";
 import axios, { AxiosError } from "axios";
 import { options } from "@/lib/options";
 import { getServerSession } from "next-auth/next";
+import {
+  getSessionUserId,
+  listDomains,
+  listDomainsWithHits,
+  listDomainsWithoutHits,
+  listDomainItems,
+  getDomainStats as dbDomainStats,
+  getHistoricalHits,
+  listInvoices,
+  getUserById,
+  getUserPlan as dbUserPlan,
+  getDomainReport as dbDomainReport,
+} from "@/lib/db-queries";
 interface Error {
   message: string[];
   statusCode: number;
@@ -9,17 +22,9 @@ interface Error {
 
 export const getGraph = async () => {
   try {
-    const session = await getServerSession(options);
-    const config = {
-      headers: { Authorization: "Bearer " + session?.token, timeout: 10000 },
-    };
-    const apiUrl =
-      process.env.API_URL +
-      "/domains/historical-hits?api_key=" +
-      process.env.API_KEY;
-    const res = await axios.get(apiUrl, config);
-
-    return res.data.data;
+    const userId = await getSessionUserId();
+    if (!userId) return undefined;
+    return await getHistoricalHits(userId);
   } catch (error) {
     console.log("Error", error);
   }
@@ -33,33 +38,12 @@ export const getDomainList = async (
   filter: string = ""
 ) => {
   try {
-    const session = await getServerSession(options);
-    const config = {
-      headers: { Authorization: "Bearer " + session?.token },
-      timeout: 10000,
-    };
-
-    const apiUrl =
-      process.env.API_URL +
-      "/domains?api_key=" +
-      process.env.API_KEY +
-      "&filter=" +
-      filter +
-      "&limit=" +
-      limit +
-      "&page=" +
-      page +
-      "&sortBy=" +
-      sortBy +
-      "&orderBy=" +
-      orderBy;
-    const res = await axios.get(apiUrl, config);
-
-    return res.data.domains;
+    const userId = await getSessionUserId();
+    if (!userId) return null;
+    return await listDomains(userId, { limit, page, sortBy, orderBy, filter });
   } catch (err) {
-    const error = err as AxiosError<Error>;
-
-    return error.response?.data.message;
+    console.log("Error", err);
+    return null;
   }
 };
 
@@ -110,34 +94,12 @@ export const getDomainListWithHits = async (
   filter: string = ""
 ) => {
   try {
-    const session = await getServerSession(options);
-    const config = {
-      headers: { Authorization: "Bearer " + session?.token },
-      timeout: 10000,
-    };
-
-    const apiUrl =
-      process.env.API_URL +
-      "/domains/hits?api_key=" +
-      process.env.API_KEY +
-      "&filter=" +
-      filter +
-      "&limit=" +
-      limit +
-      "&page=" +
-      page +
-      "&sortBy=" +
-      sortBy +
-      "&orderBy=" +
-      orderBy;
-    const res = await axios.get(apiUrl, config);
-    console.log(res.data.domains);
-
-    return res.data.domains;
+    const userId = await getSessionUserId();
+    if (!userId) return null;
+    return await listDomainsWithHits(userId, { limit, page, sortBy, orderBy, filter });
   } catch (err) {
-    const error = err as AxiosError<Error>;
-
-    return error.response?.data.message;
+    console.log("Error", err);
+    return null;
   }
 };
 
@@ -149,33 +111,12 @@ export const getDomainListWithOutHits = async (
   filter: string = ""
 ) => {
   try {
-    const session = await getServerSession(options);
-    const config = {
-      headers: { Authorization: "Bearer " + session?.token },
-      timeout: 10000,
-    };
-
-    const apiUrl =
-      process.env.API_URL +
-      "/domains/no-hits?api_key=" +
-      process.env.API_KEY +
-      "&filter=" +
-      filter +
-      "&limit=" +
-      limit +
-      "&page=" +
-      page +
-      "&sortBy=" +
-      sortBy +
-      "&orderBy=" +
-      orderBy;
-    const res = await axios.get(apiUrl, config);
-
-    return res.data.domains;
+    const userId = await getSessionUserId();
+    if (!userId) return null;
+    return await listDomainsWithoutHits(userId, { limit, page, sortBy, orderBy, filter });
   } catch (err) {
-    const error = err as AxiosError<Error>;
-
-    return error.response?.data.message;
+    console.log("Error", err);
+    return null;
   }
 };
 
@@ -188,36 +129,23 @@ export const getDomainItems = async (
   filter: string = ""
 ) => {
   try {
-    const session = await getServerSession(options);
-    const config = {
-      headers: { Authorization: "Bearer " + session?.token },
-      timeout: 10000,
-    };
-  
-    const apiUrl =
-      process.env.API_URL +
-      "/domains/items/" +
-      id +
-      "?api_key=" +
-      process.env.API_KEY +
-      "&filter=" +
-      filter +
-      "&limit=" +
-      limit +
-      "&page=" +
-      page +
-      "&sortBy=" +
-      sortBy +
-      "&orderBy=" +
-      orderBy;
-      console.log('apiUrl',apiUrl)
-    const res = await axios.get(apiUrl, config);
-
-    return res.data.items;
+    const userId = await getSessionUserId();
+    if (!userId) return null;
+    return await listDomainItems(userId, id, { limit, page, sortBy, orderBy, filter });
   } catch (err) {
-    const error = err as AxiosError<Error>;
+    console.log("Error", err);
+    return null;
+  }
+};
 
-    return error.response?.data.message;
+export const getDomainReport = async (id: number) => {
+  try {
+    const userId = await getSessionUserId();
+    if (!userId) return null;
+    return await dbDomainReport(userId, id);
+  } catch (err) {
+    console.log("Error", err);
+    return null;
   }
 };
 
@@ -314,16 +242,9 @@ export const getPackage = async (id: number) => {
 
 export const getDomainStats = async () => {
   try {
-    const session = await getServerSession(options);
-    const config = {
-      headers: { Authorization: "Bearer " + session?.token },
-    };
-    const apiUrl =
-      process.env.API_URL + "/domains/stats?api_key=" + process.env.API_KEY;
-    const res = await axios.get(apiUrl, config);
-
-    // console.log('res.data.data',res.data.data);
-    return res.data.data;
+    const userId = await getSessionUserId();
+    if (!userId) return undefined;
+    return await dbDomainStats(userId);
   } catch (error) {
     console.log("Error", error);
   }
@@ -331,31 +252,28 @@ export const getDomainStats = async () => {
 
 export const getFeed = async () => {
   try {
-    const response = await fetch("https://blog.dntrademark.com/feed");
+    // Cache for an hour and bail after 3s so a slow blog never stalls the dashboard.
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
+    const response = await fetch("https://blog.dntrademark.com/feed", {
+      signal: controller.signal,
+      next: { revalidate: 3600 },
+    });
+    clearTimeout(timeout);
     const text = await response.text();
 
     return text;
   } catch (error) {
     console.log("Error", error);
+    return "";
   }
 };
 
 export const getUser = async () => {
   try {
-    const session = await getServerSession(options);
-
-    const config = {
-      headers: { Authorization: "Bearer " + session?.token },
-    };
-    const apiUrl =
-      process.env.API_URL +
-      "/user/" +
-      session?.id +
-      "?api_key=" +
-      process.env.API_KEY;
-    const res = await axios.get(apiUrl, config);
-
-    return res.data.user;
+    const userId = await getSessionUserId();
+    if (!userId) return undefined;
+    return await getUserById(userId);
   } catch (error) {
     console.log("Error", error);
   }
@@ -363,20 +281,19 @@ export const getUser = async () => {
 
 export const getUserPackage = async () => {
   try {
-    const session = await getServerSession(options);
+    const userId = await getSessionUserId();
+    if (!userId) return undefined;
+    return await getUserById(userId);
+  } catch (error) {
+    console.log("Error", error);
+  }
+};
 
-    const config = {
-      headers: { Authorization: "Bearer " + session?.token },
-    };
-    const apiUrl =
-      process.env.API_URL +
-      "/user/" +
-      session?.id +
-      "?api_key=" +
-      process.env.API_KEY;
-    const res = await axios.get(apiUrl, config);
-
-    return res.data.user;
+export const getUserPlan = async () => {
+  try {
+    const userId = await getSessionUserId();
+    if (!userId) return undefined;
+    return await dbUserPlan(userId);
   } catch (error) {
     console.log("Error", error);
   }
@@ -396,14 +313,9 @@ export const getPackages = async () => {
 
 export const getInvoice = async () => {
   try {
-    const session = await getServerSession(options);
-    const config = {
-      headers: { Authorization: "Bearer " + session?.token, timeout: 10000 },
-    };
-
-    const apiUrl = process.env.API_URL +"/invoices?api_key=" + process.env.API_KEY;
-    const res = await axios.get(apiUrl, config);
-    return res.data.invoices;
+    const userId = await getSessionUserId();
+    if (!userId) return undefined;
+    return await listInvoices(userId, {});
   } catch (error) {
     console.log("Error", error);
   }

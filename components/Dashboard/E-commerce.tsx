@@ -6,24 +6,16 @@ import WelcomeNotif from "../Dashboard/WelcomeNotif";
 import { domainTable } from "@/types/domainTable";
 import { graph } from "@/types/graph";
 import CardDataStats from "../CardDataStats";
-import TwitterPosts from "@/components/Dashboard/TwitterPosts";
 import DomainList from "@/components/Domains/DomainList";
 import RecentList from "@/components/Domains/RecentDomains";
 import LatestBlog from "@/components/Dashboard/LatestBlog";
+import UpgradeBanner from "@/components/Dashboard/UpgradeBanner";
 import { Stat } from "@/types/stats";
+import type { UserPlan } from "@/lib/plan";
 
-// import Map from "../Maps/TestMap";
-
-// without this the component renders on server and throws an error
-import dynamic from "next/dynamic";
 import ChartOne from "../Charts/ChartOne";
-import { FaCubes } from "react-icons/fa6";
-import { BiSolidBarChartAlt2 } from "react-icons/bi";
-import { AiOutlineBarChart, AiOutlineLineChart } from "react-icons/ai";
+import { FaCubes, FaTriangleExclamation, FaCircleCheck, FaShieldHalved } from "react-icons/fa6";
 import Feedback from "../Feedback/Feedback";
-const MapOne = dynamic(() => import("../Maps/MapOne"), {
-  ssr: false,
-});
 
 interface tableProps {
   tData: domainTable;
@@ -31,6 +23,7 @@ interface tableProps {
   recent: domainTable;
   feed: string | "";
   graph: graph[];
+  plan?: UserPlan;
 }
 
 export default function ECommerce({
@@ -39,6 +32,7 @@ export default function ECommerce({
   recent,
   feed,
   graph,
+  plan,
 }: tableProps) {
   // console.log('client tData:',tData)
   // console.log('client tData.current_page:',tData.current_page)
@@ -68,48 +62,49 @@ export default function ECommerce({
   const [loading, setLoading] = useState(true);
 
   return (
-    <>
+    <div className="flex flex-col gap-5">
       <WelcomeNotif />
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+      {plan ? <UpgradeBanner plan={plan} /> : null}
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <CardDataStats
-          title="Domains"
+          title="Domains monitored"
           total={String(values.domainsCount ? values.domainsCount : 0)}
           rate=""
-          levelUp
         >
           <FaCubes className="w-5 h-5" />
         </CardDataStats>
 
         <CardDataStats
-          bgCard="bg-red-gradient-1 bg-gradient"
-          title="Domains with Hits"
+          title="Need review"
           total={String(values.hitsCount ? values.hitsCount : 0)}
           rate=""
-          levelUp
         >
-          <AiOutlineBarChart className="w-5 h-5 stats-icon-color" />
+          <FaTriangleExclamation className="w-5 h-5 text-[#b45309]" />
         </CardDataStats>
 
         <CardDataStats
-          bgCard="bg-green-gradient-1 bg-gradient"
-          title="Domains without Hits"
+          title="Clear"
           total={String(values.noHitsCount ? values.noHitsCount : 0)}
           rate=""
-          levelUp
         >
-          <AiOutlineLineChart className="w-5 h-5 stats-icon-color" />
+          <FaCircleCheck className="w-5 h-5 text-meta-3" />
         </CardDataStats>
-        <CardDataStats title="Investor Space" total="+2,7432" rate="" levelUp>
-          <BiSolidBarChartAlt2 className="w-5 h-5" />
+
+        <CardDataStats
+          title="At risk"
+          total={String(values.domainsAtRiskCount ? values.domainsAtRiskCount : 0)}
+          rate=""
+        >
+          <FaShieldHalved className="w-5 h-5 text-danger" />
         </CardDataStats>
       </div>
-      <div className="w-full mb-4 text-sm"></div>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <DomainList domains={tData?.data ?? []} />
         <RecentList domains={recent?.data ?? []} />
         <LatestBlog feed={feed} />
-        <TwitterPosts />
       </div>
       {/* <div className="w-full mb-4 text-sm"></div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
@@ -147,9 +142,7 @@ export default function ECommerce({
         </div>
       </div> */}
       {/* Start:: Graph Chart */}
-      <div className="w-full mb-4 text-sm"></div>
-      {/* <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5"> */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:gap-7.5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="">
           <div className="">
             <ChartOne graph={graph} />
@@ -220,6 +213,6 @@ export default function ECommerce({
         <Feedback />
       </div>
       {/* End:: Graph Chart */}
-    </>
+    </div>
   );
 }

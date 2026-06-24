@@ -1,9 +1,9 @@
 "use client";
 import { FaBuffer } from "react-icons/fa6";
 import { FaTimes } from "react-icons/fa";
-import { FaCircleNotch } from "react-icons/fa6";
+import { FaCircleNotch, FaArrowsRotate } from "react-icons/fa6";
 import { useState, useEffect } from "react";
-import { getDomains, deleteDomains } from "@/lib/domain-helper";
+import { getDomains, deleteDomains, rescanDomain } from "@/lib/domain-helper";
 import { domainTable } from "@/types/domainTable";
 import { domains } from "@/types/domains";
 import LoadingRipple from "../Loading/LoadingRipple";
@@ -48,6 +48,17 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
   const [deleted, setDeleted] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [rescanningId, setRescanningId] = useState<number | null>(null);
+
+  const retest = async (id: number) => {
+    setRescanningId(id);
+    try {
+      await rescanDomain(id);
+      callReload(false);
+    } finally {
+      setRescanningId(null);
+    }
+  };
 
   const sort = (col: string) => {
     setSortBy(col);
@@ -415,6 +426,18 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                         <div className="flex items-center space-x-3.5">
+                          <button
+                            onClick={() => retest(item.id)}
+                            disabled={rescanningId === item.id}
+                            title="Retest (USPTO trademark scan)"
+                            className="w-8 h-8 inline-flex items-center justify-center rounded border border-[#eee] hover:bg-primary hover:text-white hover:border-primary disabled:opacity-50"
+                          >
+                            {rescanningId === item.id ? (
+                              <FaCircleNotch className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <FaArrowsRotate className="w-4 h-4" />
+                            )}
+                          </button>
                           <Link
                             href={"/domains/items/" + item.id}
                             replace

@@ -74,3 +74,62 @@ export const deleteDomains = async (domains:Array<number>) => {
     return error;
   }
 };
+
+export const rescanDomain = async (id:number) => {
+  try {
+    const res = await fetch('/api/domain/scan', {
+      method: 'POST',
+      body: JSON.stringify({ id: id })
+    });
+    return res.json();
+  } catch (error) {
+    return error;
+  }
+};
+
+/** Email the trademark report for a domain to the signed-in user. */
+export const emailReport = async (id:number) => {
+  try {
+    const res = await fetch('/api/domain/report-email', {
+      method: 'POST',
+      body: JSON.stringify({ id: id })
+    });
+    return res.json();
+  } catch (error) {
+    return error;
+  }
+};
+
+/** Load the monitoring list + summary counts. */
+export const getMonitor = async () => {
+  const res = await fetch('/api/domain/monitor', { method: 'POST' });
+  if (res.status === 401) return { unauthenticated: true } as const;
+  return res.json();
+};
+
+/** Poll current status for a set of domain ids. */
+export const pollStatus = async (ids:Array<number>) => {
+  const res = await fetch('/api/domain/status', {
+    method: 'POST',
+    body: JSON.stringify({ ids: ids })
+  });
+  if (res.status === 401) return { unauthenticated: true } as const;
+  return res.json();
+};
+
+/** Load the current user's plan/package + usage. */
+export const getPlan = async () => {
+  const res = await fetch('/api/user/plan', { method: 'POST' });
+  if (res.status === 401) return { unauthenticated: true } as const;
+  return res.json();
+};
+
+/** Add domains (comma/newline separated string or array). Returns created rows. */
+export const addMonitorDomains = async (domains:string) => {
+  const res = await fetch('/api/domain/monitor-add', {
+    method: 'POST',
+    body: JSON.stringify({ domains: domains })
+  });
+  if (res.status === 401) return { unauthenticated: true } as const;
+  return res.json();
+};

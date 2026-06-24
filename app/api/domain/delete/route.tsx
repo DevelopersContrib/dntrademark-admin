@@ -1,23 +1,19 @@
 export const dynamic = 'force-dynamic';
 
-import axios from 'axios';
-import { options } from '@/lib/options';
-import { getServerSession } from 'next-auth/next';
+import { getSessionUserId, deleteDomains } from '@/lib/db-queries';
 
 export const POST = async (req: Request) => {
-    try {
-        const data = await req.json();
-          const session = await getServerSession(options);
-          const config = {
-            headers: { Authorization: 'Bearer ' + session?.token },
-            data:{domains:data.domains},
-          };
-      
-          const apiUrl = process.env.API_URL + '/domains/delete?api_key=' + process.env.API_KEY;
-          const res = await axios.delete(apiUrl, config);
-          return new Response(JSON.stringify({ domains: res.data }), { status: 200 });
-        } catch (error) {
-          console.log(error);
-          return new Response(JSON.stringify({ error: 'Request failed' }), { status: 500 });
-        }
+  try {
+    const data = await req.json();
+    const userId = await getSessionUserId();
+    if (!userId) {
+      return new Response(JSON.stringify({ error: 'Unauthenticated' }), { status: 401 });
+    }
+
+    const result = await deleteDomains(userId, data.domains);
+    return new Response(JSON.stringify({ domains: result }), { status: 200 });
+  } catch (error) {
+    console.log(error);
+    return new Response(JSON.stringify({ error: 'Request failed' }), { status: 500 });
+  }
 };

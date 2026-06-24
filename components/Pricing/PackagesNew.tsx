@@ -142,7 +142,7 @@ const PackagesNew = (props: any) => {
             }
             alt="Plan Image 1"
           />
-          {props?.package?.package_id === 1 && (
+          {(props?.package_id ?? props?.package?.package_id) === 1 && (
             <button
               type="submit"
               className="block w-full rounded-md border border-primary bg-primary p-3 text-center text-base font-medium text-white transition hover:bg-opacity-90"
@@ -279,7 +279,7 @@ const PackagesNew = (props: any) => {
             }
             alt="Plan Image 2"
           />
-          {props?.package?.package_id === 2 ? (
+          {(props?.package_id ?? props?.package?.package_id) === 2 ? (
             <button
               type="submit"
               className="block w-full rounded-md border border-primary bg-primary p-3 text-center text-base font-medium text-white transition hover:bg-opacity-90"
@@ -396,7 +396,7 @@ const PackagesNew = (props: any) => {
             }
             alt="Plan Image 3"
           />
-          {props?.package?.package_id === 3 ? (
+          {(props?.package_id ?? props?.package?.package_id) === 3 ? (
             <button
               type="submit"
               className="block w-full rounded-md border border-primary bg-primary p-3 text-center text-base font-medium text-white transition hover:bg-opacity-90"
