@@ -21,5 +21,12 @@ API_KEY=6334aed4bdce9855f400653800596920
 STRIPE_PUBLISHABLE_KEY=pk_live_lvZPm7sekbdhqIAsdUpqh9pP
 STRIPE_SECRET_KEY=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
 
+# ── Read replica (optional — falls back to DB_HOST when unset) ──
+# Points at vnocdb-read2 (SELECT-only user). Already set in Vercel prod+preview.
+DB_READ_HOST=
+DB_READ_PORT=3306
+DB_READ_USER=
+DB_READ_PASSWORD=
+
 # ── App ───────────────────────────────────────────────────
 BASE_URL=https://dash.dntrademark.com

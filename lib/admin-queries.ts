@@ -8,7 +8,7 @@
  * CRUD helpers below.
  */
 import bcrypt from "bcryptjs";
-import { query, queryOne, execute } from "@/lib/db";
+import { query, queryOne, readQuery, readQueryOne, execute } from "@/lib/db";
 import { getSessionUserId } from "@/lib/db-queries";
 
 export interface AdminUser {
@@ -115,13 +115,13 @@ export async function adminListUsers(opts: AdminUserListOpts = {}): Promise<Admi
   const like = `%${search}%`;
   const whereParams = search ? [like, like, like] : [];
 
-  const data = await query<AdminUser>(
+  const data = await readQuery<AdminUser>(
     `SELECT id, first_name, last_name, email, package_id, is_admin, is_onboarding,
             allow_email, email_verified_at, created_at, updated_at
      FROM users ${where} ORDER BY ${sortBy} ${orderBy} LIMIT ? OFFSET ?`,
     [...whereParams, limit, offset],
   );
-  const cnt = await queryOne<{ cnt: number }>(
+  const cnt = await readQueryOne<{ cnt: number }>(
     `SELECT COUNT(*) AS cnt FROM users ${where}`,
     whereParams,
   );
@@ -257,7 +257,7 @@ export async function adminDeleteUser(id: number, currentAdminId: number): Promi
 }
 
 export async function adminUserStats() {
-  const row = await queryOne<{ total: number; admins: number; verified: number; emailable: number }>(
+  const row = await readQueryOne<{ total: number; admins: number; verified: number; emailable: number }>(
     `SELECT
        COUNT(*) AS total,
        SUM(CASE WHEN is_admin = 1 THEN 1 ELSE 0 END) AS admins,
@@ -433,7 +433,7 @@ export async function resolveAudienceEmails(audience: AutoAudience): Promise<str
   if (audience === "emailable") conds.push("allow_email = 1");
   else if (audience === "admins") conds.push("is_admin = 1");
 
-  const rows = await query<{ email: string }>(
+  const rows = await readQuery<{ email: string }>(
     `SELECT email FROM users WHERE ${conds.join(" AND ")}`,
   );
   return rows.map((r) => r.email).filter(Boolean);
