@@ -8,7 +8,7 @@
  */
 import { getServerSession } from "next-auth/next";
 import { options } from "@/lib/options";
-import { query, queryOne, execute } from "@/lib/db";
+import { query, queryOne, readQuery, readQueryOne, execute } from "@/lib/db";
 import type { MonitorDomain, MonitorStatus, MonitorSummary } from "@/lib/monitor-status";
 import type { UserPlan } from "@/lib/plan";
 import type { DomainReport, ReportItem } from "@/lib/report";
@@ -81,11 +81,11 @@ export async function listDomains(userId: number, opts: ListOpts = {}) {
   const where = search ? `WHERE user_id = ? AND ${filterBy} LIKE ?` : "WHERE user_id = ?";
   const params = search ? [userId, `%${search}%`] : [userId];
 
-  const rows = await query(
+  const rows = await readQuery(
     `SELECT * FROM domains ${where} ORDER BY ${sortBy} ${orderBy} LIMIT ? OFFSET ?`,
     [...params, limit, offset],
   );
-  const cnt = await queryOne<{ cnt: number }>(`SELECT COUNT(*) as cnt FROM domains ${where}`, params);
+  const cnt = await readQueryOne<{ cnt: number }>(`SELECT COUNT(*) as cnt FROM domains ${where}`, params);
   return paginate(rows, page, limit, cnt?.cnt || 0);
 }
 
@@ -102,11 +102,11 @@ export async function listDomainsWithHits(userId: number, opts: ListOpts = {}) {
     : "WHERE user_id = ? AND no_of_items > 0";
   const params = search ? [userId, `%${search}%`] : [userId];
 
-  const rows = await query(
+  const rows = await readQuery(
     `SELECT * FROM domains ${where} ORDER BY ${sortBy} ${orderBy} LIMIT ? OFFSET ?`,
     [...params, limit, offset],
   );
-  const cnt = await queryOne<{ cnt: number }>(`SELECT COUNT(*) as cnt FROM domains ${where}`, params);
+  const cnt = await readQueryOne<{ cnt: number }>(`SELECT COUNT(*) as cnt FROM domains ${where}`, params);
   return paginate(rows, page, limit, cnt?.cnt || 0);
 }
 
@@ -123,11 +123,11 @@ export async function listDomainsWithoutHits(userId: number, opts: ListOpts = {}
     : "WHERE user_id = ? AND no_of_items = 0";
   const params = search ? [userId, `%${search}%`] : [userId];
 
-  const rows = await query(
+  const rows = await readQuery(
     `SELECT * FROM domains ${where} ORDER BY ${sortBy} ${orderBy} LIMIT ? OFFSET ?`,
     [...params, limit, offset],
   );
-  const cnt = await queryOne<{ cnt: number }>(`SELECT COUNT(*) as cnt FROM domains ${where}`, params);
+  const cnt = await readQueryOne<{ cnt: number }>(`SELECT COUNT(*) as cnt FROM domains ${where}`, params);
   return paginate(rows, page, limit, cnt?.cnt || 0);
 }
 
@@ -144,13 +144,13 @@ export async function listDomainItems(userId: number, domainId: number, opts: Li
     : "WHERE di.domain_id = ? AND d.user_id = ?";
   const params = search ? [domainId, userId, `%${search}%`] : [domainId, userId];
 
-  const rows = await query<Record<string, unknown>>(
+  const rows = await readQuery<Record<string, unknown>>(
     `SELECT di.*, d.domain_name, d.user_id, d.status as domain_status
      FROM domain_items di LEFT JOIN domains d ON d.id = di.domain_id
      ${where} ORDER BY di.${sortBy} ${orderBy} LIMIT ? OFFSET ?`,
     [...params, limit, offset],
   );
-  const cnt = await queryOne<{ cnt: number }>(
+  const cnt = await readQueryOne<{ cnt: number }>(
     `SELECT COUNT(*) as cnt FROM domain_items di LEFT JOIN domains d ON d.id = di.domain_id ${where}`,
     params,
   );
@@ -175,7 +175,7 @@ export async function listDomainItems(userId: number, domainId: number, opts: Li
  * Returns null when the domain doesn't exist or isn't owned by the user.
  */
 export async function getDomainReport(userId: number, domainId: number): Promise<DomainReport | null> {
-  const domain = await queryOne<{
+  const domain = await readQueryOne<{
     id: number;
     domain_name: string;
     no_of_items: number | null;
@@ -188,7 +188,7 @@ export async function getDomainReport(userId: number, domainId: number): Promise
   );
   if (!domain) return null;
 
-  const rows = await query<Record<string, unknown>>(
+  const rows = await readQuery<Record<string, unknown>>(
     `SELECT di.id, di.keyword, di.registration_number, di.serial_number,
             di.status_label, di.status_definition, di.status_date, di.filing_date,
             di.registration_date, di.abandonment_date, di.expiration_date, di.description,
@@ -233,7 +233,7 @@ export async function getDomainReport(userId: number, domainId: number): Promise
 /** Dashboard counters (mirrors GET /domains/stats). One round-trip, parallel. */
 export async function getDomainStats(userId: number) {
   const [counts, atRisk] = await Promise.all([
-    queryOne<{ total: number; hits: number; noHits: number; investor: number }>(
+    readQueryOne<{ total: number; hits: number; noHits: number; investor: number }>(
       `SELECT
          COUNT(*) AS total,
          SUM(CASE WHEN no_of_items > 0 THEN 1 ELSE 0 END) AS hits,
@@ -242,7 +242,7 @@ export async function getDomainStats(userId: number) {
        FROM domains WHERE user_id = ?`,
       [userId],
     ),
-    queryOne<{ cnt: number }>(
+    readQueryOne<{ cnt: number }>(
       `SELECT COUNT(DISTINCT d.id) as cnt FROM domains d
        INNER JOIN domain_items di ON di.domain_id = d.id
        WHERE d.user_id = ? AND di.status_label LIKE '%pending%'
@@ -262,7 +262,7 @@ export async function getDomainStats(userId: number) {
 
 /** Monthly hit history for the dashboard chart (mirrors GET /domains/historical-hits). */
 export async function getHistoricalHits(userId: number) {
-  return query(
+  return readQuery(
     `SELECT COUNT(*) as my_y,
             SUBSTRING(DATE_FORMAT(di.updated_at, '%M'), 1, 3) as my_month,
             YEAR(di.updated_at) as the_year,
@@ -281,11 +281,11 @@ export async function listInvoices(userId: number, opts: ListOpts = {}) {
   const sortBy = safeSort(opts.sortBy, INVOICE_SORT, "id");
   const orderBy = safeOrder(opts.orderBy);
 
-  const rows = await query(
+  const rows = await readQuery(
     `SELECT * FROM invoices WHERE user_id = ? ORDER BY ${sortBy} ${orderBy} LIMIT ? OFFSET ?`,
     [userId, limit, offset],
   );
-  const cnt = await queryOne<{ cnt: number }>(
+  const cnt = await readQueryOne<{ cnt: number }>(
     "SELECT COUNT(*) as cnt FROM invoices WHERE user_id = ?", [userId],
   );
   return paginate(rows, page, limit, cnt?.cnt || 0);
@@ -293,7 +293,7 @@ export async function listInvoices(userId: number, opts: ListOpts = {}) {
 
 /** A single user's full row (mirrors GET /user/:id). */
 export async function getUserById(userId: number) {
-  return queryOne("SELECT * FROM users WHERE id = ? LIMIT 1", [userId]);
+  return readQueryOne("SELECT * FROM users WHERE id = ? LIMIT 1", [userId]);
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -347,7 +347,7 @@ const MONITOR_SELECT = `
 
 /** All of a user's monitored domains, newest first. */
 export async function listMonitorDomains(userId: number, limit = 200): Promise<MonitorDomain[]> {
-  const rows = await query<MonitorRow>(
+  const rows = await readQuery<MonitorRow>(
     `${MONITOR_SELECT} WHERE d.user_id = ? ORDER BY d.created_at DESC LIMIT ?`,
     [userId, limit],
   );
@@ -359,7 +359,7 @@ export async function getMonitorStatuses(userId: number, ids: number[]): Promise
   const clean = (ids || []).map((n) => Number(n)).filter((n) => Number.isFinite(n) && n > 0);
   if (!clean.length) return [];
   const placeholders = clean.map(() => "?").join(",");
-  const rows = await query<MonitorRow>(
+  const rows = await readQuery<MonitorRow>(
     `${MONITOR_SELECT} WHERE d.user_id = ? AND d.id IN (${placeholders})`,
     [userId, ...clean],
   );
@@ -375,7 +375,7 @@ export async function getMonitorStatuses(userId: number, ids: number[]): Promise
 
 /** Metric-card counts for the monitoring summary row. */
 export async function getMonitorSummary(userId: number): Promise<MonitorSummary> {
-  const row = await queryOne<{ monitored: number; scanning: number; needReview: number; clear: number }>(
+  const row = await readQueryOne<{ monitored: number; scanning: number; needReview: number; clear: number }>(
     `SELECT
        COUNT(*) AS monitored,
        SUM(CASE WHEN no_of_items IS NULL THEN 1 ELSE 0 END) AS scanning,
@@ -408,7 +408,7 @@ const DOMAIN_RE = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-
 
 /** The user's plan/package joined with their current domain usage. */
 export async function getUserPlan(userId: number): Promise<UserPlan> {
-  const row = await queryOne<{
+  const row = await readQueryOne<{
     package_id: number | null;
     name: string | null;
     start_limit: number | null;
