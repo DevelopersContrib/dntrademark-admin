@@ -305,36 +305,50 @@ interface MonitorRow {
   domain_name: string;
   no_of_items: number | null;
   date_last_crawled: string | null;
+  created_at: string | null;
   updated_at: string | null;
   item_count: number;
   registered_count: number;
   top_owner: string | null;
 }
 
+const SCAN_STALE_MS = 15 * 60 * 1000; // 15 minutes
+
 /**
  * Derive the UI-facing monitor shape from a raw DB row.
  *  - scan_status: no_of_items IS NULL  →  freshly added, not yet scanned.
+ *    If it has been NULL for longer than SCAN_STALE_MS the scan is treated
+ *    as failed so the buyer never sees "Scanning" forever.
  *  - risk_level:  0 marks → clear · has registered/live mark → action · else review.
  *  - last_scanned_at: date_last_crawled, falling back to updated_at.
- * TODO(api): drop this once the DB exposes real scan_status/risk_level columns.
  */
 function deriveMonitor(r: MonitorRow): MonitorDomain {
-  const scanning = r.no_of_items == null;
+  const unscanned = r.no_of_items == null;
   const itemCount = Number(r.item_count) || 0;
   const registered = Number(r.registered_count) || 0;
+
+  let scanStatus: MonitorDomain["scan_status"];
+  if (!unscanned) {
+    scanStatus = "scanned";
+  } else {
+    const createdMs = r.created_at ? new Date(r.created_at).getTime() : 0;
+    const stale = createdMs > 0 && Date.now() - createdMs > SCAN_STALE_MS;
+    scanStatus = stale ? "failed" : "scanning";
+  }
+
   return {
     id: Number(r.id),
     domain_name: r.domain_name,
-    no_of_items: scanning ? null : Number(r.no_of_items),
-    scan_status: scanning ? "scanning" : "scanned",
-    risk_level: scanning ? null : itemCount === 0 ? "clear" : registered > 0 ? "action" : "review",
+    no_of_items: unscanned ? null : Number(r.no_of_items),
+    scan_status: scanStatus,
+    risk_level: scanStatus !== "scanned" ? null : itemCount === 0 ? "clear" : registered > 0 ? "action" : "review",
     last_scanned_at: r.date_last_crawled || r.updated_at || null,
     top_owner: r.top_owner || null,
   };
 }
 
 const MONITOR_SELECT = `
-  SELECT d.id, d.domain_name, d.no_of_items, d.date_last_crawled, d.updated_at,
+  SELECT d.id, d.domain_name, d.no_of_items, d.date_last_crawled, d.created_at, d.updated_at,
     (SELECT COUNT(*) FROM domain_items di WHERE di.domain_id = d.id) AS item_count,
     (SELECT COUNT(*) FROM domain_items di WHERE di.domain_id = d.id
        AND di.registration_number IS NOT NULL AND di.registration_number <> ''
@@ -378,7 +392,8 @@ export async function getMonitorSummary(userId: number): Promise<MonitorSummary>
   const row = await readQueryOne<{ monitored: number; scanning: number; needReview: number; clear: number }>(
     `SELECT
        COUNT(*) AS monitored,
-       SUM(CASE WHEN no_of_items IS NULL THEN 1 ELSE 0 END) AS scanning,
+       SUM(CASE WHEN no_of_items IS NULL
+                 AND created_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE) THEN 1 ELSE 0 END) AS scanning,
        SUM(CASE WHEN no_of_items > 0 THEN 1 ELSE 0 END) AS needReview,
        SUM(CASE WHEN no_of_items = 0 THEN 1 ELSE 0 END) AS clear
      FROM domains WHERE user_id = ?`,

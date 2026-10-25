@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { getSessionUserId, insertMonitorDomains } from '@/lib/db-queries';
+import { kickScans } from '@/lib/scan-kick';
 
 export const POST = async (req: Request) => {
   try {
@@ -10,7 +11,6 @@ export const POST = async (req: Request) => {
       return new Response(JSON.stringify({ error: 'Unauthenticated' }), { status: 401 });
     }
 
-    // Accept either an array or a comma/newline-separated string.
     let names: string[] = [];
     if (Array.isArray(data.domains)) {
       names = data.domains.map((s: unknown) => String(s));
@@ -19,6 +19,10 @@ export const POST = async (req: Request) => {
     }
 
     const result = await insertMonitorDomains(userId, names);
+
+    // Kick USPTO scans in the background (continues after the response).
+    kickScans(result.created);
+
     return new Response(JSON.stringify({ success: true, ...result }), { status: 200 });
   } catch (error) {
     console.log(error);
