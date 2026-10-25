@@ -1,28 +1,12 @@
 export const dynamic = 'force-dynamic';
 
-import { NextResponse } from 'next/server';
-import axios from 'axios';
-import { options } from '@/lib/options';
-import { getServerSession } from "next-auth/next"
+import { getSessionUserId } from '@/lib/db-queries';
 
-export const GET = async (req: Request) => {
-  try {
-
-    // const session = await getServerSession(options)
-
-    // const config = {
-    //   headers:{ 'Authorization': 'Bearer '+session?.token }
-    // };
-    
-    // const apiUrl = process.env.API_URL + '/domains/stats?api_key=' + process.env.API_KEY;
-
-    
-    // const res = await axios.get(apiUrl, config)
-    // const result = res.data.data;
-    const result = ''
-
-    return NextResponse.json(result);
-  } catch (error) {
-    console.log(error);
+export const GET = async () => {
+  const userId = await getSessionUserId();
+  if (!userId) {
+    return new Response(JSON.stringify({ error: 'Unauthenticated' }), { status: 401 });
   }
+
+  return new Response(JSON.stringify({ data: null }), { status: 200 });
 };
