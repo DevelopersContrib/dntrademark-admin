@@ -2,17 +2,8 @@ import type { NextAuthOptions } from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
-import { authorizeUser, resolveOAuthEmail } from '@/lib/auth-api';
+import { authorizeUser, authorizeOAuthUser, resolveOAuthEmail } from '@/lib/auth-api';
 import { authPath, getAuthBaseUrl } from '@/lib/auth-url';
-
-interface OAuthUserPayload {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  token?: string;
-  id?: string;
-}
 
 const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith('https://') ?? false;
 
@@ -81,21 +72,15 @@ export const options: NextAuthOptions = {
 
         if (!email) {
           console.error('[auth] OAuth sign-in missing email from provider:', account?.provider);
-          return false;
+          return authPath('/auth/signin-error?error=OAuthSignin');
         }
 
-        const nameParts = (profile?.name ?? user.name ?? email.split('@')[0] ?? 'User').split(' ');
-        const payload: OAuthUserPayload = {
-          firstName: nameParts[0] || 'User',
-          lastName: nameParts.slice(1).join(' ') || '',
-          email,
-          password: email,
-        };
+        const displayName = profile?.name ?? user.name ?? email.split('@')[0] ?? 'User';
 
-        const apiUser = await authorizeUser(payload);
+        const apiUser = await authorizeOAuthUser(email, displayName);
         if (!apiUser?.token) {
           console.error('[auth] Backend rejected OAuth user:', email, account?.provider);
-          return false;
+          return authPath('/auth/signin-error?error=OAuthCallback');
         }
 
         user.id = apiUser.id;
@@ -106,7 +91,7 @@ export const options: NextAuthOptions = {
         return true;
       } catch (error) {
         console.error('[auth] OAuth signIn callback error:', account?.provider, error);
-        return false;
+        return authPath('/auth/signin-error?error=OAuthCallback');
       }
     },
     async redirect({ url, baseUrl }) {

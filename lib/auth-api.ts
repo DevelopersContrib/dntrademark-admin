@@ -232,6 +232,81 @@ export const authorizeUser = async (credentials: User) => {
   }
 };
 
+/**
+ * OAuth-specific variant of authorizeUser.
+ *
+ * For a brand-new user the flow is identical: register via the Laravel API.
+ * For an *existing* user the normal path tries to log in with email-as-password.
+ * If the user originally signed up with a real password that login fails and
+ * authorizeUser returns null, making the entire OAuth sign-in fail with
+ * AccessDenied.
+ *
+ * This function adds a fallback: when login fails it calls /user/save (the
+ * register/upsert endpoint) and retries login once. Many Laravel APIs treat
+ * /user/save as an upsert, which resets the password and returns a fresh token.
+ */
+export async function authorizeOAuthUser(
+  email: string,
+  displayName: string,
+): Promise<{ id: string; email: string; name: string; token: string } | null> {
+  if (!email || !process.env.API_URL || !process.env.API_KEY) {
+    console.error('[auth] Missing email or API env for authorizeOAuthUser');
+    return null;
+  }
+
+  const nameParts = displayName.split(' ');
+  const firstName = nameParts[0] || 'User';
+  const lastName = nameParts.slice(1).join(' ') || '';
+  const password = email;
+
+  const credentials: User = { firstName, lastName, email, password };
+
+  try {
+    const checkUrl =
+      process.env.API_URL + '/user/check?api_key=' + process.env.API_KEY + '&email=' + email;
+    const checkRes = await axios.get(checkUrl, { timeout: 15000 });
+    const exists = userExists(checkRes.data);
+
+    if (!exists) {
+      return registerWithApi(credentials);
+    }
+
+    const existingUser = extractExistingUser(checkRes.data);
+    const token = await loginWithApi(email, password);
+    if (token) {
+      return {
+        id: existingUser?.id ?? email,
+        email,
+        name: existingUser?.firstName ?? firstName,
+        token,
+      };
+    }
+
+    console.warn(
+      '[auth] OAuth login-with-email-password failed for existing user, trying register fallback:',
+      email,
+    );
+    const registered = await registerWithApi(credentials);
+    if (registered?.token) return registered;
+
+    const retryToken = await loginWithApi(email, password);
+    if (retryToken) {
+      return {
+        id: existingUser?.id ?? email,
+        email,
+        name: existingUser?.firstName ?? firstName,
+        token: retryToken,
+      };
+    }
+
+    console.error('[auth] OAuth: all attempts failed for existing user:', email);
+    return null;
+  } catch (error) {
+    console.error('[auth] authorizeOAuthUser error:', email, error);
+    return null;
+  }
+}
+
 export async function resolveOAuthEmail(
   profile: { email?: string | null; name?: string | null } | null | undefined,
   user: { email?: string | null; name?: string | null },
