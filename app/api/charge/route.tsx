@@ -25,6 +25,11 @@ export const POST = async (req: Request) => {
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         currency: 'USD',
+        metadata: {
+          dntrademark_user_id: String(session?.id ?? ''),
+          dntrademark_package_id: String(pack.id),
+          dntrademark_email: session?.user?.email ?? '',
+        },
       });
 
       const data = {
