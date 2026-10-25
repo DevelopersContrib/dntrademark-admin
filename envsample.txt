@@ -15,7 +15,7 @@ GOOGLE_CLIENT_SECRET=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
 # ── dntrademark REST API ──────────────────────────────────
 # Found hardcoded in lib/data.tsx — this is the Laravel backend
 API_URL=https://api.dntrademark.com/api/v1
-API_KEY=6334aed4bdce9855f400653800596920
+API_KEY=your-api-key-here
 
 # ── Stripe ────────────────────────────────────────────────
 STRIPE_PUBLISHABLE_KEY=pk_live_lvZPm7sekbdhqIAsdUpqh9pP
