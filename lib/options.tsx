@@ -2,7 +2,7 @@ import type { NextAuthOptions } from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
-import { authorizeUser, authorizeOAuthUser, resolveOAuthEmail } from '@/lib/auth-api';
+import { authorizeUser, authorizeOAuthUser, resolveOAuthEmail, type OAuthUserResult } from '@/lib/auth-api';
 import { authPath, getAuthBaseUrl } from '@/lib/auth-url';
 
 const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith('https://') ?? false;
@@ -77,16 +77,21 @@ export const options: NextAuthOptions = {
 
         const displayName = profile?.name ?? user.name ?? email.split('@')[0] ?? 'User';
 
-        const apiUser = await authorizeOAuthUser(email, displayName);
-        if (!apiUser?.token) {
+        const result: OAuthUserResult = await authorizeOAuthUser(email, displayName);
+
+        if (!result.ok) {
+          if (result.reason === 'account_not_linked') {
+            console.warn('[auth] OAuth blocked — email has a password account:', email);
+            return authPath('/auth/signin-error?error=OAuthAccountNotLinked');
+          }
           console.error('[auth] Backend rejected OAuth user:', email, account?.provider);
           return authPath('/auth/signin-error?error=OAuthCallback');
         }
 
-        user.id = apiUser.id;
-        user.email = apiUser.email;
-        user.name = apiUser.name;
-        user.token = apiUser.token;
+        user.id = result.id;
+        user.email = result.email;
+        user.name = result.name;
+        user.token = result.token;
 
         return true;
       } catch (error) {
