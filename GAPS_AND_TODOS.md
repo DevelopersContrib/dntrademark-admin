@@ -49,7 +49,7 @@ Legend: 📁 file · 💥 impact · 🔧 fix
 ## C. Security & secrets
 
 ### 7. Hardcoded API key + URL in `getNotification` — **P1**
-- 📁 `lib/data.tsx` (`getNotification`) — `api_key=6334aed4...` and `https://api.dntrademark.com/...` are inline string literals.
+- 📁 `lib/data.tsx` (`getNotification`) — `api_key` and API URL were inline string literals (now fixed — uses `process.env`).
 - 💥 Secret committed to source; can't rotate via env.
 - 🔧 Use `process.env.API_URL` / `process.env.API_KEY` like the other helpers. **Rotate the key** since it's been in git.
 
