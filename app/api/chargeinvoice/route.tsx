@@ -17,16 +17,23 @@ export const POST = async (req: Request) => {
   try {
     const session = await getServerSession(options);
 
-    const data = await req.json();
-    const amount = Math.round(data.pack_price);
+    const body = await req.json();
+    const amount = Math.round(body.pack_price);
+    const packId = body.pack_id;
 
     try {
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         currency: 'USD',
+        metadata: {
+          dntrademark_user_id: String(session?.id ?? ''),
+          dntrademark_package_id: String(packId ?? ''),
+          dntrademark_email: session?.user?.email ?? '',
+        },
       });
 
       const data = {
+        package_id: packId,
         email: session?.user?.email,
         amount: amount,
         price: amount,
