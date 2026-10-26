@@ -103,8 +103,9 @@ export const checkEmail = async (email: string) => {
     const result = await axios.get(apiUrl, { timeout: 10000 });
     const id = result.data?.data?.data?.id ?? result.data?.data?.id;
     return id ? { isEmailAvailable: false } : { isEmailAvailable: true };
-  } catch (error) {
-    console.log('Error', error);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('[auth] checkEmail error:', msg);
     return { isEmailAvailable: true };
   }
 };
@@ -136,17 +137,29 @@ export const saveUser = async (values: User) => {
   }
 };
 
-async function loginWithApi(email: string, password: string) {
+const LOGIN_REJECTED_STATUSES = new Set([401, 403, 422]);
+
+async function loginWithApi(email: string, password: string): Promise<string | null> {
   const loginUrl = process.env.API_URL + '/auth/login?api_key=' + process.env.API_KEY;
   const params = new URLSearchParams();
   params.append('email', email);
   params.append('password', password);
 
-  const loginRes = await axios.post(loginUrl, params, { timeout: 15000 });
+  let loginRes;
+  try {
+    loginRes = await axios.post(loginUrl, params, { timeout: 15000 });
+  } catch (err: unknown) {
+    if (axios.isAxiosError(err) && err.response && LOGIN_REJECTED_STATUSES.has(err.response.status)) {
+      console.warn(`[auth] login rejected (status ${err.response.status})`);
+      return null;
+    }
+    throw err;
+  }
+
   const token = extractToken(loginRes.data);
 
   if (!token) {
-    console.error('[auth] Login response missing token:', email, loginRes.data);
+    console.warn('[auth] Login response missing token for', email);
     return null;
   }
 
@@ -227,8 +240,10 @@ export const authorizeUser = async (credentials: User) => {
     }
 
     return registerWithApi(credentials);
-  } catch (error) {
-    console.error('[auth] authorizeUser error:', email, error);
+  } catch (error: unknown) {
+    const status = axios.isAxiosError(error) ? error.response?.status : undefined;
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('[auth] authorizeUser error:', email, status ?? '', msg);
     return null;
   }
 };
@@ -318,8 +333,10 @@ export async function authorizeOAuthUser(
 
     console.warn('[auth] OAuth: existing user has a different password, failing closed');
     return { ok: false, reason: 'account_not_linked' };
-  } catch (error) {
-    console.error('[auth] authorizeOAuthUser error:', error);
+  } catch (error: unknown) {
+    const status = axios.isAxiosError(error) ? error.response?.status : undefined;
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('[auth] authorizeOAuthUser error:', status ?? '', msg);
     return { ok: false, reason: 'api_error' };
   }
 }
