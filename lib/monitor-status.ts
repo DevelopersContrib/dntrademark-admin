@@ -135,9 +135,9 @@ export function relativeTime(value: string | null | undefined): string {
   return `${Math.floor(mo / 12)}y ago`;
 }
 
-/** Trust line shown on resolved cards. Cron runs daily, hence "24h". */
+/** Trust line shown on resolved cards. Backed by the daily Vercel Cron at /api/cron/scan. */
 export function monitoringTrustLine(lastScannedAt: string | null | undefined): string {
-  return `Monitoring active \u00b7 last scanned ${relativeTime(lastScannedAt)} \u00b7 next scan in 24h`;
+  return `Monitoring active \u00b7 last scanned ${relativeTime(lastScannedAt)} \u00b7 scanned daily`;
 }
 
 /**

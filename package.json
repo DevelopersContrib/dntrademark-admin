@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migrate:oauth": "npx tsx scripts/migrate-oauth-passwords.ts",
-    "test:oauth-password": "npx tsx scripts/test-oauth-password.ts"
+    "migrate:oauth": "tsx scripts/migrate-oauth-passwords.ts",
+    "test:oauth-password": "tsx scripts/test-oauth-password.ts",
+    "test:password-reset": "tsx scripts/test-password-reset-token.ts"
   },
   "dependencies": {
     "@react-jvectormap/core": "^1.0.4",
@@ -51,7 +52,8 @@
   "devDependencies": {
     "@types/nodemailer": "^8.0.1",
     "@types/papaparse": "^5.3.9",
-    "@types/react-draft-wysiwyg": "^1.13.7"
+    "@types/react-draft-wysiwyg": "^1.13.7",
+    "tsx": "^4.23.15"
   },
   "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0"
 }

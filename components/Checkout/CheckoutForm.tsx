@@ -7,11 +7,8 @@ import { PackagesProps } from '@/types/packages';
 
 // Docs:: https://stripe.com/docs/payments/accept-a-payment-charges?client=react
 
-async function stripeTokenHandler(token: any, pack_price: string) {
-  const paymentData = { token: token.id, pack_price: pack_price };
-
-  // Use fetch to send the token ID and any other payment data to your server.
-  // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+async function stripeTokenHandler(token: any, pack_price: string, pack_id: number) {
+  const paymentData = { token: token.id, pack_price: pack_price, pack_id };
 
   const res = await fetch('/api/chargeinvoice', {
     method: 'POST',
@@ -58,7 +55,7 @@ const CheckoutForm: React.FC<pack> = ({ pack }) => {
         // Send the token to your server.
         // This function does not exist yet; we will define it in the next step.
         setLoading(true);
-        const res = await stripeTokenHandler(result.token, pack.price.toString());
+        const res = await stripeTokenHandler(result.token, pack.price.toString(), pack.id);
         if (res.success) {
           setLoading(false);
           setSuccess(true);
