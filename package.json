@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "migrate:oauth": "tsx scripts/migrate-oauth-passwords.ts",
-    "test:oauth-password": "tsx scripts/test-oauth-password.ts"
+    "test:oauth-password": "tsx scripts/test-oauth-password.ts",
+    "test:password-reset": "tsx scripts/test-password-reset-token.ts"
   },
   "dependencies": {
     "@react-jvectormap/core": "^1.0.4",

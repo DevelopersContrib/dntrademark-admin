@@ -93,6 +93,12 @@ export default function SigninForm() {
           />
         </div>
 
+        <div className="flex justify-end">
+          <Link href="/auth/forgot-password" className="text-sm font-medium text-brand hover:underline">
+            Forgot password?
+          </Link>
+        </div>
+
         {error && (
           <p className="text-sm text-danger" role="alert">
             {error}
