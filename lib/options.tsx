@@ -100,8 +100,9 @@ export const options: NextAuthOptions = {
         user.token = result.token;
 
         return true;
-      } catch (error) {
-        console.error('[auth] OAuth signIn callback error:', account?.provider, error);
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : String(error);
+        console.error('[auth] OAuth signIn callback error:', account?.provider, msg);
         return authPath('/auth/signin-error?error=OAuthCallback');
       }
     },
