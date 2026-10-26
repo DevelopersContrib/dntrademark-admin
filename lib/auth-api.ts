@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { User } from '@/types/user';
+import { deriveOAuthPassword } from '@/lib/oauth-password';
 
 // The backend issues Laravel-style tokens as "<id>|<hash>" but its authenticated
 // endpoints only accept the "<hash>" portion as the Bearer token. Sending the full
@@ -239,13 +240,15 @@ export type OAuthUserResult =
 /**
  * OAuth-specific variant of authorizeUser.
  *
- * New user → register via the Laravel API (password = email).
- * Existing user → try login with email-as-password.
+ * New user → register via the Laravel API with a derived HMAC password.
+ * Existing user → try login with the derived password first; if that fails,
+ * fall back to the legacy email-as-password login when OAUTH_LEGACY_LOGIN
+ * is enabled (default: enabled, set to 'false' to disable once all accounts
+ * have been migrated).
  *
  * If the user originally signed up with a real password the login fails.
  * We intentionally fail closed here — never call /user/save for an existing
- * user because that could reset their password to their email, which is a
- * public, guessable value (account takeover via the credentials form).
+ * user because that could reset their password, which is an account takeover.
  */
 export async function authorizeOAuthUser(
   email: string,
@@ -256,12 +259,21 @@ export async function authorizeOAuthUser(
     return { ok: false, reason: 'api_error' };
   }
 
+  const derivedPassword = deriveOAuthPassword(email);
+  if (!derivedPassword) {
+    return { ok: false, reason: 'api_error' };
+  }
+
   const nameParts = displayName.split(' ');
   const firstName = nameParts[0] || 'User';
   const lastName = nameParts.slice(1).join(' ') || '';
-  const password = email;
 
-  const credentials: User = { firstName, lastName, email, password };
+  const credentials: User = {
+    firstName,
+    lastName,
+    email,
+    password: derivedPassword,
+  };
 
   try {
     const checkUrl =
@@ -276,7 +288,8 @@ export async function authorizeOAuthUser(
     }
 
     const existingUser = extractExistingUser(checkRes.data);
-    const token = await loginWithApi(email, password);
+
+    const token = await loginWithApi(email, derivedPassword);
     if (token) {
       return {
         ok: true,
@@ -287,10 +300,26 @@ export async function authorizeOAuthUser(
       };
     }
 
-    console.warn('[auth] OAuth: existing user has a different password, failing closed:', email);
+    const legacyEnabled = process.env.OAUTH_LEGACY_LOGIN !== 'false';
+    if (legacyEnabled) {
+      const legacyToken = await loginWithApi(email, email);
+      if (legacyToken) {
+        const userId = existingUser?.id ?? 'unknown';
+        console.warn(`[auth] legacy oauth login used for user id ${userId}`);
+        return {
+          ok: true,
+          id: existingUser?.id ?? email,
+          email,
+          name: existingUser?.firstName ?? firstName,
+          token: legacyToken,
+        };
+      }
+    }
+
+    console.warn('[auth] OAuth: existing user has a different password, failing closed');
     return { ok: false, reason: 'account_not_linked' };
   } catch (error) {
-    console.error('[auth] authorizeOAuthUser error:', email, error);
+    console.error('[auth] authorizeOAuthUser error:', error);
     return { ok: false, reason: 'api_error' };
   }
 }
