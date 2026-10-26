@@ -1,15 +1,27 @@
 /**
  * Background scan kick — fire-and-forget wrapper around scanDomain that
- * survives Vercel serverless via waitUntil.  Imported by route handlers
- * that insert new domains so every add gets a scan without relying on
- * the client staying open.
+ * survives Vercel serverless via the platform's waitUntil hook.  Imported
+ * by route handlers that insert new domains so every add gets a scan
+ * without relying on the client staying open.
+ *
+ * We access the Vercel request-context symbol directly instead of pulling
+ * in `@vercel/functions` (whose barrel export drags in a `ws` dependency
+ * that breaks the Next 13 webpack build).
  */
-import { waitUntil } from "@vercel/functions";
 import { scanDomain } from "./scan";
 
 interface ScanTarget {
   id: number;
   domain_name: string;
+}
+
+type WaitUntilFn = (p: Promise<unknown>) => void;
+
+function getWaitUntil(): WaitUntilFn | undefined {
+  const ctx = (globalThis as Record<symbol, { get?: () => { waitUntil?: WaitUntilFn } }>)[
+    Symbol.for("@vercel/request-context")
+  ];
+  return ctx?.get?.()?.waitUntil;
 }
 
 /**
@@ -31,9 +43,10 @@ export function kickScans(domains: ScanTarget[]): void {
     }
   })();
 
-  try {
-    waitUntil(work);
-  } catch {
+  const wu = getWaitUntil();
+  if (wu) {
+    wu(work);
+  } else {
     work.catch((err) => console.error("[scan-kick] background error:", err));
   }
 }
