@@ -1,3 +1,4 @@
+#!/usr/bin/env npx tsx
 /**
  * Minimal test script for deriveOAuthPassword and the email==password rejection.
  * No test framework required — uses Node assert.

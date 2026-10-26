@@ -1,3 +1,4 @@
+#!/usr/bin/env npx tsx
 /**
  * One-time migration: re-hash OAuth users whose password is bcrypt(email)
  * to bcrypt(deriveOAuthPassword(email)).
