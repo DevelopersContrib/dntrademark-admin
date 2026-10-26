@@ -232,17 +232,93 @@ export const authorizeUser = async (credentials: User) => {
   }
 };
 
+export type OAuthUserResult =
+  | { ok: true; id: string; email: string; name: string; token: string }
+  | { ok: false; reason: 'account_not_linked' | 'api_error' };
+
+/**
+ * OAuth-specific variant of authorizeUser.
+ *
+ * New user → register via the Laravel API (password = email).
+ * Existing user → try login with email-as-password.
+ *
+ * If the user originally signed up with a real password the login fails.
+ * We intentionally fail closed here — never call /user/save for an existing
+ * user because that could reset their password to their email, which is a
+ * public, guessable value (account takeover via the credentials form).
+ */
+export async function authorizeOAuthUser(
+  email: string,
+  displayName: string,
+): Promise<OAuthUserResult> {
+  if (!email || !process.env.API_URL || !process.env.API_KEY) {
+    console.error('[auth] Missing email or API env for authorizeOAuthUser');
+    return { ok: false, reason: 'api_error' };
+  }
+
+  const nameParts = displayName.split(' ');
+  const firstName = nameParts[0] || 'User';
+  const lastName = nameParts.slice(1).join(' ') || '';
+  const password = email;
+
+  const credentials: User = { firstName, lastName, email, password };
+
+  try {
+    const checkUrl =
+      process.env.API_URL + '/user/check?api_key=' + process.env.API_KEY + '&email=' + email;
+    const checkRes = await axios.get(checkUrl, { timeout: 15000 });
+    const exists = userExists(checkRes.data);
+
+    if (!exists) {
+      const registered = await registerWithApi(credentials);
+      if (!registered?.token) return { ok: false, reason: 'api_error' };
+      return { ok: true, ...registered };
+    }
+
+    const existingUser = extractExistingUser(checkRes.data);
+    const token = await loginWithApi(email, password);
+    if (token) {
+      return {
+        ok: true,
+        id: existingUser?.id ?? email,
+        email,
+        name: existingUser?.firstName ?? firstName,
+        token,
+      };
+    }
+
+    console.warn('[auth] OAuth: existing user has a different password, failing closed:', email);
+    return { ok: false, reason: 'account_not_linked' };
+  } catch (error) {
+    console.error('[auth] authorizeOAuthUser error:', email, error);
+    return { ok: false, reason: 'api_error' };
+  }
+}
+
+/**
+ * Resolve the user's email from the OAuth profile.
+ *
+ * For GitHub we always hit the /user/emails API to confirm the email is
+ * **verified**. An unverified primary email is rejected — without this check
+ * an attacker could add someone else's email to their GitHub account (without
+ * verifying it) and use OAuth to impersonate that address.
+ *
+ * Google emails are verified by definition (Google requires it).
+ */
 export async function resolveOAuthEmail(
   profile: { email?: string | null; name?: string | null } | null | undefined,
   user: { email?: string | null; name?: string | null },
   provider?: string | null,
   accessToken?: string | null,
 ): Promise<string | null> {
-  const directEmail = profile?.email ?? user.email ?? null;
-  if (directEmail) return directEmail;
+  if (provider === 'github' && accessToken) {
+    return resolveVerifiedGitHubEmail(accessToken);
+  }
 
-  if (provider !== 'github' || !accessToken) return null;
+  return profile?.email ?? user.email ?? null;
+}
 
+async function resolveVerifiedGitHubEmail(accessToken: string): Promise<string | null> {
   try {
     const response = await fetch('https://api.github.com/user/emails', {
       headers: {
@@ -262,12 +338,16 @@ export async function resolveOAuthEmail(
       verified: boolean;
     }>;
 
-    return (
-      emails.find((entry) => entry.primary && entry.verified)?.email ??
-      emails.find((entry) => entry.verified)?.email ??
-      emails[0]?.email ??
-      null
-    );
+    const verified =
+      emails.find((e) => e.primary && e.verified)?.email ??
+      emails.find((e) => e.verified)?.email ??
+      null;
+
+    if (!verified) {
+      console.error('[auth] GitHub account has no verified email — rejecting sign-in');
+    }
+
+    return verified;
   } catch (error) {
     console.error('[auth] GitHub email fetch error:', error);
     return null;

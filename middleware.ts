@@ -3,11 +3,13 @@ import type { NextRequest } from 'next/server';
 import { withAuth } from 'next-auth/middleware';
 
 const authMiddleware = withAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     authorized: ({ token }) => !!token,
   },
   pages: {
     signIn: '/auth/signin',
+    error: '/auth/signin-error',
   },
 });
 
