@@ -44,6 +44,12 @@ export const options: NextAuthOptions = {
         },
       },
       async authorize(credentials: any) {
+        const email = (credentials?.email ?? '').trim().toLowerCase();
+        const password = (credentials?.password ?? '').trim();
+        if (email && password && email === password.toLowerCase()) {
+          return null;
+        }
+
         const user = await authorizeUser(credentials);
         if (!user?.token) return null;
 
