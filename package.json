@@ -9,6 +9,7 @@
     "lint": "next lint",
     "migrate:oauth": "tsx scripts/migrate-oauth-passwords.ts",
     "test:oauth-password": "tsx scripts/test-oauth-password.ts",
+    "test:oauth-fallback": "tsx scripts/test-oauth-fallback.ts",
     "test:password-reset": "tsx scripts/test-password-reset-token.ts"
   },
   "dependencies": {
