@@ -1,10 +1,27 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { Component, useEffect, useRef, useState } from "react";
+import type { ErrorInfo, ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 import Image from "next/image";
+
+class AdminSectionBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("[Sidebar] admin section render error:", error, info);
+  }
+  render() {
+    return this.state.hasError ? null : this.props.children;
+  }
+}
 import {
   FaBuffer,
   FaRegNewspaper,
@@ -331,6 +348,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               {/* <!-- Admin (admins only) --> */}
               {isAdmin ? (
+                <AdminSectionBoundary>
                 <SidebarLinkGroup activeCondition={pathname.startsWith("/admin")}>
                   {(handleClick, open) => {
                     return (
@@ -398,6 +416,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     );
                   }}
                 </SidebarLinkGroup>
+                </AdminSectionBoundary>
               ) : null}
               {/* <!-- Admin --> */}
 
