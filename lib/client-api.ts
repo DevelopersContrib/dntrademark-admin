@@ -1,7 +1,15 @@
 export const getNotificationsNew = async () => {
   const res = await fetch('/api/notifications/', { method: 'GET' });
   if (!res.ok) return { message: [] };
-  return res.json();
+  const data = await res.json();
+  if (data && typeof data === 'object' && !Array.isArray(data.message)) {
+    console.warn(
+      '[notifications] unexpected response shape:',
+      'message type=' + typeof data.message,
+      'keys=' + Object.keys(data).join(','),
+    );
+  }
+  return data;
 };
 
 export const checkEmail = async (email: string) => {

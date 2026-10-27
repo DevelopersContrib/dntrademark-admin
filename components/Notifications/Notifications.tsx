@@ -14,11 +14,26 @@ const Notifications = () => {
 
   const getAllNotifications = async () => {
     setFetchingData(true);
-
-    getNotificationsNew().then((res) => {
-      setNotifications(res?.message ?? []);
-      setFetchingData(false);
-    });
+    try {
+      const res = await getNotificationsNew();
+      const raw = res?.message;
+      if (Array.isArray(raw)) {
+        const safe = raw
+          .filter((n: unknown): n is Record<string, unknown> => n != null && typeof n === 'object')
+          .map((n: Record<string, unknown>) => ({
+            message: typeof n.message === 'string' ? n.message : '',
+            url: typeof n.url === 'string' && n.url ? n.url : '#',
+            status: typeof n.status === 'string' ? n.status : '',
+            date_sent: typeof n.date_sent === 'string' ? n.date_sent : '',
+          }));
+        setNotifications(safe as any);
+      } else {
+        setNotifications([]);
+      }
+    } catch {
+      setNotifications([]);
+    }
+    setFetchingData(false);
   };
 
   useEffect(() => {
