@@ -1,9 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { NotificationType } from "@/types/notificationType";
 
 import { getNotificationsNew } from '@/lib/client-api';
+
+interface SafeNotification {
+  message: string;
+  url: string;
+  status?: string;
+  date_sent?: string;
+}
 
 const DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -14,13 +20,25 @@ const DropdownNotification = () => {
   const dropdown = useRef<any>(null);
   
 
-const [ notifications, setNotifications ] = useState<NotificationType[]>([]);
+const [ notifications, setNotifications ] = useState<SafeNotification[]>([]);
 
   const getAllNotifications = async () => {
     try {
       const res = await getNotificationsNew();
-      const list = res?.message;
-      setNotifications(Array.isArray(list) ? list : []);
+      const raw = res?.message;
+      if (!Array.isArray(raw)) {
+        setNotifications([]);
+        return;
+      }
+      const safe: SafeNotification[] = raw
+        .filter((n: unknown): n is Record<string, unknown> => n != null && typeof n === 'object')
+        .map((n: Record<string, unknown>) => ({
+          message: typeof n.message === 'string' ? n.message : '',
+          url: typeof n.url === 'string' && n.url ? n.url : '#',
+          status: typeof n.status === 'string' ? n.status : undefined,
+          date_sent: typeof n.date_sent === 'string' ? n.date_sent : undefined,
+        }));
+      setNotifications(safe);
     } catch {
       setNotifications([]);
     }
@@ -104,19 +122,21 @@ const [ notifications, setNotifications ] = useState<NotificationType[]>([]);
         </div>
 
         <ul className="flex h-auto flex-col overflow-y-auto">
-          {
-            notifications.length > 0 ? notifications.map((notif: NotificationType, index: number) => (
-              <li key={index}>
-                <Link
-                  className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 a-tag"
-                  href={notif.url}
-                >
-                  <p className="text-sm long-and-truncated" dangerouslySetInnerHTML={{ __html: notif.message }} />
-                </Link>
-              </li>
-              
-            )) : ''
-          }
+          {notifications.length > 0
+            ? notifications.map((notif, index) => (
+                <li key={index}>
+                  <Link
+                    className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 a-tag"
+                    href={notif.url}
+                  >
+                    <p
+                      className="text-sm long-and-truncated"
+                      dangerouslySetInnerHTML={{ __html: notif.message }}
+                    />
+                  </Link>
+                </li>
+              ))
+            : null}
         </ul>
       </div>
     </li>
