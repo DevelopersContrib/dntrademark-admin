@@ -17,8 +17,13 @@ const DropdownNotification = () => {
 const [ notifications, setNotifications ] = useState<NotificationType[]>([]);
 
   const getAllNotifications = async () => {
-    const res = await getNotificationsNew();
-    setNotifications(res?.message ?? []);
+    try {
+      const res = await getNotificationsNew();
+      const list = res?.message;
+      setNotifications(Array.isArray(list) ? list : []);
+    } catch {
+      setNotifications([]);
+    }
   }
 
   useEffect(() => {

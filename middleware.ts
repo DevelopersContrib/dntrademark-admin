@@ -56,5 +56,6 @@ export const config = {
     '/tables',
     '/forms/:path*',
     '/ui/:path*',
+    '/admin/:path*',
   ],
 };

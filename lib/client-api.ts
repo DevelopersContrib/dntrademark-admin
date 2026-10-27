@@ -1,5 +1,6 @@
 export const getNotificationsNew = async () => {
   const res = await fetch('/api/notifications/', { method: 'GET' });
+  if (!res.ok) return { message: [] };
   return res.json();
 };
 

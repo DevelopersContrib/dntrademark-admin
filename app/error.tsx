@@ -11,7 +11,12 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    console.error(
+      '[error boundary]',
+      error?.message ?? '(no message)',
+      error?.digest ? `digest=${error.digest}` : '',
+      error?.stack ?? '',
+    );
   }, [error]);
 
   return (
