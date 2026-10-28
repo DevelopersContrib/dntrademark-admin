@@ -53,7 +53,7 @@ A flat list of every **page**, **API route**, and **component**, with:
 | `/feedback` | `app/(dashboard)/feedback/page.tsx` | `components/Feedback/Feedback.tsx` | `/api/feedback/save` |
 | `/onboarding` | `app/(dashboard)/onboarding/page.tsx` | `components/onboarding/OnboardContent.tsx` | 🌐 `/api/domain/add`, `/api/user/update` |
 
-### Admin (gated by `ADMIN_EMAILS` / `users.is_admin`)
+### Admin (gated by hardcoded VNOC admins + `users.is_admin`)
 | URL | Edit page | Edit UI | Powered by → table |
 | --- | --- | --- | --- |
 | `/admin` | `app/(dashboard)/admin/page.tsx` | (inline) | ✅ `adminUserStats`, `listAutoresponders` → `users`, `autoresponders` |
