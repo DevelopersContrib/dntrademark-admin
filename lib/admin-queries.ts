@@ -30,39 +30,26 @@ export type AdminGuard =
   | { ok: false; status: 401 | 403 };
 
 /**
- * VNOC org-level admins — always allowed regardless of ADMIN_EMAILS or the DB
- * flag. Case-insensitive, trimmed at comparison time.
+ * VNOC org-level admins — always allowed regardless of the DB flag.
+ * Case-insensitive, trimmed at comparison time.
  */
-const VNOC_ADMINS: ReadonlySet<string> = new Set([
+export const VNOC_ADMINS: ReadonlySet<string> = new Set([
   "maidabarrientos@gmail.com",
   "chad@ecorp.com",
 ]);
 
-/** Parse the ADMIN_EMAILS env var into a normalized set of allowed emails. */
-function adminEmailSet(): Set<string> {
-  return new Set(
-    (process.env.ADMIN_EMAILS || "")
-      .split(/[,\s]+/)
-      .map((e) => e.trim().toLowerCase())
-      .filter(Boolean),
-  );
-}
-
 /**
  * Whether an email is an authorized admin.
  *
- * Check order:
+ * Two sources of truth:
  *  1. VNOC org-level admins (hardcoded above) — always pass.
- *  2. `ADMIN_EMAILS` env var allow-list.
- *  3. DB `is_admin` flag as a fallback when the env var is empty.
+ *  2. DB `users.is_admin = 1` flag.
  */
 export function isAdminEmail(email: string | null | undefined, dbIsAdmin = false): boolean {
   if (!email) return false;
   const norm = email.trim().toLowerCase();
   if (VNOC_ADMINS.has(norm)) return true;
-  const allow = adminEmailSet();
-  if (allow.size === 0) return dbIsAdmin;
-  return allow.has(norm);
+  return dbIsAdmin;
 }
 
 /**
