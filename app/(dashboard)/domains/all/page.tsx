@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import AllDomains from "@/components/Domains/AllDomains"
 import Unauthenticated from '@/components/Unauthenticated';
-import {getDomainList,getInvoice} from '@/lib/data'
+import {getDomainList} from '@/lib/data'
 import { resolveDomainList } from '@/lib/domain-page';
 
 export const metadata: Metadata = {
@@ -22,12 +22,8 @@ const page = async() => {
     redirect('/auth/signin');
   }
 
-  const invoices = await getInvoice();
-  const invoiceArr = (invoices ?? []) as [];
-  const deleteDomain = invoiceArr.length === 0;
-
   return (
-    <AllDomains tData={resolved} deleteDomain={deleteDomain}  />
+    <AllDomains tData={resolved} />
   )
 }
 

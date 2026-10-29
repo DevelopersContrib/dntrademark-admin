@@ -1,18 +1,13 @@
 "use client";
 import { FaBuffer } from "react-icons/fa6";
-import { FaTimes } from "react-icons/fa";
-import { FaCircleNotch, FaArrowsRotate } from "react-icons/fa6";
-import { useState, useEffect } from "react";
-import { getDomains, deleteDomains, rescanDomain } from "@/lib/domain-helper";
+import { FaTrash } from "react-icons/fa";
+import { FaCircleNotch, FaArrowsRotate, FaXmark } from "react-icons/fa6";
+import { useState, useEffect, useCallback } from "react";
+import { getDomains, deleteDomains, rescanDomain, type DeleteDomainsResult } from "@/lib/domain-helper";
 import { domainTable } from "@/types/domainTable";
 import { domains } from "@/types/domains";
 import LoadingRipple from "../Loading/LoadingRipple";
 import Link from "next/link";
-
-interface tableProps {
-  tData: domainTable;
-  deleteDomain: boolean;
-}
 
 const emptyTable: domainTable = {
   current_page: 1,
@@ -29,7 +24,17 @@ const emptyTable: domainTable = {
   total: 0,
 };
 
-const AllDomains = ({ tData,deleteDomain }: tableProps) => {
+interface ToastState {
+  type: "success" | "error";
+  message: string;
+}
+
+interface ConfirmState {
+  ids: number[];
+  names: string[];
+}
+
+const AllDomains = ({ tData }: { tData: domainTable }) => {
   const safeData = tData?.data ? tData : emptyTable;
   const [rows, setRows] = useState<domains[]>(safeData.data ?? []);
   const [tableData, setTableData] = useState<domainTable>(safeData);
@@ -43,18 +48,19 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
   const [reload, setReload] = useState<number>(1);
   const [listItems, setListItems] = useState<JSX.Element[]>([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [selectedRows, setSelectedRows] = useState<domainTable[]>([]);
 
-  const [deleted, setDeleted] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
   const [rescanningId, setRescanningId] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [confirm, setConfirm] = useState<ConfirmState | null>(null);
+  const [toast, setToast] = useState<ToastState | null>(null);
+
+  const selectedCount = rows.filter((r) => r.selected).length;
 
   const retest = async (id: number) => {
     setRescanningId(id);
     try {
       await rescanDomain(id);
-      callReload(false);
+      callReload();
     } finally {
       setRescanningId(null);
     }
@@ -63,17 +69,12 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
   const sort = (col: string) => {
     setSortBy(col);
     setOrderBy(orderBy === "ASC" ? "DESC" : "ASC");
-    callReload(false);
+    callReload();
   };
 
   const toggleCheckbox = (check: boolean) => {
-    setDeleted(false);
     setSelectAll(check);
-    const updatedData = rows.map((row) => ({
-      ...row,
-      selected: check,
-    }));
-    setRows(updatedData);
+    setRows((prev) => prev.map((row) => ({ ...row, selected: check })));
   };
 
   const toggleSelectAll = () => {
@@ -81,75 +82,113 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
   };
 
   const handleRowCheckboxChange = (id: number) => {
-    setDeleted(false);
-    const updatedData = rows.map((row) =>
-      row.id === id ? { ...row, selected: !row.selected } : row
+    setRows((prev) =>
+      prev.map((row) => (row.id === id ? { ...row, selected: !row.selected } : row)),
     );
-    setRows(updatedData);
   };
 
-  const deleteSingle = (id: number) => {
-    setDeleted(false);
-    const updatedData = rows.map((row) =>
-      row.id === id ? { ...row, selected: true } : row
-    );
-    setRows(updatedData);
-    setShowDelete(false);
-    setConfirmDelete(true);
+  const openDeleteConfirm = (ids: number[], names: string[]) => {
+    setConfirm({ ids, names });
   };
 
-  const callReload = (del: boolean) => {
-    const d = new Date();
-    const time = d.getTime();
-    setReload(time);
-    setDeleted(del);
+  const openSingleDelete = (id: number, name: string) => {
+    openDeleteConfirm([id], [name]);
   };
+
+  const openBulkDelete = () => {
+    const selected = rows.filter((r) => r.selected);
+    openDeleteConfirm(
+      selected.map((r) => r.id),
+      selected.map((r) => r.domain_name),
+    );
+  };
+
+  const cancelDelete = () => {
+    setConfirm(null);
+  };
+
+  const executeDelete = async () => {
+    if (!confirm) return;
+    setDeleting(true);
+    try {
+      const res: DeleteDomainsResult = await deleteDomains(confirm.ids);
+      if (res.error) {
+        setToast({ type: "error", message: res.error });
+      } else if (res.domains.success) {
+        const failedNames = res.domains.failed.map((f) => {
+          const match = confirm.names[confirm.ids.indexOf(f.id)];
+          return match || `ID ${f.id}`;
+        });
+        if (failedNames.length > 0) {
+          setToast({
+            type: "error",
+            message: `Deleted ${res.domains.deleted.length} domain(s). Failed: ${failedNames.join(", ")}`,
+          });
+        } else {
+          const count = res.domains.deleted.length;
+          setToast({
+            type: "success",
+            message: `${count} domain${count === 1 ? "" : "s"} deleted successfully.`,
+          });
+        }
+        toggleCheckbox(false);
+        callReload();
+      } else {
+        const failedNames = res.domains.failed.map((f) => {
+          const match = confirm.names[confirm.ids.indexOf(f.id)];
+          return match || `ID ${f.id}`;
+        });
+        setToast({
+          type: "error",
+          message: failedNames.length
+            ? `Delete failed for: ${failedNames.join(", ")}`
+            : "Delete failed. Please try again.",
+        });
+      }
+    } catch {
+      setToast({ type: "error", message: "An unexpected error occurred." });
+    } finally {
+      setDeleting(false);
+      setConfirm(null);
+    }
+  };
+
+  const callReload = useCallback(() => {
+    setReload(Date.now());
+  }, []);
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
-    callReload(false);
+    callReload();
   };
 
   const handleLimit = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setLimit(parseInt(event.target.value));
     setPage(1);
-    callReload(false);
+    callReload();
   };
 
   const handlePrevious = () => {
     if (page > 1) setPage(page - 1);
-    callReload(false);
+    callReload();
   };
 
   const handleNext = () => {
     if (page < tableData.last_page) setPage(page + 1);
-    callReload(false);
+    callReload();
   };
 
-  const deleteRows = async () => {
-    const selected = rows.filter((row) => row.selected);
-    let ids: Array<number> = [];
-    selected.map((row) => ids.push(row.id));
-
-    if (ids.length > 0) {
-      setLoading(true);
-      setShowDelete(false);
-      setConfirmDelete(false);
-      const res = await deleteDomains(ids);
-      setLoading(false);
-      if (res.domains.success) {
-        callReload(true);
-      }
-    }
-  };
   useEffect(() => {
-    const selected = rows.filter((row) => row.selected);
-    setShowDelete(selected.length > 0);
-  }, [rows]);
+    if (toast) {
+      const t = setTimeout(() => setToast(null), 6000);
+      return () => clearTimeout(t);
+    }
+  }, [toast]);
 
   useEffect(() => {
     const handlePage = (pageNo: number) => {
       setPage(pageNo);
-      callReload(false);
+      callReload();
     };
     const generateListItems = (t: domainTable) => {
       const items = [];
@@ -163,7 +202,7 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
             >
               {i}
             </a>
-          </li>
+          </li>,
         );
       }
       setListItems(items);
@@ -171,7 +210,6 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
 
     const getAllDomains = async () => {
       setLoading(true);
-
       const res = await getDomains(search, limit, page, sortBy, orderBy);
       const tData = res?.domains as domainTable;
       if (!tData?.data) return;
@@ -184,57 +222,57 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
     // eslint-disable-next-line
   }, [reload]);
 
+  const confirmMessage =
+    confirm && confirm.names.length === 1
+      ? `Delete ${confirm.names[0]}? This removes the domain and its monitoring data from your account. This can\u2019t be undone.`
+      : confirm
+        ? `Delete ${confirm.names.length} domains? This removes them and their monitoring data from your account. This can\u2019t be undone.`
+        : "";
+
   return (
     <div className="panel-card">
       <div className="panel-card-header">
         <h3 className="text-lg font-semibold text-black dark:text-white">All Domains</h3>
       </div>
-      {deleted ? (
+
+      {/* Toast */}
+      {toast && (
         <div className="mb-4">
-          <div className="flex w-full rounded-lg border-l-[6px] border-[#34D399] bg-[#34D399] bg-opacity-[15%] px-7 py-8 shadow-md md:p-9">
-            <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#34D399]">
-              <svg
-                width="16"
-                height="12"
-                viewBox="0 0 16 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M15.2984 0.826822L15.2868 0.811827L15.2741 0.797751C14.9173 0.401867 14.3238 0.400754 13.9657 0.794406L5.91888 9.45376L2.05667 5.2868C1.69856 4.89287 1.10487 4.89389 0.747996 5.28987C0.417335 5.65675 0.417335 6.22337 0.747996 6.59026L0.747959 6.59029L0.752701 6.59541L4.86742 11.0348C5.14445 11.3405 5.52858 11.5 5.89581 11.5C6.29242 11.5 6.65178 11.3355 6.92401 11.035L15.2162 2.11161C15.5833 1.74452 15.576 1.18615 15.2984 0.826822Z"
-                  fill="white"
-                  stroke="white"
-                ></path>
-              </svg>
+          <div
+            className={`flex w-full rounded-lg border-l-[6px] bg-opacity-[15%] px-7 py-8 shadow-md md:p-9 ${
+              toast.type === "success"
+                ? "border-[#34D399] bg-[#34D399]"
+                : "border-[#F87171] bg-[#F87171]"
+            }`}
+          >
+            <div
+              className={`mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg ${
+                toast.type === "success" ? "bg-[#34D399]" : "bg-[#F87171]"
+              }`}
+            >
+              {toast.type === "success" ? (
+                <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M15.2984 0.826822L15.2868 0.811827L15.2741 0.797751C14.9173 0.401867 14.3238 0.400754 13.9657 0.794406L5.91888 9.45376L2.05667 5.2868C1.69856 4.89287 1.10487 4.89389 0.747996 5.28987C0.417335 5.65675 0.417335 6.22337 0.747996 6.59026L0.747959 6.59029L0.752701 6.59541L4.86742 11.0348C5.14445 11.3405 5.52858 11.5 5.89581 11.5C6.29242 11.5 6.65178 11.3355 6.92401 11.035L15.2162 2.11161C15.5833 1.74452 15.576 1.18615 15.2984 0.826822Z"
+                    fill="white"
+                    stroke="white"
+                  />
+                </svg>
+              ) : (
+                <FaXmark className="h-4 w-4 text-white" />
+              )}
             </div>
             <div className="w-full">
-              <h5 className="mb-3 text-lg font-semibold text-dark">
-                {"Deleted Successfully"}
-              </h5>
+              <h5 className="text-lg font-semibold text-dark">{toast.message}</h5>
             </div>
           </div>
         </div>
-      ) : (
-        ""
       )}
 
       <div className="flex flex-col gap-5.5 p-6.5">
         <div className="max-w-full overflow-x-auto">
           <div className="w-full pb-4 border-b border-b-[#eee] flex justify-between mb-4">
-            {/* <div className="flex items-center space-x-2">
-              <div>Filter</div>
-              <div>
-                <div className="relative">
-                  <select className="border-form-stroke border-[#ddd] text-body-color focus:border-primary active:border-primary w-full appearance-none rounded-lg border-[1.5px] py-2 pl-4 pr-8 font-medium outline-none transition disabled:cursor-default disabled:bg-[#F5F7FD]">
-                    <option value="">All</option>
-                    <option value="">Option</option>
-                    <option value="">Option</option>
-                  </select>
-                  <span className="border-body-color absolute right-4 top-1/2 mt-[-2px] h-[10px] w-[10px] -translate-y-1/2 rotate-45 border-r-2 border-b-2"></span>
-                </div>
-              </div>
-            </div> */}
-            <div className="space-x-2">
+            <div className="space-x-2 flex items-center flex-wrap gap-y-2">
               <Link href="/domains/add" replace>
                 <button className="bg-primary inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4">
                   <FaBuffer className="w-4 h-4 mr-2" />
@@ -242,39 +280,14 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
                 </button>
               </Link>
 
-              {confirmDelete ? (
-                <>
-                  <button
-                    onClick={deleteRows}
-                    className="bg-danger inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4"
-                  >
-                    <FaTimes className="w-4 h-4 mr-2" />
-                    Continue Delete?
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowDelete(false);
-                      setConfirmDelete(false);
-                      toggleCheckbox(false);
-                    }}
-                    className="bg-success inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4"
-                  >
-                    <FaTimes className="w-4 h-4 mr-2" />
-                    Cancel
-                  </button>
-                </>
-              ) : showDelete && deleteDomain ? (
+              {selectedCount > 0 && (
                 <button
-                  onClick={() => {
-                    setConfirmDelete(true);
-                  }}
+                  onClick={openBulkDelete}
                   className="bg-danger inline-flex items-center justify-center rounded-md py-2 px-10 text-center text-base font-normal text-white hover:bg-opacity-90 lg:px-4"
                 >
-                  <FaTimes className="w-4 h-4 mr-2" />
-                  Delete Selected
+                  <FaTrash className="w-4 h-4 mr-2" />
+                  Delete selected ({selectedCount})
                 </button>
-              ) : (
-                ""
               )}
             </div>
           </div>
@@ -295,10 +308,7 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
                   <span className="border-body-color absolute right-4 top-1/2 mt-[-2px] h-[10px] w-[10px] -translate-y-1/2 rotate-45 border-r-2 border-b-2"></span>
                 </div>
               </div>
-              <div>
-                records{" "}
-                {/* {loading ? <FaCircleNotch className="w-4 h-4 fa-spin" /> : ""}{" "} */}
-              </div>
+              <div>records</div>
             </div>
             <div className="space-x-2 flex items-center">
               <div>search:</div>
@@ -319,12 +329,10 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
                 <th className="min-w-[20px] table-th-header">
                   <input
                     type="checkbox"
-                    id=""
                     checked={selectAll}
                     onChange={toggleSelectAll}
                   />
                 </th>
-                {/* Note:: Add class to "sorting" if sort "sorting_asc or sorting_desc" */}
                 <th
                   onClick={() => sort("domain_name")}
                   className={
@@ -338,7 +346,6 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
                 >
                   Domains
                 </th>
-                {/* Note:: Add class to "sorting" if sort "sorting_asc or sorting_desc" */}
                 <th
                   onClick={() => sort("date_last_crawled")}
                   className={
@@ -352,7 +359,6 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
                 >
                   Last Crawled Date
                 </th>
-                {/* Note:: Add class to "sorting" if sort "sorting_asc or sorting_desc" */}
                 <th
                   onClick={() => sort("no_of_items")}
                   className={
@@ -366,7 +372,6 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
                 >
                   Number of Items
                 </th>
-                {/* Note:: Add class to "sorting" if sort "sorting_asc or sorting_desc" */}
                 <th
                   onClick={() => sort("status")}
                   className={
@@ -399,7 +404,6 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
                       <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark">
                         <input
                           type="checkbox"
-                          id=""
                           checked={item.selected || false}
                           onChange={() => handleRowCheckboxChange(item.id)}
                         />
@@ -454,48 +458,45 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
                               <path
                                 d="M8.99981 14.8219C3.43106 14.8219 0.674805 9.50624 0.562305 9.28124C0.47793 9.11249 0.47793 8.88749 0.562305 8.71874C0.674805 8.49374 3.43106 3.20624 8.99981 3.20624C14.5686 3.20624 17.3248 8.49374 17.4373 8.71874C17.5217 8.88749 17.5217 9.11249 17.4373 9.28124C17.3248 9.50624 14.5686 14.8219 8.99981 14.8219ZM1.85605 8.99999C2.4748 10.0406 4.89356 13.5562 8.99981 13.5562C13.1061 13.5562 15.5248 10.0406 16.1436 8.99999C15.5248 7.95936 13.1061 4.44374 8.99981 4.44374C4.89356 4.44374 2.4748 7.95936 1.85605 8.99999Z"
                                 fill=""
-                              ></path>
+                              />
                               <path
                                 d="M9 11.3906C7.67812 11.3906 6.60938 10.3219 6.60938 9C6.60938 7.67813 7.67812 6.60938 9 6.60938C10.3219 6.60938 11.3906 7.67813 11.3906 9C11.3906 10.3219 10.3219 11.3906 9 11.3906ZM9 7.875C8.38125 7.875 7.875 8.38125 7.875 9C7.875 9.61875 8.38125 10.125 9 10.125C9.61875 10.125 10.125 9.61875 10.125 9C10.125 8.38125 9.61875 7.875 9 7.875Z"
                                 fill=""
-                              ></path>
+                              />
                             </svg>
                           </Link>
-                          {
-                            deleteDomain?(
-                              <button
-                                onClick={() => deleteSingle(item.id)}
-                                className="w-8 h-8 inline-flex items-center justify-center rounded border border-[#eee] hover:bg-meta-1 hover:text-white hover:border-meta-1"
-                              >
-                                <svg
-                                  className="fill-current"
-                                  width="18"
-                                  height="18"
-                                  viewBox="0 0 18 18"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M13.7535 2.47502H11.5879V1.9969C11.5879 1.15315 10.9129 0.478149 10.0691 0.478149H7.90352C7.05977 0.478149 6.38477 1.15315 6.38477 1.9969V2.47502H4.21914C3.40352 2.47502 2.72852 3.15002 2.72852 3.96565V4.8094C2.72852 5.42815 3.09414 5.9344 3.62852 6.1594L4.07852 15.4688C4.13477 16.6219 5.09102 17.5219 6.24414 17.5219H11.7004C12.8535 17.5219 13.8098 16.6219 13.866 15.4688L14.3441 6.13127C14.8785 5.90627 15.2441 5.3719 15.2441 4.78127V3.93752C15.2441 3.15002 14.5691 2.47502 13.7535 2.47502ZM7.67852 1.9969C7.67852 1.85627 7.79102 1.74377 7.93164 1.74377H10.0973C10.2379 1.74377 10.3504 1.85627 10.3504 1.9969V2.47502H7.70664V1.9969H7.67852ZM4.02227 3.96565C4.02227 3.85315 4.10664 3.74065 4.24727 3.74065H13.7535C13.866 3.74065 13.9785 3.82502 13.9785 3.96565V4.8094C13.9785 4.9219 13.8941 5.0344 13.7535 5.0344H4.24727C4.13477 5.0344 4.02227 4.95002 4.02227 4.8094V3.96565ZM11.7285 16.2563H6.27227C5.79414 16.2563 5.40039 15.8906 5.37227 15.3844L4.95039 6.2719H13.0785L12.6566 15.3844C12.6004 15.8625 12.2066 16.2563 11.7285 16.2563Z"
-                                    fill=""
-                                  ></path>
-                                  <path
-                                    d="M9.00039 9.11255C8.66289 9.11255 8.35352 9.3938 8.35352 9.75942V13.3313C8.35352 13.6688 8.63477 13.9782 9.00039 13.9782C9.33789 13.9782 9.64727 13.6969 9.64727 13.3313V9.75942C9.64727 9.3938 9.33789 9.11255 9.00039 9.11255Z"
-                                    fill=""
-                                  ></path>
-                                  <path
-                                    d="M11.2502 9.67504C10.8846 9.64692 10.6033 9.90004 10.5752 10.2657L10.4064 12.7407C10.3783 13.0782 10.6314 13.3875 10.9971 13.4157C11.0252 13.4157 11.0252 13.4157 11.0533 13.4157C11.3908 13.4157 11.6721 13.1625 11.6721 12.825L11.8408 10.35C11.8408 9.98442 11.5877 9.70317 11.2502 9.67504Z"
-                                    fill=""
-                                  ></path>
-                                  <path
-                                    d="M6.72245 9.67504C6.38495 9.70317 6.1037 10.0125 6.13182 10.35L6.3287 12.825C6.35683 13.1625 6.63808 13.4157 6.94745 13.4157C6.97558 13.4157 6.97558 13.4157 7.0037 13.4157C7.3412 13.3875 7.62245 13.0782 7.59433 12.7407L7.39745 10.2657C7.39745 9.90004 7.08808 9.64692 6.72245 9.67504Z"
-                                    fill=""
-                                  ></path>
-                                </svg>
-                              </button>
-                            ):null
-                          }
-                          
+                          <button
+                            onClick={() => openSingleDelete(item.id, item.domain_name)}
+                            aria-label="Delete"
+                            title="Delete"
+                            className="w-8 h-8 inline-flex items-center justify-center rounded border border-[#eee] hover:bg-meta-1 hover:text-white hover:border-meta-1"
+                          >
+                            <svg
+                              className="fill-current"
+                              width="18"
+                              height="18"
+                              viewBox="0 0 18 18"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M13.7535 2.47502H11.5879V1.9969C11.5879 1.15315 10.9129 0.478149 10.0691 0.478149H7.90352C7.05977 0.478149 6.38477 1.15315 6.38477 1.9969V2.47502H4.21914C3.40352 2.47502 2.72852 3.15002 2.72852 3.96565V4.8094C2.72852 5.42815 3.09414 5.9344 3.62852 6.1594L4.07852 15.4688C4.13477 16.6219 5.09102 17.5219 6.24414 17.5219H11.7004C12.8535 17.5219 13.8098 16.6219 13.866 15.4688L14.3441 6.13127C14.8785 5.90627 15.2441 5.3719 15.2441 4.78127V3.93752C15.2441 3.15002 14.5691 2.47502 13.7535 2.47502ZM7.67852 1.9969C7.67852 1.85627 7.79102 1.74377 7.93164 1.74377H10.0973C10.2379 1.74377 10.3504 1.85627 10.3504 1.9969V2.47502H7.70664V1.9969H7.67852ZM4.02227 3.96565C4.02227 3.85315 4.10664 3.74065 4.24727 3.74065H13.7535C13.866 3.74065 13.9785 3.82502 13.9785 3.96565V4.8094C13.9785 4.9219 13.8941 5.0344 13.7535 5.0344H4.24727C4.13477 5.0344 4.02227 4.95002 4.02227 4.8094V3.96565ZM11.7285 16.2563H6.27227C5.79414 16.2563 5.40039 15.8906 5.37227 15.3844L4.95039 6.2719H13.0785L12.6566 15.3844C12.6004 15.8625 12.2066 16.2563 11.7285 16.2563Z"
+                                fill=""
+                              />
+                              <path
+                                d="M9.00039 9.11255C8.66289 9.11255 8.35352 9.3938 8.35352 9.75942V13.3313C8.35352 13.6688 8.63477 13.9782 9.00039 13.9782C9.33789 13.9782 9.64727 13.6969 9.64727 13.3313V9.75942C9.64727 9.3938 9.33789 9.11255 9.00039 9.11255Z"
+                                fill=""
+                              />
+                              <path
+                                d="M11.2502 9.67504C10.8846 9.64692 10.6033 9.90004 10.5752 10.2657L10.4064 12.7407C10.3783 13.0782 10.6314 13.3875 10.9971 13.4157C11.0252 13.4157 11.0252 13.4157 11.0533 13.4157C11.3908 13.4157 11.6721 13.1625 11.6721 12.825L11.8408 10.35C11.8408 9.98442 11.5877 9.70317 11.2502 9.67504Z"
+                                fill=""
+                              />
+                              <path
+                                d="M6.72245 9.67504C6.38495 9.70317 6.1037 10.0125 6.13182 10.35L6.3287 12.825C6.35683 13.1625 6.63808 13.4157 6.94745 13.4157C6.97558 13.4157 6.97558 13.4157 7.0037 13.4157C7.3412 13.3875 7.62245 13.0782 7.59433 12.7407L7.39745 10.2657C7.39745 9.90004 7.08808 9.64692 6.72245 9.67504Z"
+                                fill=""
+                              />
+                            </svg>
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -538,6 +539,52 @@ const AllDomains = ({ tData,deleteDomain }: tableProps) => {
           </div>
         </div>
       </div>
+
+      {/* Confirmation modal */}
+      {confirm && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl dark:bg-boxdark">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-black dark:text-white">
+                {confirm.names.length === 1 ? "Delete domain" : `Delete ${confirm.names.length} domains`}
+              </h3>
+              <button
+                onClick={cancelDelete}
+                disabled={deleting}
+                className="text-body hover:text-black dark:hover:text-white disabled:opacity-50"
+              >
+                <FaXmark className="h-5 w-5" />
+              </button>
+            </div>
+            <p className="mb-6 text-sm text-body dark:text-bodydark">
+              {confirmMessage}
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={cancelDelete}
+                disabled={deleting}
+                className="rounded-md border border-stroke py-2 px-6 text-sm font-medium text-black hover:bg-gray-2 dark:border-strokedark dark:text-white dark:hover:bg-meta-4 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={executeDelete}
+                disabled={deleting}
+                className="inline-flex items-center rounded-md bg-danger py-2 px-6 text-sm font-medium text-white hover:bg-opacity-90 disabled:opacity-50"
+              >
+                {deleting ? (
+                  <>
+                    <FaCircleNotch className="mr-2 h-4 w-4 animate-spin" />
+                    Deleting…
+                  </>
+                ) : (
+                  "Delete"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

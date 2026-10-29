@@ -565,11 +565,93 @@ export async function insertMonitorDomains(userId: number, names: string[]): Pro
   };
 }
 
-/** Delete the given domain ids that belong to the user (mirrors DELETE /domains/delete). */
-export async function deleteDomains(userId: number, ids: number[]) {
-  const clean = (ids || []).map((n) => Number(n)).filter((n) => Number.isFinite(n));
-  if (!clean.length) return { success: false };
-  const placeholders = clean.map(() => "?").join(",");
-  await execute(`DELETE FROM domains WHERE id IN (${placeholders}) AND user_id = ?`, [...clean, userId]);
-  return { success: true };
+/**
+ * Delete the given domain ids that belong to the user.
+ *
+ * Cascade: for every matching domain row the function removes
+ *   1. `domains_items_owners` rows (via the item ids)
+ *   2. `domain_items` rows
+ *   3. the `domains` row itself
+ *
+ * All three steps run inside a single transaction so nothing is left orphaned.
+ * Ownership is enforced — only domains with `user_id = ?` are touched.
+ *
+ * Accepts at most MAX_DELETE_BATCH (500) ids per call. Returns per-domain
+ * success/failure so the UI can report partial failures.
+ */
+
+export const MAX_DELETE_BATCH = 500;
+
+export interface DeleteResult {
+  success: boolean;
+  deleted: number[];
+  failed: Array<{ id: number; error: string }>;
+}
+
+export async function deleteDomains(userId: number, ids: number[]): Promise<DeleteResult> {
+  const clean = (ids || [])
+    .map((n) => Number(n))
+    .filter((n) => Number.isFinite(n) && n > 0)
+    .slice(0, MAX_DELETE_BATCH);
+
+  if (!clean.length) return { success: false, deleted: [], failed: [] };
+
+  const conn = await (await import("./db")).db().getConnection();
+  const deleted: number[] = [];
+  const failed: Array<{ id: number; error: string }> = [];
+
+  try {
+    await conn.beginTransaction();
+
+    const ph = clean.map(() => "?").join(",");
+    const [owned] = await conn.query<Array<{ id: number } & import("mysql2/promise").RowDataPacket>>(
+      `SELECT id FROM domains WHERE id IN (${ph}) AND user_id = ?`,
+      [...clean, userId],
+    );
+    const ownedIds = (owned as Array<{ id: number }>).map((r) => r.id);
+    const ownedSet = new Set(ownedIds);
+
+    for (const id of clean) {
+      if (!ownedSet.has(id)) {
+        failed.push({ id, error: "not found or not owned" });
+      }
+    }
+
+    if (ownedIds.length) {
+      const oph = ownedIds.map(() => "?").join(",");
+
+      await conn.query(
+        `DELETE dio FROM domains_items_owners dio
+         INNER JOIN domain_items di ON di.id = dio.item_id
+         WHERE di.domain_id IN (${oph})`,
+        ownedIds,
+      );
+
+      await conn.query(
+        `DELETE FROM domain_items WHERE domain_id IN (${oph})`,
+        ownedIds,
+      );
+
+      await conn.query(
+        `DELETE FROM domains WHERE id IN (${oph}) AND user_id = ?`,
+        [...ownedIds, userId],
+      );
+
+      deleted.push(...ownedIds);
+    }
+
+    await conn.commit();
+  } catch (err) {
+    await conn.rollback();
+    for (const id of clean) {
+      if (!failed.some((f) => f.id === id)) {
+        failed.push({ id, error: "transaction failed" });
+      }
+    }
+    return { success: false, deleted: [], failed };
+  } finally {
+    conn.release();
+  }
+
+  return { success: deleted.length > 0, deleted, failed };
 }
