@@ -63,16 +63,25 @@ export const getDomainItems = async (id:number,search:string,limit:number,page:n
 
 
 
-export const deleteDomains = async (domains:Array<number>) => {
-  try {
-    const res = await fetch('/api/domain/delete', {
-      method: 'POST',
-      body: JSON.stringify({ domains: domains })
-    });
-    return res.json();
-  } catch (error) {
-    return error;
+export interface DeleteDomainsResult {
+  domains: {
+    success: boolean;
+    deleted: number[];
+    failed: Array<{ id: number; error: string }>;
+  };
+  error?: string;
+}
+
+export const deleteDomains = async (ids: number[]): Promise<DeleteDomainsResult> => {
+  const res = await fetch('/api/domain/delete', {
+    method: 'POST',
+    body: JSON.stringify({ domains: ids }),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    return { domains: { success: false, deleted: [], failed: [] }, error: body.error || 'Request failed' };
   }
+  return res.json();
 };
 
 export const rescanDomain = async (id:number) => {
