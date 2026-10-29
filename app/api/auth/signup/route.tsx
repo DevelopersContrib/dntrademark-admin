@@ -4,6 +4,32 @@ import { NextResponse } from 'next/server';
 import axios from 'axios';
 import { checkEmail } from '@/lib/auth-api';
 import { createVerificationToken, sendVerificationEmail } from '@/lib/email-verification';
+import { queryOne } from '@/lib/db';
+
+/**
+ * Extract the user id from a /user/save response body.
+ * Mirrors the paths that extractSavedUser in lib/auth-api.ts checks:
+ *   body.user.id | body.data.user.id | body.data.id
+ */
+function extractUserId(body: Record<string, unknown>): number | null {
+  const pluck = (obj: unknown): number | null => {
+    if (!obj || typeof obj !== 'object') return null;
+    const id = (obj as Record<string, unknown>).id;
+    return id != null ? Number(id) : null;
+  };
+
+  const user = body.user;
+  if (pluck(user) != null) return pluck(user);
+
+  const nested = body.data;
+  if (nested && typeof nested === 'object') {
+    const nd = nested as Record<string, unknown>;
+    if (pluck(nd.user) != null) return pluck(nd.user);
+    if (pluck(nd) != null) return pluck(nd);
+  }
+
+  return null;
+}
 
 export const POST = async (req: Request) => {
   try {
@@ -33,12 +59,25 @@ export const POST = async (req: Request) => {
     const res = await axios.post(apiUrl, params);
     const result = res.data;
 
-    const userId =
-      result?.data?.id ?? result?.data?.data?.id ?? result?.id ?? null;
+    let userId = extractUserId(result ?? {});
 
-    if (userId) {
+    if (userId == null) {
       try {
-        const token = createVerificationToken(Number(userId), email);
+        const row = await queryOne<{ id: number }>(
+          'SELECT id FROM users WHERE email = ? LIMIT 1',
+          [email],
+        );
+        userId = row?.id ?? null;
+      } catch (dbErr) {
+        console.error('[signup] DB fallback lookup failed (non-blocking):', dbErr);
+      }
+    }
+
+    if (userId == null) {
+      console.warn('[signup] could not resolve user id after registration — verification email skipped');
+    } else {
+      try {
+        const token = createVerificationToken(userId, email);
         await sendVerificationEmail(email, token);
       } catch (err) {
         console.error('[signup] verification email failed (non-blocking):', err);
