@@ -53,23 +53,33 @@ function extractSavedUser(payload: unknown): { id: string; email: string; name: 
   };
 }
 
-function extractExistingUser(payload: unknown): { id: string; firstName?: string } | null {
+/**
+ * Walk through all envelope depths the Laravel API is known to use
+ * ({ id }, { data: { id } }, { data: { data: { id } } }, etc.) and
+ * return the first object that contains an `id` field.  This keeps
+ * userExists() in sync with checkEmail(), which already checks
+ * data.data.data.id — a mismatch between the two caused an existing
+ * user to be routed to the register path, silently overwriting their
+ * password.
+ */
+function findUserObject(payload: unknown): Record<string, unknown> | null {
   if (!payload || typeof payload !== 'object') return null;
-  const root = payload as Record<string, unknown>;
-  const envelope =
-    root.data && typeof root.data === 'object'
-      ? (root.data as Record<string, unknown>)
-      : root;
-  const user =
-    envelope.data && typeof envelope.data === 'object'
-      ? (envelope.data as Record<string, unknown>)
-      : envelope;
+  let cursor: unknown = payload;
+  for (let depth = 0; depth < 4; depth++) {
+    if (!cursor || typeof cursor !== 'object') break;
+    const obj = cursor as Record<string, unknown>;
+    if (obj.id != null) return obj;
+    cursor = obj.data;
+  }
+  return null;
+}
 
-  const id = user.id;
-  if (id == null) return null;
+function extractExistingUser(payload: unknown): { id: string; firstName?: string } | null {
+  const user = findUserObject(payload);
+  if (!user) return null;
 
   return {
-    id: String(id),
+    id: String(user.id),
     firstName:
       typeof user.first_name === 'string'
         ? user.first_name
@@ -83,12 +93,14 @@ function userExists(payload: unknown): boolean {
   if (!payload || typeof payload !== 'object') return false;
   const root = payload as Record<string, unknown>;
   if (root.success === false) return false;
+
   const envelope =
     root.data && typeof root.data === 'object'
       ? (root.data as Record<string, unknown>)
       : root;
   if (envelope.success === false) return false;
-  return extractExistingUser(payload) !== null;
+
+  return findUserObject(payload) !== null;
 }
 
 export const checkEmail = async (email: string) => {
@@ -98,7 +110,7 @@ export const checkEmail = async (email: string) => {
       '/user/check?api_key=' +
       process.env.API_KEY +
       '&email=' +
-      email;
+      encodeURIComponent(email);
 
     const result = await axios.get(apiUrl, { timeout: 10000 });
     const id = result.data?.data?.data?.id ?? result.data?.data?.id;
@@ -218,7 +230,11 @@ export const authorizeUser = async (credentials: User) => {
 
   try {
     const checkUrl =
-      process.env.API_URL + '/user/check?api_key=' + process.env.API_KEY + '&email=' + email;
+      process.env.API_URL +
+      '/user/check?api_key=' +
+      process.env.API_KEY +
+      '&email=' +
+      encodeURIComponent(email);
     const checkRes = await axios.get(checkUrl, { timeout: 15000 });
     const exists = userExists(checkRes.data);
 
@@ -292,7 +308,11 @@ export async function authorizeOAuthUser(
 
   try {
     const checkUrl =
-      process.env.API_URL + '/user/check?api_key=' + process.env.API_KEY + '&email=' + email;
+      process.env.API_URL +
+      '/user/check?api_key=' +
+      process.env.API_KEY +
+      '&email=' +
+      encodeURIComponent(email);
     const checkRes = await axios.get(checkUrl, { timeout: 15000 });
     const exists = userExists(checkRes.data);
 
@@ -319,8 +339,9 @@ export async function authorizeOAuthUser(
     if (legacyEnabled) {
       const legacyToken = await loginWithApi(email, email);
       if (legacyToken) {
-        const userId = existingUser?.id ?? 'unknown';
-        console.warn(`[auth] legacy oauth login used for user id ${userId}`);
+        console.warn(
+          `[auth] legacy oauth login used for user id ${existingUser?.id ?? 'unknown'}`,
+        );
         return {
           ok: true,
           id: existingUser?.id ?? email,
@@ -331,7 +352,9 @@ export async function authorizeOAuthUser(
       }
     }
 
-    console.warn('[auth] OAuth: existing user has a different password, failing closed');
+    console.warn(
+      `[auth] OAuth: cannot log in existing user id ${existingUser?.id ?? 'unknown'}, failing closed`,
+    );
     return { ok: false, reason: 'account_not_linked' };
   } catch (error: unknown) {
     const status = axios.isAxiosError(error) ? error.response?.status : undefined;
