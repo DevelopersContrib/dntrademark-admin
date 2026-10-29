@@ -83,7 +83,7 @@ function mailerConfigured(): boolean {
 
 export async function sendVerificationEmail(email: string, token: string): Promise<boolean> {
   if (!mailerConfigured()) {
-    console.warn("[email-verification] mailer not configured — skipping send");
+    console.error("[email-verification] mailer not configured — MAIL_HOST/MAIL_USERNAME/MAIL_PASSWORD missing");
     return false;
   }
 
