@@ -50,10 +50,9 @@ export default function SigninForm() {
     <div className="space-y-1">
       {oauthError && (
         <div className="mb-4 rounded-xl border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
-          OAuth sign-in failed ({oauthError}).{' '}
-          <Link href="/auth/signin-error" className="font-semibold underline">
-            View details
-          </Link>
+          {oauthError === 'OAuthAccountNotLinked'
+            ? 'This email is already registered with a password. Please sign in below.'
+            : 'Google/GitHub sign-in didn\u2019t work. Please try again or sign in with your email.'}
         </div>
       )}
 

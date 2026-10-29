@@ -2,26 +2,51 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Metadata } from 'next';
 
-import { authPath, getAuthBaseUrl } from '@/lib/auth-url';
-
 export const metadata: Metadata = {
   title: 'DNTrademark Admin - Sign In Error',
 };
 
-const ERROR_MESSAGES: Record<string, string> = {
-  OAuthCallback:
-    'Sign-in with Google or GitHub failed after the provider callback. Common causes: wrong OAuth callback URL on Google/GitHub, NEXTAUTH_URL mismatch, missing API credentials on the server, or the backend API rejected login/registration for your email.',
-  OAuthSignin: 'Could not start the OAuth sign-in flow. Check provider credentials on the server.',
-  OAuthCreateAccount: 'Could not create an OAuth account. Please try again or use email sign-in.',
-  EmailCreateAccount: 'Could not create account with that email.',
-  Callback: 'There was a problem completing sign-in. Please try again.',
-  OAuthAccountNotLinked:
-    'This email already has a password account that could not be linked automatically. ' +
-    'Please sign in with your email and password, or try again — if the problem persists, contact support.',
-  AccessDenied: 'Sign-in was denied. Your account may not exist yet or the backend API rejected the login.',
-  Configuration: 'Auth is misconfigured on the server (missing NEXTAUTH_SECRET, NEXTAUTH_URL, or OAuth keys).',
-  Verification: 'The sign-in link is no longer valid.',
-  Default: 'An unexpected error occurred during sign-in.',
+const ERROR_MESSAGES: Record<string, { heading: string; body: string }> = {
+  OAuthAccountNotLinked: {
+    heading: 'Email already registered',
+    body: 'This email is already registered with a password. Please sign in with your email and password. If you forgot it, use Forgot password.',
+  },
+  OAuthCallback: {
+    heading: "Sign-in didn't work",
+    body: 'Something went wrong while completing your Google or GitHub sign-in. Please try again.',
+  },
+  OAuthSignin: {
+    heading: "Couldn't start sign-in",
+    body: 'We were unable to start the sign-in process. Please try again in a moment.',
+  },
+  OAuthCreateAccount: {
+    heading: 'Account creation failed',
+    body: 'We could not create your account through Google or GitHub. Please try again or sign up with your email.',
+  },
+  EmailCreateAccount: {
+    heading: 'Account creation failed',
+    body: 'We could not create an account with that email. It may already be registered.',
+  },
+  Callback: {
+    heading: "Sign-in didn't work",
+    body: 'There was a problem completing sign-in. Please try again.',
+  },
+  AccessDenied: {
+    heading: "Couldn't sign you in",
+    body: "We weren't able to sign you in. Your account may not exist yet — try creating one, or sign in with a different method.",
+  },
+  Configuration: {
+    heading: 'Sign-in temporarily unavailable',
+    body: 'Sign-in is temporarily unavailable due to a server issue. Please try again later.',
+  },
+  Verification: {
+    heading: 'Link expired',
+    body: 'This sign-in link is no longer valid. Please request a new one.',
+  },
+  Default: {
+    heading: "Sign-in didn't work",
+    body: 'Something unexpected happened. Please try again or sign in with your email and password.',
+  },
 };
 
 export default function SignInErrorPage({
@@ -30,13 +55,13 @@ export default function SignInErrorPage({
   searchParams: { error?: string };
 }) {
   const code = searchParams.error ?? 'Default';
-  const message = ERROR_MESSAGES[code] ?? ERROR_MESSAGES.Default;
-  const baseUrl = getAuthBaseUrl();
+  const { heading, body } = ERROR_MESSAGES[code] ?? ERROR_MESSAGES.Default;
+  const isAccountNotLinked = code === 'OAuthAccountNotLinked';
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4 sm:p-6">
       <div className="panel-card w-full max-w-md overflow-hidden shadow-4">
-        <div className="border-b border-stroke/60 px-8 py-8 dark:border-strokedark/60">
+        <div className="px-8 py-8">
           <Image
             src="https://cdn.vnoc.com/logos/logo-dntrademark-final.png"
             alt="Logo"
@@ -44,35 +69,26 @@ export default function SignInErrorPage({
             height={32}
           />
           <h2 className="mt-6 text-2xl font-bold tracking-tight text-black dark:text-white">
-            Sign-in error
+            {heading}
           </h2>
-          <p className="mt-2 text-sm text-body dark:text-bodydark">{message}</p>
-          {code !== 'Default' && (
-            <p className="mt-2 text-xs text-bodydark2">Error code: {code}</p>
-          )}
-        </div>
-        <div className="space-y-3 px-8 py-8 text-sm text-body dark:text-bodydark">
-          <p className="font-medium text-black dark:text-white">If you are an admin, verify:</p>
-          <ul className="list-inside list-disc space-y-1">
-            <li>
-              <code className="text-xs">NEXTAUTH_URL={baseUrl}</code>
-            </li>
-            <li>
-              Google callback:{' '}
-              <code className="text-xs">{authPath('/api/auth/callback/google')}</code>
-            </li>
-            <li>
-              GitHub callback:{' '}
-              <code className="text-xs">{authPath('/api/auth/callback/github')}</code>
-            </li>
-            <li>API_URL and API_KEY reach api.dntrademark.com from production</li>
-          </ul>
-          <Link
-            href="/auth/signin"
-            className="btn-primary mt-4 inline-flex w-full justify-center"
-          >
-            Back to sign in
-          </Link>
+          <p className="mt-2 text-sm text-body dark:text-bodydark">{body}</p>
+
+          <div className="mt-6 space-y-3">
+            <Link
+              href="/auth/signin"
+              className="btn-primary inline-flex w-full justify-center"
+            >
+              Sign in with email
+            </Link>
+            {isAccountNotLinked && (
+              <Link
+                href="/auth/forgot-password"
+                className="inline-flex w-full justify-center text-sm font-medium text-brand hover:underline"
+              >
+                Forgot password?
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>
