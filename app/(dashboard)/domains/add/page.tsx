@@ -85,7 +85,7 @@ const Page = () => {
               activeTab === 2
               &&
               <Tabs>
-                <UploadForm></UploadForm>
+                <UploadForm plan={plan} />
               </Tabs>
             }
           </div>
