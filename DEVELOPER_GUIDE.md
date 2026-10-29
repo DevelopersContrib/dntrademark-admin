@@ -162,4 +162,25 @@ A flat list of every **page**, **API route**, and **component**, with:
 | Admin queries (users/autoresponders) | `lib/admin-queries.ts` |
 | Login / OAuth config | `lib/options.tsx` |
 
+---
+
+## 5. Mail settings (`lib/mailer.ts`)
+
+Email is sent through the **Amazon SES SMTP** interface via `nodemailer`.
+`lib/mailer.ts` reads the following environment variables:
+
+| Variable | Required | Default | Notes |
+| --- | --- | --- | --- |
+| `MAIL_HOST` | **yes** | — | SES SMTP endpoint, e.g. `email-smtp.us-east-1.amazonaws.com` |
+| `MAIL_USERNAME` | **yes** | — | IAM SMTP username |
+| `MAIL_PASSWORD` | **yes** | — | IAM SMTP password |
+| `MAIL_PORT` | no | `587` | Use `465` for implicit TLS; `587` uses STARTTLS |
+| `MAIL_FROM_ADDRESS` | no | `no-reply@dntrademark.com` | Envelope sender address |
+| `MAIL_FROM_NAME` | no | `DNTrademark` | Display name in the `From` header |
+
+**Prerequisites**
+- The sender domain (or the exact `MAIL_FROM_ADDRESS`) must be **verified in SES**.
+- The SES account must be **out of sandbox mode**, otherwise mail can only be sent to verified addresses.
+- After adding or changing these variables in Vercel, **redeploy** the project so the new values take effect.
+
 > Known gaps & cleanup are tracked in **`GAPS_AND_TODOS.md`**.
