@@ -38,8 +38,13 @@ export default function SignupForm() {
         body: JSON.stringify({ firstName, lastName, email, password }),
       });
 
+      if (res.status === 409) {
+        setError('EMAIL_EXISTS');
+        return;
+      }
+
       if (!res.ok) {
-        setError('Could not create your account. That email may already be registered.');
+        setError('Could not create your account. Please try again.');
         return;
       }
 
@@ -141,9 +146,23 @@ export default function SignupForm() {
         </div>
 
         {error && (
-          <p className="text-sm text-danger" role="alert">
-            {error}
-          </p>
+          <div className="text-sm text-danger" role="alert">
+            {error === 'EMAIL_EXISTS' ? (
+              <p>
+                An account with this email already exists.{' '}
+                <a href="/auth/signin" className="font-medium underline">
+                  Sign in
+                </a>{' '}
+                or{' '}
+                <a href="/auth/forgot-password" className="font-medium underline">
+                  reset your password
+                </a>
+                .
+              </p>
+            ) : (
+              <p>{error}</p>
+            )}
+          </div>
         )}
 
         <button type="submit" disabled={isLoading} className="btn-primary w-full py-3.5">

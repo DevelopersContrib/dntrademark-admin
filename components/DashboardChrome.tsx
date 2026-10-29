@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
+import EmailVerificationBanner from '@/components/EmailVerificationBanner';
 
 export default function DashboardChrome({
   children,
@@ -21,6 +22,7 @@ export default function DashboardChrome({
 
         <main className="flex-1">
           <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-8">
+            <EmailVerificationBanner />
             {children}
           </div>
         </main>
