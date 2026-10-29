@@ -65,15 +65,11 @@ export async function POST(req: Request) {
     const resetUrl = `${baseUrl}/auth/reset-password?token=${encodeURIComponent(token)}`;
 
     if (!mailerConfigured()) {
-      if (process.env.NODE_ENV !== "production") {
-        console.log("[forgot-password] mail not configured — reset URL generated (not logged in production)");
-      } else {
-        console.log("[forgot-password] mail not configured");
-      }
+      console.error("[forgot-password] mailer not configured — MAIL_HOST/MAIL_USERNAME/MAIL_PASSWORD missing");
       return NextResponse.json({ message: GENERIC_MSG });
     }
 
-    await sendMail({
+    const result = await sendMail({
       to: email,
       subject: "Reset your DNTrademark password",
       html: `
@@ -98,6 +94,10 @@ export async function POST(req: Request) {
         </div>
       `,
     });
+
+    if (!result.ok) {
+      console.error("[forgot-password] failed to send password-reset email:", result.error);
+    }
 
     return NextResponse.json({ message: GENERIC_MSG });
   } catch (error) {
