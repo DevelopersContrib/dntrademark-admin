@@ -16,7 +16,8 @@ const ERROR_MESSAGES: Record<string, string> = {
   EmailCreateAccount: 'Could not create account with that email.',
   Callback: 'There was a problem completing sign-in. Please try again.',
   OAuthAccountNotLinked:
-    'This email already has a password account. Please sign in with your email and password instead.',
+    'This email already has a password account that could not be linked automatically. ' +
+    'Please sign in with your email and password, or try again — if the problem persists, contact support.',
   AccessDenied: 'Sign-in was denied. Your account may not exist yet or the backend API rejected the login.',
   Configuration: 'Auth is misconfigured on the server (missing NEXTAUTH_SECRET, NEXTAUTH_URL, or OAuth keys).',
   Verification: 'The sign-in link is no longer valid.',
